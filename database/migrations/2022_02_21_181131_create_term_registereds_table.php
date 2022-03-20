@@ -21,7 +21,16 @@ class CreateTermRegisteredsTable extends Migration
             $table->foreign('registration_no')->references("registration_no")->on("students");
             $table->foreign('term_name')->references("term_name")->on("terms");
             $table->foreign('coordinator_id')->references("id")->on("coordinators");
-
+            $table->string('organization_ntn_no')->nullable();
+            $table->string('organization_name')->nullable();
+            $table->string('organization_email')->nullable();
+            $table->string('organization_contact')->nullable();
+            $table->text('organization_address')->nullable();
+            $table->string('organization_website')->nullable();
+            $table->string('supervisor_name')->nullable();
+            $table->string('supervisor_email')->nullable();
+            $table->string('supervisor_designation')->nullable();
+            $table->string('supervisor_contact')->nullable();
             $table->timestamps();
         });
     }

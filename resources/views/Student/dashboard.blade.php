@@ -45,6 +45,7 @@
         <div style="margin-top:57px;">
             <div class="sidebar">
                 <a class="active" href="{{ url('/student/dashboard') }}">Home</a>
+                <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
             </div>
         </div>
         <div class="content">
@@ -59,7 +60,11 @@
                                 Send the details of the organization.
                             </p>
                             <hr class="my-4">
+                            @if($studentintern->status != NULL)
                             <a href="#" class="btn btn-success btn-lg" role="button" aria-pressed="true">Upload Offer Letter</a>
+                            @else
+                            <button type="button" class="btn btn-success btn-lg" disabled>Upload Offer Letter</button>
+                            @endif
                             <!-- <a href="{{ url('/student/download') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Download doc</a> -->
                         </div>
                     </div>

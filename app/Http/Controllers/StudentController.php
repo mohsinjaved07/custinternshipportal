@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\StudentAccount;
 use App\Models\StudentDocs;
+use App\Models\TermRegistered;
 use App\Models\Term;
+use App\Models\InternConfirm;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\StudentForgotPwd;
+use App\Mail\InternConfirmation;
 use PhpOffice\PhpWord\Settings;
 use PhpOffice\PhpWord\IOFactory;
 use Carbon\Carbon;
@@ -79,14 +82,20 @@ class StudentController extends Controller
         if ($registration_no){
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
-            return view('Student.dashboard', compact('student', 'term'));
+            $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
+            return view('Student.dashboard', compact('student', 'term', 'studentintern'));
         } else {
             return Redirect("/student/loginForm");
         }
     }
 
     public function loginForm(){
-        return view('Student.login');
+        $registration_no = session('registration_no');
+        if($registration_no){
+            return redirect('student/dashboard');
+        } else {
+            return view('Student.login');
+        }
     }
 
     public function logout(){
@@ -143,11 +152,10 @@ class StudentController extends Controller
             } else {
                 return Redirect()->back();
             }
-
-            return Redirect("/student/loginForm");
-        } else {
-            return Redirect("/student/loginForm");
+            session()->forget('registration_no');
         }
+        
+        return Redirect("/student/loginForm");
     }
 
     public function forgotpasswordlink(){
@@ -208,4 +216,86 @@ class StudentController extends Controller
         return Redirect('student/loginForm');
 
     }
+
+    public function internshipInfo(){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $student = Student::where('registration_no', $registration_no)->first();
+            $term = Term::all()->last();
+            return view('Student.internshipinfo', compact('student', 'term'));
+        } else {
+            return Redirect("/student/loginForm");
+        }
+    }
+
+    public function setOrganizationDetails(Request $request){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $validated = $request->validate([
+                'orgntn' => 'required|max:100',
+                'orgname' => 'required|max:100',
+                'orgemail' => 'required|max:100',
+                'orgcontact' => 'required|numeric|digits:11',
+                'orgaddress' => 'required|max:100',
+                'orgwebsite' => 'required|max:100',
+                'supervisorname' => 'required|max:100',
+                'supervisoremail' => 'required|max:100',
+                'supervisordesignation' => 'required|max:100',
+                'supervisorcontact' => 'required|numeric|digits:11'
+            ],
+            [
+                'orgntn.required' => 'Please enter organization NTN',
+                'orgname.required' => 'Please enter organization name',
+                'orgemail.required' => 'Please enter organization email',
+                'orgcontact.required' => 'Please enter organization contact',
+                'orgaddress.required' => 'Please enter organization address',
+                'orgwebsite.required' => 'Please enter organization website',
+                'supervisorname.required' => 'Please enter supervisor name',
+                'supervisoremail.required' => 'Please enter supervisor email',
+                'supervisordesignation.required' => 'Please enter supervisor designation',
+                'supervisorcontact.required' => 'Please enter supervisor contact'
+            ]);
+
+            $term = Term::all()->last();
+            $termregistered = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+            if ($termregistered){
+                $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                    'organization_ntn_no' => $request->orgntn,
+                    'organization_name' => $request->orgname,
+                    'organization_email' => $request->orgemail,
+                    'organization_contact' => $request->orgcontact,
+                    'organization_address' => $request->orgaddress,
+                    'organization_website' => $request->orgwebsite,
+                    'supervisor_name' => $request->supervisorname,
+                    'supervisor_email' => $request->supervisoremail,
+                    'supervisor_designation' => $request->supervisordesignation,
+                    'supervisor_contact' => $request->supervisorcontact
+                ]);
+            }
+            
+            $link = Crypt::encryptString($request->orgname);
+            $internconfirm = InternConfirm::where('registration_no', $registration_no)->first();
+            if($internconfirm){
+                $internconfirm->where('registration_no', $registration_no)->update([
+                    'link' => $link,
+                    'expire_date'=> Carbon::now()->addDays(7),
+                    'status' => NULL
+                ]);
+            } else {
+                $internconfirm = new InternConfirm;
+                $internconfirm->registration_no = $registration_no;
+                $internconfirm->link = $link;
+                $internconfirm->expire_date = Carbon::now()->addDays(7);
+                $internconfirm->status = NULL;
+                $internconfirm->save();
+            }
+            Mail::to($request->orgemail)->send(new InternConfirmation($link, $internconfirm));
+            Mail::to($request->supervisoremail)->send(new InternConfirmation($link, $internconfirm));
+        } else {
+            return Redirect('student/loginForm');
+        }
+
+        return Redirect()->back();
+    }
+
 }

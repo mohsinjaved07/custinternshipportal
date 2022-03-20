@@ -20,8 +20,8 @@
         <!-- Scripts -->
         <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-        
 
+        
     </head>
     <body class="antialiased">
         <nav class="navbar navbar-light fixed-top bg-light">
@@ -35,7 +35,7 @@
             </div>
             <div class="btn-group">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ $root->coordinators->name }}
+                    {{ $root->coordinators->name }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="{{ url('/coordinator/changepassword') }}">Change password</a>
@@ -43,84 +43,60 @@
                 </div>
             </div>
         </nav>
-        <div style="margin-top:57px;">
-            <div class="sidebar">
-                <a class="active" href="{{ url('/coordinator/dashboard') }}">Dashboard</a>
-                <div href="#" class="dropdown-btn">Term Management 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/changeterm') }}">Change Term</a>
-                </div>
-                @if(session('term') == $term->term_name)
-                <div href="#" class="dropdown-btn">Generate Login 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
-                    <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
-                </div>
-                <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
-                <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
-                @endif
-            </div>
-        </div>
-        <div class="content">
-            <h1>Welcome, {{ $root->coordinators->name }}</h1>
-
+        <div class="container" style="margin-top:57px;">
+            <h1>Organization list</h1>
             <hr/>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Students</h5>
+                        <h5 class="card-header bg-dark text-white text-center">Students Information</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Show the details of the students registered in internship program.
+                                Here are the organization list students working.
                             </p>
-                            <hr class="my-4">    
-                            <a href="{{ url('coordinator/studentsinfo') }}" class="btn btn-success btn-lg" role="button" aria-pressed="true">Show student info</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Activity</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Schedule the term wise internship plan, their workflows and important dates.
-                            </p>
-                            <hr class="my-4">
-                            <a href="{{ url('/coordinator/getplan') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Set internship plan</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-light text-dark text-center">Announcements</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Here you can view the announcements.
-                            </p>
-                            <hr class="my-4">
-                        </div>
-                    </div>
-                </div>
-            </div><br/><br/>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Organization</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                You can see the list of organizations student uploaded.
-                            </p>
-                            <hr class="my-4">    
-                            <a href="{{ url('coordinator/organizationlist') }}" class="btn btn-info btn-lg" role="button" aria-pressed="true">Show organization list</a>
+                            <hr class="my-4"/>
+                            <label>Search Student</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-search"></i></div>
+                                </div>
+                                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for registration no..."/><br/>
+                            </div>
+                            <div class="scroller">
+                                <table class="table" id="myTable">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Registration No</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Organization</th>
+                                            <th scope="col">Contact No</th>
+                                            <th scope="col">Supervisor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($student as $s)
+                                        @if(isset($s->organization_ntn_no))
+                                        <tr>
+                                            <td>{{ $s->registration_no }}</td>
+                                            <td>{{ $s->students->name }}</td>
+                                            <td><a href="{{ $s->organization_website }}" target="_blank">{{ $s->organization_name }}</a></td>
+                                            <td>{{ $s->organization_contact }}</td>
+                                            <td>{{ $s->supervisor_name }}</td>
+                                        </tr>
+                                        @endif
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center">
+                                <a href="{{ url('coordinator/dashboard') }}" class="btn btn-lg btn-danger">Go Back</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <script src="{{ asset('js/lettercheck.js') }}"></script>
+        <script src="{{ asset('js/my.js') }}"></script>
     </body>
-    <script src="{{ asset('js/my.js') }}"></script>
 </html>

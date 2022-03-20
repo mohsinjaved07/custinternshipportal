@@ -12,8 +12,18 @@ class TermRegistered extends Model
         'registration_no',
         'term_name',
         'coordinator_id',
+        'organization_ntn_no',
+        'organization_name',
+        'organization_email',
+        'organization_contact',
+        'organization_address',
+        'organization_website',
+        'supervisor_name',
+        'supervisor_email',
+        'supervisor_designation',
+        'supervisor_contact'
     ];
-
+    
     public function students(){
         return $this->hasOne(Student::class, "registration_no", "registration_no");
     }

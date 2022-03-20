@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ConfirmationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,7 @@ Route::get('/coordinator/uploadfile', [CoordinatorController::class, 'uploadfile
 Route::get('/coordinator/forgotpasswordlink', [CoordinatorController::class, 'forgotpasswordlink']);
 Route::get('/coordinator/setannouncement', [CoordinatorController::class, 'setAnnouncement']);
 Route::get('/coordinator/forgotpassword/{name}', [CoordinatorController::class, 'forgotpassword']);
+Route::get('/coordinator/organizationlist', [CoordinatorController::class, 'getOrganizationList']);
 
 Route::post('/coordinator/register', [CoordinatorController::class, 'register'])->name("createCoordinator");
 Route::post('/coordinator/login', [CoordinatorController::class, 'login'])->name("validateCoordinator");
@@ -54,6 +56,7 @@ Route::post('/coordinator/setforgotpassword/{name}', [CoordinatorController::cla
 
 
 /*********************************** Student Routes ***********************************/
+
 Route::get('/student/loginForm', [StudentController::class, 'loginForm']);
 Route::get('/student/dashboard', [StudentController::class, 'dashboardPage']);
 Route::get('/student/logout', [StudentController::class, 'logout']);
@@ -61,6 +64,7 @@ Route::get('/student/getplan', [StudentController::class, 'getplan']);
 Route::get('/student/accountsettings', [StudentController::class, 'accountsettings']);
 Route::get('/student/forgotpasswordlink', [StudentController::class, 'forgotpasswordlink']);
 Route::get('/student/forgotpassword/{registrationno}', [StudentController::class, 'forgotpassword']);
+Route::get('/student/internshipinfo', [StudentController::class, 'internshipinfo']);
 
 Route::post('/student/login', [StudentController::class, 'login'])->name("validateStudent");
 Route::post('/student/setloginid', [StudentController::class, 'setloginid'])->name("setloginid");
@@ -69,3 +73,10 @@ Route::post('/student/downloadrecletter', [StudentController::class, 'downloadre
 Route::post('/student/downloadinternshipplan', [StudentController::class, 'downloadinternshipplan'])->name('internshipplan');
 Route::post('/student/sendforgotpasswordemail', [StudentController::class, 'sendforgotpasswordemail'])->name('sendforgotpasswordemail');
 Route::post('/student/setforgotpassword/{registrationno}', [StudentController::class, 'setforgotpassword']);
+Route::post('/student/setorganizationdetails', [StudentController::class, 'setOrganizationDetails'])->name("setorganizationdetails");
+
+/*********************************** End of Student Routes ***********************************/
+
+/*********************************** Confirmation Routes ***********************************/
+
+Route::get('/confirmation/{link}', [ConfirmationController::class, 'studentConfirm']);

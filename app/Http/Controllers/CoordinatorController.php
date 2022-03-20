@@ -33,7 +33,7 @@ class CoordinatorController extends Controller
             'email' => 'required|unique:coordinators|max:100',
             'password' => 'required|max:100|string|min:6|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
             'department' => 'required|max:100',
-            'contactno' => 'required|unique:coordinators|max:11',
+            'contactno' => 'required|unique:coordinators|numeric|digits:11',
             'office' => 'required|unique:coordinators|max:100'
         ],
         [
@@ -120,7 +120,7 @@ class CoordinatorController extends Controller
     public function sendLetter(){
         $id = session('id');
         if ($id){
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get(['registration_no']);
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
             return view('Coordinator.sendletter', compact('student', 'root', 'term'));
@@ -209,7 +209,7 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get(['registration_no']);
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
             $term = Term::all()->last();
             return view('Coordinator.studentsinfo', compact('root', 'student', 'term'));
         } else {
@@ -374,7 +374,7 @@ class CoordinatorController extends Controller
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get(['registration_no']);
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
             return view('Coordinator.portallogin', compact('root', 'term', 'student'));
         } else {
             return Redirect("/coordinator/loginForm");
@@ -443,7 +443,7 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get(['registration_no']);
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
             $term = Term::all()->last();
             return view("Coordinator.setannouncement", compact('root', 'student', 'term'));
         } else {
@@ -506,6 +506,17 @@ class CoordinatorController extends Controller
         }
 
         return Redirect('coordinator/loginForm');
+    }
 
+    public function getOrganizationList(){
+        $id = session('id');
+        if ($id){
+            $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
+            $term = Term::all()->last();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            return view('Coordinator.organizationlist', compact('root', 'term', 'student'));
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
     }
 }
