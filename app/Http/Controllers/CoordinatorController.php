@@ -9,10 +9,12 @@ use App\Models\StudentAccount;
 use App\Models\StudentDocs;
 use App\Models\TermRegistered;
 use App\Models\Term;
+use App\Models\Announcement;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\LetterMail;
 use App\Mail\LoginInfoMail;
+use App\Mail\AnnouncementMail;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
@@ -515,6 +517,44 @@ class CoordinatorController extends Controller
             $term = Term::all()->last();
             $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
             return view('Coordinator.organizationlist', compact('root', 'term', 'student'));
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function announcement(Request $request){
+        $id = session('id');
+        if ($id){
+            $validated = $request->validate([
+                'purpose' => 'required',
+                'users' => 'required',
+                'startDate' => 'required',
+                'endDate' => 'required',
+                'announcementMethod' => 'required',
+                'description' => 'required'
+            ]);
+
+            foreach($request->users as $u){
+                if($u == "allStudent"){
+                    $student = Student::all();
+                    foreach($student as $s){
+                        $announcement = new Announcement;
+                        $announcement->registration_no = $s->registration_no;
+                        $announcement->purpose = $request->purpose;
+                        $announcement->description = $request->description;
+                        $announcement->start_date = $request->startDate;
+                        $announcement->end_date = $request->endDate;
+                        $announcement->coordinator_id = $id;
+                        $announcement->save();
+
+                        foreach($request->announcementMethod as $a){
+                            Mail::to($s->email)->send(new AnnouncementMail($request->description));
+                        }
+                    }
+                }
+            }
+
+            return Redirect()->back();
         } else {
             return Redirect("/coordinator/loginForm");
         }

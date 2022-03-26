@@ -17,8 +17,12 @@ class CreateAnnouncementsTable extends Migration
             $table->id();
             $table->string("registration_no");
             $table->foreign("registration_no")->references("registration_no")->on("students");
+            $table->string("purpose");
             $table->text("description");
-            $table->string("");
+            $table->string("start_date");
+            $table->string("end_date");
+            $table->unsignedBigInteger("coordinator_id")->nullable();
+            $table->foreign('coordinator_id')->references("id")->on("coordinators");
             $table->timestamps();
         });
     }

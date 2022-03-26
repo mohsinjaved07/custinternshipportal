@@ -33,9 +33,9 @@ for (i = 0; i < dropdown.length; i++) {
 }
 
 function disableText(){
-  document.getElementById("desc").disabled = true;
+  document.getElementById("desc").readOnly = true;
 }
 
 function enableText(){
-  document.getElementById("desc").disabled = false;
+  document.getElementById("desc").readOnly = false;
 }

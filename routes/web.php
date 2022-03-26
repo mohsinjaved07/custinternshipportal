@@ -51,6 +51,7 @@ Route::post('/coordinator/selectterm', [CoordinatorController::class, 'selectter
 Route::post('/coordinator/postfile', [CoordinatorController::class, 'postfile'])->name('postfile');
 Route::post('/coordinator/sendforgotpasswordemail', [CoordinatorController::class, 'sendforgotpasswordemail'])->name('coordinatorsendforgotpasswordemail');
 Route::post('/coordinator/setforgotpassword/{name}', [CoordinatorController::class, 'setforgotpassword']);
+Route::post('/coordinator/announcement', [CoordinatorController::class, 'announcement'])->name('announcement');
 
 /*********************************** End of Coordinator Routes ***********************************/
 

@@ -78,7 +78,7 @@
                                 Here you can create announcement.
                             </p>
                             <hr class="my-4">
-                            <form action="#" method="post">
+                            <form action="{{ route('announcement') }}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
@@ -87,6 +87,9 @@
                                             <select name="purpose" class="form-control">
                                                 <option value="Meeting">Meeting</option>
                                             </select>
+                                            @error('purpose')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -97,26 +100,29 @@
                                                 <option value = "allInternalEvaluator">allInternalEvaluator</option>
                                                 <option value = "allExternalEvaluator">allExternalEvaluator</option>
                                             </select>
+                                            @error('users')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div><br/>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label><strong>Meeting Date:</strong></label>
-                                            <input type="date" name="meetingDate" class="form-control" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label><strong>Start Date:</strong></label>
                                             <input type="date" name="startDate" class="form-control" />
+                                            @error('startDate')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label><strong>End Date:</strong></label>
                                             <input type="date" name="endDate" class="form-control" />
+                                            @error('endDate')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                 </div><br/>
@@ -124,10 +130,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <p><strong>Announcement type:</strong></p>  
-                                            <input type="checkbox" name="announcement[]" value="Email" id="Email" checked/>
+                                            <input type="checkbox" name="announcementMethod[]" value="Email" id="Email" checked/>
                                             <label for="Email">Email</label><br/>
-                                            <input type="checkbox" name="announcement[]" value="Phone" id="Phone"/>
+                                            <input type="checkbox" name="announcementMethod[]" value="Phone" id="Phone"/>
                                             <label for="Phone">Phone</label><br/>
+                                            @error('announcementMethod')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -143,12 +152,13 @@
                                 <div class="form-group">
                                     <label class="h2">Message:</label>
                                     <p class="text-danger"><strong>Note: </strong>Don't change ${}. The names under the bracket are reserved.</p>
-                                    <textarea name="description" id="desc" rows="10" class="form-control" disabled>${name} (${registration_no}) is currently doing ${department} at Capital University of Science and Technology (CUST), Islamabad. He/She has completed 90 Credit hours in this course with flying colors. I have no doubt that the student has the skills, focus, and determination to perform well in further studies.
+                                    <textarea name="description" readOnly id="desc" rows="10" class="form-control">Be advised that you're progress will be checked anytime for evaluation purpose. So, please be attentive at your work according to calendar.
 
-I recommend this student without reservation for the internship. So far, he/she is a disciplined student and has never been involved in any activity that might have tarnished reputation as a student. 
-
-I wish this student best of luck in every endeavor of life.
+Thank you,
                                     </textarea>
+                                    @error('description')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div style="text-align:center">
                                     <button type="submit" class="btn btn-danger btn-lg">Submit</button>
