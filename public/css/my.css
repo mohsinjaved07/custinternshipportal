@@ -117,3 +117,8 @@ body {
   background-attachment: fixed;
   background-size: cover;
 }
+
+.required {
+  color:red;
+  font-size:20px;
+}

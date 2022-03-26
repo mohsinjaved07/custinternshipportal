@@ -222,7 +222,8 @@ class StudentController extends Controller
         if ($registration_no){
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
-            return view('Student.internshipinfo', compact('student', 'term'));
+            $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
+            return view('Student.internshipinfo', compact('student', 'term', 'studentintern'));
         } else {
             return Redirect("/student/loginForm");
         }
@@ -289,7 +290,6 @@ class StudentController extends Controller
                 $internconfirm->status = NULL;
                 $internconfirm->save();
             }
-            Mail::to($request->orgemail)->send(new InternConfirmation($link, $internconfirm));
             Mail::to($request->supervisoremail)->send(new InternConfirmation($link, $internconfirm));
         } else {
             return Redirect('student/loginForm');

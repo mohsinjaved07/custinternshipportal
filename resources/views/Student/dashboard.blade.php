@@ -46,53 +46,14 @@
             <div class="sidebar">
                 <a class="active" href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
+                @if(isset($studentintern->status))
+                <a href="">Upload Offer Letter</a>
+                @endif
             </div>
         </div>
         <div class="content">
             <h1>Welcome, {{ $student->name }}</h1>
             <hr/>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Organization</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Send the details of the organization.
-                            </p>
-                            <hr class="my-4">
-                            @if($studentintern->status != NULL)
-                            <a href="#" class="btn btn-success btn-lg" role="button" aria-pressed="true">Upload Offer Letter</a>
-                            @else
-                            <button type="button" class="btn btn-success btn-lg" disabled>Upload Offer Letter</button>
-                            @endif
-                            <!-- <a href="{{ url('/student/download') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Download doc</a> -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Activity Calendar</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Follow this activity guidelines for your internship progress.
-                            </p>
-                            <hr class="my-4">
-                            <a href="{{ url('/student/getplan') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Show Internship Plan</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-light text-dark text-center">Announcements</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Here you can view the announcements.
-                            </p>
-                            <hr class="my-4">
-                        </div>
-                    </div>
-                </div>
-            </div><br/><br/>
             <div class="row">
                 <div class="col-md-4">
                     <div class="card shadow">
@@ -131,6 +92,29 @@
                                 </tbody>
                             </table>
                         </div>  
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow">
+                        <h5 class="card-header bg-dark text-white text-center">Activity Calendar</h5>
+                        <div class="card-body">
+                            <p class="card-title font-weight-bold custFontColor">
+                                Follow this activity guidelines for your internship progress.
+                            </p>
+                            <hr class="my-4">
+                            <a href="{{ url('/student/getplan') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Show Internship Plan</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow">
+                        <h5 class="card-header bg-light text-dark text-center">Announcements</h5>
+                        <div class="card-body">
+                            <p class="card-title font-weight-bold custFontColor">
+                                Here you can view the announcements.
+                            </p>
+                            <hr class="my-4">
+                        </div>
                     </div>
                 </div>
             </div>

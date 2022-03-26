@@ -71,6 +71,7 @@
                                             <th scope="col">Organization</th>
                                             <th scope="col">Contact No</th>
                                             <th scope="col">Supervisor</th>
+                                            <th scope="col">Organization Details</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -82,7 +83,43 @@
                                             <td><a href="{{ $s->organization_website }}" target="_blank">{{ $s->organization_name }}</a></td>
                                             <td>{{ $s->organization_contact }}</td>
                                             <td>{{ $s->supervisor_name }}</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{$s->registration_no}}">
+                                                    Details
+                                                </button>
+                                            </td>
                                         </tr>
+                                        <div class="modal fade" id="{{$s->registration_no}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Organization Details</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <strong>Registration No</strong>: {{ $s->registration_no }}<br/>
+                                                        <strong>Name</strong>: {{ $s->students->name }}<br/>
+                                                        <br/><br/>
+                                                        <strong>Organization NTN No</strong>: {{ $s->organization_ntn_no }}<br/>
+                                                        <strong>Organization Name</strong>: {{ $s->organization_name }}<br/>
+                                                        <strong>Organization Email</strong>: {{ $s->organization_email }}<br/>
+                                                        <strong>Organization Website</strong>: <a href="{{ $s->organization_website }}" target="_blank">{{ $s->organization_website }}</a><br/>
+                                                        <strong>Organization Contact</strong>: {{ $s->organization_contact }}<br/>
+                                                        <strong>Organization Address</strong>: {{ $s->organization_address }}<br/>
+                                                        <br/><br/>
+                                                        <strong>Supervisor Name</strong>: {{ $s->supervisor_name }}<br/>
+                                                        <strong>Supervisor Email</strong>: {{ $s->supervisor_email }}<br/>
+                                                        <strong>Supervisor Designation</strong>: {{ $s->supervisor_designation }}<br/>
+                                                        <strong>Supervisor Contact</strong>: {{ $s->supervisor_contact }}<br/>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         @endif
                                         @endforeach
                                     </tbody>
@@ -96,7 +133,6 @@
                 </div>
             </div>
         </div>
-        <script src="{{ asset('js/lettercheck.js') }}"></script>
         <script src="{{ asset('js/my.js') }}"></script>
     </body>
 </html>

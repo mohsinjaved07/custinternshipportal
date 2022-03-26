@@ -46,6 +46,9 @@
             <div class="sidebar">
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a class="active" href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
+                @if(isset($studentintern->status))
+                <a href="">Upload Offer Letter</a>
+                @endif
             </div>
         </div>
         <div class="content">
@@ -68,7 +71,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Organization NTN No.:</label>
+                                                <label><span class="required">*</span>Organization NTN No.:</label>
                                                 <input type="text" class="form-control" name="orgntn"/>
                                                 @error('orgntn')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -77,7 +80,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Organization Name:</label>
+                                                <label><span class="required">*</span>Organization Name:</label>
                                                 <input type="text" class="form-control" name="orgname"/>
                                                 @error('orgname')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -88,7 +91,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Organization Email:</label>
+                                                <label><span class="required">*</span>Organization Email:</label>
                                                 <input type="text" class="form-control" name="orgemail"/>
                                                 @error('orgemail')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -97,7 +100,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Organization Contact:</label>
+                                                <label><span class="required">*</span>Organization Contact:</label>
                                                 <input type="text" class="form-control" name="orgcontact"/>
                                                 @error('orgcontact')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -106,7 +109,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label>Organization website:</label>
+                                                <label><span class="required">*</span>Organization website:</label>
                                                 <input type="text" class="form-control" name="orgwebsite"/>
                                                 @error('orgwebsite')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -117,7 +120,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label>Organization Address:</label>
+                                                <label><span class="required">*</span>Organization Address:</label>
                                                 <textarea class="form-control" name="orgaddress" rows="4"></textarea>
                                                 @error('orgaddress')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -132,7 +135,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Supervisor name:</label>
+                                                <label><span class="required">*</span>Supervisor name:</label>
                                                 <input type="text" class="form-control" name="supervisorname"/>
                                                 @error('supervisorname')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -141,7 +144,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Supervisor email:</label>
+                                                <label><span class="required">*</span>Supervisor email:</label>
                                                 <input type="text" class="form-control" name="supervisoremail"/>
                                                 @error('supervisoremail')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -152,7 +155,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Supervisor designation:</label>
+                                                <label><span class="required">*</span>Supervisor designation:</label>
                                                 <input type="text" class="form-control" name="supervisordesignation"/>
                                                 @error('supervisordesignation')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -161,7 +164,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label>Supervisor Contact:</label>
+                                                <label><span class="required">*</span>Supervisor Contact:</label>
                                                 <input type="text" class="form-control" name="supervisorcontact"/>
                                                 @error('supervisorcontact')
                                                 <span class="text-danger">{{ $message }}</span>

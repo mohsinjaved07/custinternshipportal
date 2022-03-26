@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\InternConfirm;
+use App\Mail\StudentConfirmationMail;
+use Illuminate\Support\Facades\Mail;
+
 use Carbon\Carbon;
 
 class ConfirmationController extends Controller
@@ -18,6 +21,7 @@ class ConfirmationController extends Controller
                     $internconfirm->where('link', $link)->update([
                         'status'=>'authenticated',
                     ]);
+                    Mail::to($internconfirm->students->email)->send(new StudentConfirmationMail($internconfirm->students));
                     return "Thank you for your cooperation. You can close this window.";
                 }
             } else {

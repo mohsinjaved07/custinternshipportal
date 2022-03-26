@@ -115,7 +115,7 @@
                                 You can see the list of organizations student uploaded.
                             </p>
                             <hr class="my-4">    
-                            <a href="{{ url('coordinator/organizationlist') }}" class="btn btn-info btn-lg" role="button" aria-pressed="true">Show organization list</a>
+                            <a href="{{ url('coordinator/organizationlist') }}" class="btn btn-info btn-lg" role="button" aria-pressed="true">Internship Students Details</a>
                         </div>
                     </div>
                 </div>
