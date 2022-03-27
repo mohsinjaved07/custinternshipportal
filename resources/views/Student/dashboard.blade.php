@@ -114,6 +114,15 @@
                                 Here you can view the announcements.
                             </p>
                             <hr class="my-4">
+                            @foreach($announcement as $a)
+                                @if($a->end_date >= Carbon\Carbon::now())
+                                <div class="alert alert-success" role="alert">
+                                    {{ $a->description }}<br/><br/>
+                                    <strong>Announced by:</strong> {{ $a->coordinator->name }}<br/>
+                                    <strong>Expire date:</strong> {{ Carbon\Carbon::parse($a->end_date)->toFormattedDateString() }}
+                                </div>
+                                @endif
+                            @endforeach
                         </div>
                     </div>
                 </div>

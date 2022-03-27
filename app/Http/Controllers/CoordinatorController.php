@@ -530,7 +530,6 @@ class CoordinatorController extends Controller
                 'users' => 'required',
                 'startDate' => 'required',
                 'endDate' => 'required',
-                'announcementMethod' => 'required',
                 'description' => 'required'
             ]);
 
@@ -546,9 +545,11 @@ class CoordinatorController extends Controller
                         $announcement->end_date = $request->endDate;
                         $announcement->coordinator_id = $id;
                         $announcement->save();
-
-                        foreach($request->announcementMethod as $a){
-                            Mail::to($s->email)->send(new AnnouncementMail($request->description));
+                        
+                        if($request->announcementMethod){
+                            foreach($request->announcementMethod as $a){
+                                Mail::to($s->email)->send(new AnnouncementMail($request->description));
+                            }
                         }
                     }
                 }

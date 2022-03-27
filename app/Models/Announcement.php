@@ -16,4 +16,8 @@ class Announcement extends Model
         'end_date',
         'coordinator_id',
     ];
+
+    public function coordinator(){
+        return $this->hasOne(Coordinator::class, "id", "coordinator_id");
+    }
 }

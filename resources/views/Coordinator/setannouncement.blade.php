@@ -153,8 +153,6 @@
                                     <label class="h2">Message:</label>
                                     <p class="text-danger"><strong>Note: </strong>Don't change ${}. The names under the bracket are reserved.</p>
                                     <textarea name="description" readOnly id="desc" rows="10" class="form-control">Be advised that you're progress will be checked anytime for evaluation purpose. So, please be attentive at your work according to calendar.
-
-Thank you,
                                     </textarea>
                                     @error('description')
                                         <span class="text-danger">{{ $message }}</span>

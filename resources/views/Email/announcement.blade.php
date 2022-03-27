@@ -49,6 +49,8 @@
                             <br/>
                             <p>
                                 {{ $description }}
+                                <br/><br/>
+                                Thank you,
                             </p>
                             <br/><br/>
                             <p>

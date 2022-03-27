@@ -9,6 +9,7 @@ use App\Models\StudentDocs;
 use App\Models\TermRegistered;
 use App\Models\Term;
 use App\Models\InternConfirm;
+use App\Models\Announcement;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\StudentForgotPwd;
@@ -80,10 +81,11 @@ class StudentController extends Controller
     public function dashboardPage(){
         $registration_no = session('registration_no');
         if ($registration_no){
+            $announcement = Announcement::where('registration_no', $registration_no)->get();
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
-            return view('Student.dashboard', compact('student', 'term', 'studentintern'));
+            return view('Student.dashboard', compact('student', 'term', 'studentintern', 'announcement'));
         } else {
             return Redirect("/student/loginForm");
         }
