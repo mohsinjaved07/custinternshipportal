@@ -81,7 +81,7 @@
                                         <input type="password" class="form-control" name="password"/>    
                                     </div>
                                     @error('password')
-                                    <span class="text-danger">{{ $message }}</span>
+                                    <span class="text-danger">{{ 'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.' }}</span>
                                     @enderror
                                 </div>
                                 <div class="form-group">

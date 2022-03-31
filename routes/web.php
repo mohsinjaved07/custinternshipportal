@@ -89,5 +89,7 @@ Route::get('/confirmation/{link}', [ConfirmationController::class, 'studentConfi
 
 Route::get('/admin/login', [AdminController::class, 'login']);
 Route::get('/admin/registration', [AdminController::class, 'registration']);
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 
 Route::post('/admin/register', [AdminController::class, 'register'])->name('createAdmin');
+Route::post('/admin/validation', [AdminController::class, 'validation'])->name('validation');
