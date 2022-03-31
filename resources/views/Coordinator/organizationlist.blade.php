@@ -85,7 +85,7 @@
                                             <td>{{ $s->supervisor_name }}</td>
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{$s->registration_no}}">
-                                                    Details
+                                                    <i class="fas fa-list-alt"></i>
                                                 </button>
                                             </td>
                                         </tr>

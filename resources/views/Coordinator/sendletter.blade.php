@@ -63,6 +63,7 @@
                 <a class="active" href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
                 <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
                 @endif
+                <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
             </div>
         </div>
         <div class="content">

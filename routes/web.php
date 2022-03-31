@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CoordinatorController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ConfirmationController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,3 +82,12 @@ Route::post('/student/setorganizationdetails', [StudentController::class, 'setOr
 /*********************************** Confirmation Routes ***********************************/
 
 Route::get('/confirmation/{link}', [ConfirmationController::class, 'studentConfirm']);
+
+/*********************************** End of Confirmation Routes ***********************************/
+
+/*********************************** Administrator Routes ***********************************/
+
+Route::get('/admin/login', [AdminController::class, 'login']);
+Route::get('/admin/registration', [AdminController::class, 'registration']);
+
+Route::post('/admin/register', [AdminController::class, 'register'])->name('createAdmin');

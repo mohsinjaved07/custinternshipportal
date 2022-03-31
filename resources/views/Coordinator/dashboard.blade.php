@@ -63,6 +63,7 @@
                 <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
                 <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
                 @endif
+                <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
             </div>
         </div>
         <div class="content">
@@ -115,7 +116,7 @@
                                 You can see the list of organizations student uploaded.
                             </p>
                             <hr class="my-4">    
-                            <a href="{{ url('coordinator/organizationlist') }}" class="btn btn-info btn-lg" role="button" aria-pressed="true">Internship Students Details</a>
+                            <a href="{{ url('coordinator/organizationlist') }}" class="btn btn-info btn-lg" role="button" aria-pressed="true">Student Internship Progress</a>
                         </div>
                     </div>
                 </div>

@@ -36,7 +36,7 @@ class CoordinatorController extends Controller
             'password' => 'required|max:100|string|min:6|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
             'department' => 'required|max:100',
             'contactno' => 'required|unique:coordinators|numeric|digits:11',
-            'office' => 'required|unique:coordinators|max:100'
+            'office' => 'required|max:100'
         ],
         [
             'name.required' => 'Please enter name',
