@@ -24,7 +24,6 @@ Route::get('/', function () {
 
 /*********************************** Coordinator Routes ***********************************/
 
-Route::get('/coordinator/registration', [CoordinatorController::class, 'registration']);
 Route::get('/coordinator/loginForm', [CoordinatorController::class, 'loginForm']);
 Route::get('/coordinator/dashboard', [CoordinatorController::class, 'dashboardPage']);
 Route::get('/coordinator/sendletter', [CoordinatorController::class, 'sendletter']);
@@ -41,7 +40,6 @@ Route::get('/coordinator/setannouncement', [CoordinatorController::class, 'setAn
 Route::get('/coordinator/forgotpassword/{name}', [CoordinatorController::class, 'forgotpassword']);
 Route::get('/coordinator/organizationlist', [CoordinatorController::class, 'getOrganizationList']);
 
-Route::post('/coordinator/register', [CoordinatorController::class, 'register'])->name("createCoordinator");
 Route::post('/coordinator/login', [CoordinatorController::class, 'login'])->name("validateCoordinator");
 Route::post('/coordinator/password', [CoordinatorController::class, 'password'])->name('password');
 Route::post('/coordinator/letter', [CoordinatorController::class, 'letter'])->name('letter');
@@ -90,6 +88,16 @@ Route::get('/confirmation/{link}', [ConfirmationController::class, 'studentConfi
 Route::get('/admin/login', [AdminController::class, 'login']);
 Route::get('/admin/registration', [AdminController::class, 'registration']);
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+Route::get('/admin/changepassword', [AdminController::class, 'changePassword']);
+Route::get('/admin/coordinator', [AdminController::class, 'coordinator']);
+Route::get('/admin/postcoordinator', [AdminController::class, 'postCoordinator']);
+Route::get('/admin/updatecoordinator/{coordinatorid}', [AdminController::class, 'updateCoordinator']);
+Route::get('/admin/deletecoordinator/{coordinatorid}', [AdminController::class, 'deleteCoordinator']);
+Route::get('/admin/logout', [AdminController::class, 'logout']);
 
 Route::post('/admin/register', [AdminController::class, 'register'])->name('createAdmin');
 Route::post('/admin/validation', [AdminController::class, 'validation'])->name('validation');
+Route::post('/admin/password', [AdminController::class, 'password'])->name('adminpassword');
+Route::post('/admin/addcoordinator', [AdminController::class, 'addCoordinator'])->name('addCoordinator');
+Route::post('/admin/changecoordinator', [AdminController::class, 'changeCoordinator'])->name('changeCoordinator');
+Route::post('/admin/removecoordinator/{coordinatorid}', [AdminController::class, 'removeCoordinator']);

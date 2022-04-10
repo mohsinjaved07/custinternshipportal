@@ -17,7 +17,7 @@ class CreateTermRegisteredsTable extends Migration
             $table->id();
             $table->string('registration_no');
             $table->string('term_name');
-            $table->unsignedBigInteger('coordinator_id');
+            $table->unsignedBigInteger('coordinator_id')->nullable();
             $table->foreign('registration_no')->references("registration_no")->on("students");
             $table->foreign('term_name')->references("term_name")->on("terms");
             $table->foreign('coordinator_id')->references("id")->on("coordinators");

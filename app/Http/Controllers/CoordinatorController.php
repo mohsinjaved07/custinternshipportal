@@ -24,59 +24,7 @@ use Carbon\Carbon;
 use App\Mail\CoordinatorForgotPwd;
 
 class CoordinatorController extends Controller
-{
-    public function registration(){
-        return view('Coordinator.register');
-    }
-
-    public function register(Request $request){
-        $validated = $request->validate([
-            'name' => 'required|max:100',
-            'email' => 'required|unique:coordinators|max:100',
-            'password' => 'required|max:100|string|min:6|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-            'department' => 'required|max:100',
-            'contactno' => 'required|unique:coordinators|numeric|digits:11',
-            'office' => 'required|max:100'
-        ],
-        [
-            'name.required' => 'Please enter name',
-            'email.required' => 'Please enter email',
-            'password.required' => 'Please enter password',
-            'department.required' => 'Please enter department',
-            'contactno.required' => 'Please enter contactno',
-            'office.required' => 'Please enter office'
-        ]);
-
-        $coordinator = new Coordinator;
-        $coordinator->name = $request->name;
-        $coordinator->email = $request->email;
-        $coordinator->password = Hash::make($request->password);
-        $coordinator->department = $request->department;
-        $coordinator->contactno = $request->contactno;
-        $coordinator->office = $request->office;
-        $coordinator->save();
-
-
-        $term = Term::all()->last();
-        $students = Student::all();
-        $coordinator = Coordinator::where('email', $request->email)->first();
-
-        if($term){
-            if($students){
-                foreach($students as $s){
-                    $termRegistered = new TermRegistered;
-                    $termRegistered->registration_no = $s->registration_no;
-                    $termRegistered->term_name = $term->term_name;
-                    $termRegistered->coordinator_id = $coordinator->id;
-                    $termRegistered->save();
-                }
-            }
-        }
-
-        
-        return Redirect('/coordinator/loginForm');
-    }
-    
+{    
     public function loginForm(){
         return view('Coordinator.login');
     }

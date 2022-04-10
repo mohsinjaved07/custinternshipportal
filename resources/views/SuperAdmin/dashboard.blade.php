@@ -34,35 +34,25 @@
                 {{ $superadmin->name }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="">Change password</a>
-                    <a class="dropdown-item" href="">Log out</a>
+                    <a class="dropdown-item" href="{{ url('admin/changepassword') }}">Change password</a>
+                    <a class="dropdown-item" href="{{ url('admin/logout') }}">Log out</a>
                 </div>
             </div>
         </nav>
-        <h1 style="margin-top:57px;">Welcome, {{ $superadmin->name }}</h1>
+        <h1 style="margin-top:57px;" class="text-center">Welcome, {{ $superadmin->name }}</h1>
         <hr/>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <h5 class="card-header bg-dark text-white text-center">Coordinators</h5>
-                    <div class="card-body">
-                        <p class="card-title font-weight-bold custFontColor">
-                            Show the details of the coordinators
-                        </p>
-                        <hr class="my-4">    
-                        <a href="{{ url('coordinator/studentsinfo') }}" class="btn btn-success btn-lg" role="button" aria-pressed="true">Show Coordinator List</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <h5 class="card-header bg-dark text-white text-center">Students</h5>
-                    <div class="card-body">
-                        <p class="card-title font-weight-bold custFontColor">
-                        Show the details of the Students
-                        </p>
-                        <hr class="my-4">
-                        <a href="{{ url('/coordinator/getplan') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Show Students List</a>
+        <div class="container" >
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <h5 class="card-header bg-dark text-white text-center">Coordinators</h5>
+                        <div class="card-body">
+                            <p class="card-title font-weight-bold custFontColor">
+                                Show the details of the coordinators
+                            </p>
+                            <hr class="my-4">    
+                            <a href="{{ url('admin/coordinator') }}" class="btn btn-success btn-lg" role="button" aria-pressed="true">Show Coordinators List</a>
+                        </div>
                     </div>
                 </div>
             </div>
