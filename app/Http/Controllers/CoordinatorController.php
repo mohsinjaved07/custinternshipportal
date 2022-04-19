@@ -359,7 +359,7 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $validated = $request->validate([
-                'studentlist' => 'required|mimes:xlsx, xls, csv'
+                'studentlist' => 'required|mimes:xlsx,xls,csv'
             ],
             [
                 'studentlist.required' => 'Please upload excel file.'

@@ -31,6 +31,8 @@ class CreateTermRegisteredsTable extends Migration
             $table->string('supervisor_email')->nullable();
             $table->string('supervisor_designation')->nullable();
             $table->string('supervisor_contact')->nullable();
+            $table->string('offer_letter')->nullable();
+            $table->string('offer_letter_uploaded_date')->nullable();
             $table->timestamps();
         });
     }

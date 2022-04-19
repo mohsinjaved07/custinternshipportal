@@ -47,7 +47,7 @@
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a class="active" href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
                 @if(isset($studentintern->status))
-                <a href="">Upload Offer Letter</a>
+                <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
             </div>
         </div>

@@ -44,85 +44,39 @@
         </nav>
         <div style="margin-top:57px;">
             <div class="sidebar">
-                <a class="active" href="{{ url('/student/dashboard') }}">Home</a>
+                <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
                 @if(isset($studentintern->status))
-                <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
+                <a class="active" href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
             </div>
         </div>
         <div class="content">
-            <h1>Welcome, {{ $student->name }}</h1>
+            <h1>Upload Offer Letter</h1>
             <hr/>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Documents</h5>
+                        <h5 class="card-header bg-dark text-white text-center">Offer Letter</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                View your documents
+                                Please make sure that you upload your offer in PDF format.
                             </p>
                             <hr class="my-4">
-                            <table class="table" id="myTable">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Documents</th>
-                                        <th>Downloads</th>
-                                    </tr>
-                                </thead>    
-                                <tbody>
-                                    <tr>
-                                        <td>Recommendation letter:</td>
-                                        <td>
-                                            <form action="{{ route('recletter') }}" method="post">
-                                                @csrf
-                                                <button type="submit" class="btn btn-primary">Download</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Internship plan:</td>
-                                        <td>
-                                            <form action="{{ route('internshipplan') }}" method="post">
-                                                @csrf
-                                                <button type="submit" class="btn btn-primary">Download</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>  
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Activity Calendar</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Follow this activity guidelines for your internship progress.
-                            </p>
-                            <hr class="my-4">
-                            <a href="{{ url('/student/getplan') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Show Internship Plan</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow">
-                        <h5 class="card-header bg-light text-dark text-center">Announcements</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Here you can view the announcements.
-                            </p>
-                            <hr class="my-4">
-                            @foreach($announcement as $a)
-                                @if($a->end_date >= Carbon\Carbon::now())
-                                <div class="alert alert-success" role="alert">
-                                    {{ $a->description }}<br/><br/>
-                                    <strong>Announced by:</strong> {{ $a->coordinator->name }}<br/>
-                                    <strong>Expire date:</strong> {{ Carbon\Carbon::parse($a->end_date)->toFormattedDateString() }}
+                            <form action="{{ url('/student/offerletter/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                <label>Upload File</label>
+                                <input type="file" name="offerLetter"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF</span><br/><br/>
+                                @error('offerLetter')
+                                <div class="text-danger">
+                                    <p>{{ $message }}</p>
                                 </div>
-                                @endif
-                            @endforeach
+                                @enderror
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success btn-lg">Submit</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

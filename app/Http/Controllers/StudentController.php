@@ -231,6 +231,47 @@ class StudentController extends Controller
         }
     }
 
+    public function uploadofferletter(){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $student = Student::where('registration_no', $registration_no)->first();
+            $term = Term::all()->last();
+            $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
+            return view('Student.uploadofferletter', compact('student', 'term', 'studentintern'));
+        } else {
+            return Redirect("/student/loginForm");
+        }
+    }
+
+    public function offerletter($regno, Request $request){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $validated = $request->validate([
+                'offerLetter' => 'required',
+            ],
+            [
+                'offerLetter.required' => 'Please enter new password',
+            ]);
+            
+            $offerletterfile = $request->file("offerLetter");
+            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
+            $file_name = $regno.'.'.$file_ext;
+            $offerletterfile->move("offer_letters", $file_name);
+            
+            $term = Term::all()->last();
+            $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
+            if($termregistered){
+                $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                    'offer_letter' => "offer_letters/".$file_name,
+                    'offer_letter_uploaded_date' => Carbon::now()
+                ]);
+            }
+            return Redirect()->back();
+        } else {
+            return Redirect("/student/loginForm");
+        }
+    }
+
     public function setOrganizationDetails(Request $request){
         $registration_no = session('registration_no');
         if ($registration_no){
