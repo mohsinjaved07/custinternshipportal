@@ -10,6 +10,8 @@ use App\Models\TermRegistered;
 use App\Models\Term;
 use App\Models\InternConfirm;
 use App\Models\Announcement;
+use App\Models\Organization;
+use App\Models\Supervisor;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\StudentForgotPwd;
@@ -300,11 +302,15 @@ class StudentController extends Controller
                 'supervisorcontact.required' => 'Please enter supervisor contact'
             ]);
 
+            if ($request->orgntn[3] != '-'){
+                return Redirect()->back();
+            }
+
             $term = Term::all()->last();
             $termregistered = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
             if ($termregistered){
                 $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                    'organization_ntn_no' => $request->orgntn,
+                    'organization_ntn_no' => strtoupper($request->orgntn),
                     'organization_name' => $request->orgname,
                     'organization_email' => $request->orgemail,
                     'organization_contact' => $request->orgcontact,
@@ -315,6 +321,29 @@ class StudentController extends Controller
                     'supervisor_designation' => $request->supervisordesignation,
                     'supervisor_contact' => $request->supervisorcontact
                 ]);
+            }
+
+            $org = Organization::where('organization_ntn_no', $request->orgntn)->first();
+            if(!$org){
+                $org = new Organization;
+                $org->organization_ntn_no = strtoupper($request->orgntn);
+                $org->organization_name = $request->orgname;
+                $org->organization_email = $request->orgemail;
+                $org->organization_contact = $request->orgcontact;
+                $org->organization_address = $request->orgaddress;
+                $org->organization_website = $request->orgwebsite;
+                $org->save();
+            }
+
+            $supervisor = Supervisor::where('supervisor_name', $request->supervisorname)->first();
+            if(!$supervisor){
+                $supervisor = new Supervisor;
+                $supervisor->supervisor_name = $request->supervisorname;
+                $supervisor->supervisor_email = $request->supervisoremail;
+                $supervisor->supervisor_designation = $request->supervisordesignation;
+                $supervisor->supervisor_contact = $request->supervisorcontact;
+                $supervisor->organization_ntn_no = strtoupper($request->orgntn);
+                $supervisor->save();
             }
             
             $link = Crypt::encryptString($request->orgname);

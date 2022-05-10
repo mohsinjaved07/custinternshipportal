@@ -44,7 +44,7 @@
             </div>
         </nav>
         <div class="container" style="margin-top:57px;">
-            <h1>Organization list</h1>
+            <h1>Student Progress Re</h1>
             <hr/>
             <div class="row">
                 <div class="col-md-12">
@@ -69,9 +69,10 @@
                                             <th scope="col">Registration No</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Organization</th>
-                                            <th scope="col">Contact No</th>
-                                            <th scope="col">Supervisor</th>
-                                            <th scope="col">Organization Details</th>
+                                            <th scope="col">Offer Letter</th>
+                                            <th scope="col">Report</th>
+                                            <th scope="col">External Evaluator</th>
+                                            <th scope="col">Internal Evaluator</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -81,8 +82,6 @@
                                             <td>{{ $s->registration_no }}</td>
                                             <td>{{ $s->students->name }}</td>
                                             <td><a href="{{ $s->organization_website }}" target="_blank">{{ $s->organization_name }}</a></td>
-                                            <td>{{ $s->organization_contact }}</td>
-                                            <td>{{ $s->supervisor_name }}</td>
                                             @if(isset($s->offer_letter))
                                             <td class="text-center">
                                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{$s->registration_no}}">
