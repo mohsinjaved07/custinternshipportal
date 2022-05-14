@@ -20,129 +20,94 @@
         <!-- Scripts -->
         <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-
         
+
     </head>
     <body class="antialiased">
-    <nav class="navbar navbar-light fixed-top bg-light">
-            <a class="navbar-brand font-weight-bold" href="{{ url('/coordinator/dashboard') }}">
+        <nav class="navbar navbar-light fixed-top bg-light">
+            <a class="navbar-brand font-weight-bold" href="{{ url('/student/dashboard') }}">
                 <img src="{{ asset('image/cust.jpg') }}" class="imgcircle" width="30" height="30" class="d-inline-block align-top" alt="">
                 CUST Internship Portal
             </a>
             <div class="btn-group">
-                <button class="btn btn-info">Working Term: {{ session('term') }}</button>&nbsp
                 <button class="btn btn-warning">Term: {{ $term->term_name }}</button>
             </div>
             <div class="btn-group">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ $root->coordinators->name }}
+                {{ $student->name }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{{ url('/coordinator/changepassword') }}">Change password</a>
-                    <a class="dropdown-item" href="{{ url('/coordinator/logout') }}">Log out</a>
+                    <a class="dropdown-item" href="{{ url('/student/accountsettings') }}">Change Password</a>
+                    <a class="dropdown-item" href="{{ url('/student/logout') }}">Log out</a>
                 </div>
             </div>
         </nav>
         <div style="margin-top:57px;">
             <div class="sidebar">
-                <a href="{{ url('/coordinator/dashboard') }}">Dashboard</a>
-                <div href="#" class="dropdown-btn">Term Management 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/changeterm') }}">Change Term</a>
-                </div>
-                @if(session('term') == $term->term_name)
-                <div href="#" class="dropdown-btn">Generate Login 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
-                    <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
-                </div>
-                <a class="active" href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
-                <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
+                <a href="{{ url('/student/dashboard') }}">Home</a>
+                <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
+                @if(isset($studentintern->status))
+                <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
-                <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
-                <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
+                @if($root->days_remaining < Carbon\Carbon::now())
+                <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                @endif
+                @if(isset($root->internship_report))
+                <a class="active" href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                @endif
             </div>
         </div>
         <div class="content">
-            <h1>Send Recommendation letter</h1>
+            <h1>Upload Internship Completion Certificate</h1>
             <hr/>
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Recommendation Letter</h5>
+                        <h5 class="card-header bg-dark text-white text-center">Internship Completion Certificate</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Here are the students list.
+                                Please make sure that you upload your certificate in PDF, PNG or JPG format.
                             </p>
                             <hr class="my-4">
-                            <form action="{{ route('letter') }}" method="post">
+                            <form action="{{ url('/student/internshipcompletioncertificate/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
                                 @csrf
-                                <div class="form-group">
-                                    <label class="h2">Add description:</label>
-                                    <p class="text-danger"><strong>Note: </strong>Don't change ${}. The names under the bracket are reserved.</p>
-                                    <textarea name="description" rows="10" class="form-control">${name} (${registration_no}) is currently doing ${department} at Capital University of Science and Technology (CUST), Islamabad. He/She has completed 90 Credit hours in this course with flying colors. I have no doubt that the student has the skills, focus, and determination to perform well in further studies.
-
-I recommend this student without reservation for the internship. So far, he/she is a disciplined student and has never been involved in any activity that might have tarnished reputation as a student. 
-
-I wish this student best of luck in every endeavor of life.
-                                    </textarea>
+                                <label>Upload File</label>
+                                <input type="file" name="internshipCompletionCertificate"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF, PNG, JPG</span><br/><br/>
+                                @error('internshipReport')
+                                <div class="text-danger">
+                                    <p>{{ $message }}</p>
                                 </div>
-                                <hr class="my-4">
-                                <div class="form-group">
-                                    <label class="h2">Select student registration no:</label>
-                                    <div style="float:right;">
-                                        <button type="button" class="btn btn-danger" id="checkbutton" onclick="letter()">Select all</button>
-                                    </div><br/>
-                                    <br/>
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="fas fa-search"></i></div>
-                                        </div>
-                                        <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for registration number..."/><br/>
+                                @enderror
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-success btn-lg">Submit</button>
+                                </div>
+                            </form><br/><br/>
+                            @if(isset($root->internship_completion_certificate))
+                            <hr/>
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h2 class="text-center">Your internship completion certificate:</h2>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @if(strpos($root->internship_completion_certificate, "png") != 0)
+                                        <img src="{{ asset($root->internship_completion_certificate) }}" width="500" height="300"/>
+                                        @endif
+                                        @if(strpos($root->internship_completion_certificate, "jpg") != 0)
+                                        <img src="{{ asset($root->internship_completion_certificate) }}" width="500" height="300"/>
+                                        @endif
+                                        @if(strpos($root->internship_completion_certificate, "pdf") != 0)
+                                        <embed src="{{ asset($root->offer_letter) }}" width="500" height="500" type="application/pdf"/>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="scroller">
-                                        <table class="table" id="myTable">
-                                            <thead class="thead-dark">
-                                                <tr>
-                                                    <th scope="col">Registration No</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col">Select</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($student as $s)
-                                                <tr>
-                                                    <td>{{ $s->students->registration_no }}</td>
-                                                    <td>{{ $s->students->name }}</td>
-                                                    <td>
-                                                        <input type="checkbox" class="checkmark" name="regno[]" value="{{ $s->students->registration_no }}"/>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br/><p>Send recommendation letter:&nbsp
-                                        <button type="submit" class="btn btn-success">Submit</button>
-                                        @error('regno')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </p>
-                                </div>
-                            </form>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </body>
-    <script src="{{ asset('js/lettercheck.js') }}"></script>
-    <script src="{{ asset('js/my.js') }}"></script>
 </html>

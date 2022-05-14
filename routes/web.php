@@ -39,6 +39,8 @@ Route::get('/coordinator/forgotpasswordlink', [CoordinatorController::class, 'fo
 Route::get('/coordinator/setannouncement', [CoordinatorController::class, 'setAnnouncement']);
 Route::get('/coordinator/forgotpassword/{name}', [CoordinatorController::class, 'forgotpassword']);
 Route::get('/coordinator/organizationlist', [CoordinatorController::class, 'getOrganizationList']);
+Route::get('/coordinator/organizations', [CoordinatorController::class, 'organizations']);
+Route::get('/coordinator/{organizationNTN}/supervisors', [CoordinatorController::class, 'supervisors']);
 
 Route::post('/coordinator/login', [CoordinatorController::class, 'login'])->name("validateCoordinator");
 Route::post('/coordinator/password', [CoordinatorController::class, 'password'])->name('password');
@@ -66,6 +68,8 @@ Route::get('/student/forgotpasswordlink', [StudentController::class, 'forgotpass
 Route::get('/student/forgotpassword/{registrationno}', [StudentController::class, 'forgotpassword']);
 Route::get('/student/internshipinfo', [StudentController::class, 'internshipinfo']);
 Route::get('/student/uploadofferletter', [StudentController::class, 'uploadofferletter']);
+Route::get('/student/uploadinternshipreport', [StudentController::class, 'uploadinternshipreport']);
+Route::get('/student/uploadcompletioncertificate', [StudentController::class, 'uploadcompletioncertificate']);
 
 Route::post('/student/login', [StudentController::class, 'login'])->name("validateStudent");
 Route::post('/student/setloginid', [StudentController::class, 'setloginid'])->name("setloginid");
@@ -76,6 +80,8 @@ Route::post('/student/sendforgotpasswordemail', [StudentController::class, 'send
 Route::post('/student/setforgotpassword/{registrationno}', [StudentController::class, 'setforgotpassword']);
 Route::post('/student/setorganizationdetails', [StudentController::class, 'setOrganizationDetails'])->name("setorganizationdetails");
 Route::post('/student/offerletter/{regno}', [StudentController::class, 'offerletter']);
+Route::post('/student/internshipreport/{regno}', [StudentController::class, 'internshipreport']);
+Route::post('/student/internshipcompletioncertificate/{regno}', [StudentController::class, 'internshipcompletioncertificate']);
 
 /*********************************** End of Student Routes ***********************************/
 

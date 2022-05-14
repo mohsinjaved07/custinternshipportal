@@ -49,6 +49,12 @@
                 @if(isset($studentintern->status))
                 <a class="active" href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
+                @if($root->days_remaining < Carbon\Carbon::now())
+                <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                @endif
+                @if(isset($root->internship_report))
+                <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                @endif
             </div>
         </div>
         <div class="content">
@@ -76,7 +82,20 @@
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-success btn-lg">Submit</button>
                                 </div>
-                            </form>
+                            </form><br/><br/>
+                            @if(isset($root->offer_letter))
+                            <hr/>
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h2 class="text-center">Your Offer Letter:</h2>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <embed src="{{ asset($root->offer_letter) }}" width="500" height="500" type="application/pdf"/>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

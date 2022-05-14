@@ -21,7 +21,14 @@ class TermRegistered extends Model
         'supervisor_name',
         'supervisor_email',
         'supervisor_designation',
-        'supervisor_contact'
+        'supervisor_contact',
+        'offer_letter',
+        'offer_letter_uploaded_date',
+        'internship_report',
+        'internship_report_uploaded_date',
+        'internship_completion_certificate',
+        'internship_completion_certificate_uploaded_date',
+        'days_remaining'
     ];
     
     public function students(){

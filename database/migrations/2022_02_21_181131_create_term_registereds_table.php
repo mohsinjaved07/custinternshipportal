@@ -33,6 +33,11 @@ class CreateTermRegisteredsTable extends Migration
             $table->string('supervisor_contact')->nullable();
             $table->string('offer_letter')->nullable();
             $table->string('offer_letter_uploaded_date')->nullable();
+            $table->string('internship_report')->nullable();
+            $table->string('internship_report_uploaded_date')->nullable();
+            $table->string('internship_completion_certificate')->nullable();
+            $table->string('internship_completion_certificate_uploaded_date')->nullable();
+            $table->string('days_remaining')->nullable();
             $table->timestamps();
         });
     }

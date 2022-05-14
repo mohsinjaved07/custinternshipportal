@@ -64,6 +64,7 @@
                 <a class="active" href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
                 @endif
                 <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
+                <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
             </div>
         </div>
         <div class="content">

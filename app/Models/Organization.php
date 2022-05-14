@@ -16,4 +16,8 @@ class Organization extends Model
         'organization_address',
         'organization_website'
     ];
+
+    public function supervisors(){
+        return $this->hasOne(Supervisor::class, 'organization_ntn_no', 'organization_ntn_no');
+    }
 }

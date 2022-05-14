@@ -10,6 +10,8 @@ use App\Models\StudentDocs;
 use App\Models\TermRegistered;
 use App\Models\Term;
 use App\Models\Announcement;
+use App\Models\Organization;
+use App\Models\Supervisor;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\LetterMail;
@@ -504,6 +506,32 @@ class CoordinatorController extends Controller
             }
 
             return Redirect()->back();
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function organizations(){
+        $id = session('id');
+        if ($id){
+            $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
+            $term = Term::all()->last();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $org = Organization::all();
+            return view('Coordinator.organizations', compact('root', 'term', 'student', 'org'));
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function supervisors($organizationNTN){
+        $id = session('id');
+        if ($id){
+            $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
+            $term = Term::all()->last();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $supervisor = Supervisor::where('organization_ntn_no', $organizationNTN)->get();
+            return view('Coordinator.supervisors', compact('root', 'term', 'student', 'supervisor'));
         } else {
             return Redirect("/coordinator/loginForm");
         }

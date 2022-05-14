@@ -87,7 +87,8 @@ class StudentController extends Controller
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
-            return view('Student.dashboard', compact('student', 'term', 'studentintern', 'announcement'));
+            $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+            return view('Student.dashboard', compact('student', 'term', 'studentintern', 'announcement', 'root'));
         } else {
             return Redirect("/student/loginForm");
         }
@@ -227,7 +228,8 @@ class StudentController extends Controller
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
-            return view('Student.internshipinfo', compact('student', 'term', 'studentintern'));
+            $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+            return view('Student.internshipinfo', compact('student', 'term', 'studentintern', 'root'));
         } else {
             return Redirect("/student/loginForm");
         }
@@ -239,7 +241,8 @@ class StudentController extends Controller
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
-            return view('Student.uploadofferletter', compact('student', 'term', 'studentintern'));
+            $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+            return view('Student.uploadofferletter', compact('student', 'term', 'studentintern', 'root'));
         } else {
             return Redirect("/student/loginForm");
         }
@@ -249,10 +252,10 @@ class StudentController extends Controller
         $registration_no = session('registration_no');
         if ($registration_no){
             $validated = $request->validate([
-                'offerLetter' => 'required',
+                'offerLetter' => 'required|mimes:pdf',
             ],
             [
-                'offerLetter.required' => 'Please enter new password',
+                'offerLetter.required' => 'Please upload offer letter',
             ]);
             
             $offerletterfile = $request->file("offerLetter");
@@ -263,9 +266,101 @@ class StudentController extends Controller
             $term = Term::all()->last();
             $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
             if($termregistered){
+                if(isset($termregistered->days_remaining)) {
+                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                        'offer_letter' => "offer_letters/".$file_name,
+                        'offer_letter_uploaded_date' => Carbon::now(),
+                    ]);
+                } else {
+                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                        'offer_letter' => "offer_letters/".$file_name,
+                        'offer_letter_uploaded_date' => Carbon::now(),
+                        'days_remaining' => Carbon::now()->addDays(35)
+                    ]);
+                }
+            }
+            return Redirect()->back();
+        } else {
+            return Redirect("/student/loginForm");
+        }
+    }
+
+    public function uploadinternshipreport(){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $student = Student::where('registration_no', $registration_no)->first();
+            $term = Term::all()->last();
+            $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
+            $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+            return view('Student.uploadinternshipreport', compact('student', 'term', 'studentintern', 'root'));
+        } else {
+            return Redirect("/student/loginForm");
+        }
+    }
+
+    public function internshipreport($regno, Request $request){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $validated = $request->validate([
+                'internshipReport' => 'required|mimes:pdf,docx',
+            ],
+            [
+                'internshipReport.required' => 'Please upload report.',
+            ]);
+            
+            $offerletterfile = $request->file("internshipReport");
+            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
+            $file_name = $regno.'.'.$file_ext;
+            $offerletterfile->move("internship_reports", $file_name);
+            
+            $term = Term::all()->last();
+            $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
+            if($termregistered){
                 $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                    'offer_letter' => "offer_letters/".$file_name,
-                    'offer_letter_uploaded_date' => Carbon::now()
+                    'internship_report' => "internship_reports/".$file_name,
+                    'internship_report_uploaded_date' => Carbon::now()
+                ]);
+            }
+            return Redirect()->back();
+        } else {
+            return Redirect("/student/loginForm");
+        }
+    }
+
+    public function uploadcompletioncertificate(){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $student = Student::where('registration_no', $registration_no)->first();
+            $term = Term::all()->last();
+            $studentintern = InternConfirm::where('registration_no', $registration_no)->first();
+            $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+            return view('Student.uploadcompletioncertificate', compact('student', 'term', 'studentintern', 'root'));
+        } else {
+            return Redirect("/student/loginForm");
+        }
+    }
+
+    public function internshipcompletioncertificate($regno, Request $request){
+        $registration_no = session('registration_no');
+        if ($registration_no){
+            $validated = $request->validate([
+                'internshipCompletionCertificate' => 'required|mimes:pdf,png,jpg',
+            ],
+            [
+                'internshipCompletionCertificate.required' => 'Please upload internship completion certificate.',
+            ]);
+            
+            $offerletterfile = $request->file("internshipCompletionCertificate");
+            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
+            $file_name = $regno.'.'.$file_ext;
+            $offerletterfile->move("internship_completion_certificate", $file_name);
+            
+            $term = Term::all()->last();
+            $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
+            if($termregistered){
+                $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                    'internship_completion_certificate' => "internship_completion_certificate/".$file_name,
+                    'internship_completion_certificate_uploaded_date' => Carbon::now()
                 ]);
             }
             return Redirect()->back();

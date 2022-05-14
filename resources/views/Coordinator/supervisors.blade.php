@@ -24,7 +24,7 @@
         
     </head>
     <body class="antialiased">
-    <nav class="navbar navbar-light fixed-top bg-light">
+        <nav class="navbar navbar-light fixed-top bg-light">
             <a class="navbar-brand font-weight-bold" href="{{ url('/coordinator/dashboard') }}">
                 <img src="{{ asset('image/cust.jpg') }}" class="imgcircle" width="30" height="30" class="d-inline-block align-top" alt="">
                 CUST Internship Portal
@@ -43,106 +43,58 @@
                 </div>
             </div>
         </nav>
-        <div style="margin-top:57px;">
-            <div class="sidebar">
-                <a href="{{ url('/coordinator/dashboard') }}">Dashboard</a>
-                <div href="#" class="dropdown-btn">Term Management 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/changeterm') }}">Change Term</a>
-                </div>
-                @if(session('term') == $term->term_name)
-                <div href="#" class="dropdown-btn">Generate Login 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
-                    <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
-                </div>
-                <a class="active" href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
-                <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
-                @endif
-                <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
-                <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
-            </div>
-        </div>
-        <div class="content">
-            <h1>Send Recommendation letter</h1>
+        <div class="container" style="margin-top:57px;">
+            <h1>Supervisor Lists</h1>
             <hr/>
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Recommendation Letter</h5>
+                        <h5 class="card-header bg-dark text-white text-center">Supervisor Information</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Here are the students list.
+                                Here are the supervisor list.
                             </p>
-                            <hr class="my-4">
-                            <form action="{{ route('letter') }}" method="post">
-                                @csrf
-                                <div class="form-group">
-                                    <label class="h2">Add description:</label>
-                                    <p class="text-danger"><strong>Note: </strong>Don't change ${}. The names under the bracket are reserved.</p>
-                                    <textarea name="description" rows="10" class="form-control">${name} (${registration_no}) is currently doing ${department} at Capital University of Science and Technology (CUST), Islamabad. He/She has completed 90 Credit hours in this course with flying colors. I have no doubt that the student has the skills, focus, and determination to perform well in further studies.
-
-I recommend this student without reservation for the internship. So far, he/she is a disciplined student and has never been involved in any activity that might have tarnished reputation as a student. 
-
-I wish this student best of luck in every endeavor of life.
-                                    </textarea>
+                            <hr class="my-4"/>
+                            <label>Search Supervisor</label>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-search"></i></div>
                                 </div>
-                                <hr class="my-4">
-                                <div class="form-group">
-                                    <label class="h2">Select student registration no:</label>
-                                    <div style="float:right;">
-                                        <button type="button" class="btn btn-danger" id="checkbutton" onclick="letter()">Select all</button>
-                                    </div><br/>
-                                    <br/>
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="fas fa-search"></i></div>
-                                        </div>
-                                        <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for registration number..."/><br/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="scroller">
-                                        <table class="table" id="myTable">
-                                            <thead class="thead-dark">
-                                                <tr>
-                                                    <th scope="col">Registration No</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col">Select</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($student as $s)
-                                                <tr>
-                                                    <td>{{ $s->students->registration_no }}</td>
-                                                    <td>{{ $s->students->name }}</td>
-                                                    <td>
-                                                        <input type="checkbox" class="checkmark" name="regno[]" value="{{ $s->students->registration_no }}"/>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br/><p>Send recommendation letter:&nbsp
-                                        <button type="submit" class="btn btn-success">Submit</button>
-                                        @error('regno')
-                                            <span class="text-danger">{{ $message }}</span>
-                                        @enderror
-                                    </p>
-                                </div>
-                            </form>
+                                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for Supervisor..."/><br/>
+                            </div>
+                            <div class="scroller">
+                                <table class="table" id="myTable">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Supervisor Name</th>
+                                            <th scope="col">Supervisor Email</th>
+                                            <th scope="col">Supervisor Designation</th>
+                                            <th scope="col">Supervisor Contact</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php($i=1)
+                                        @foreach($supervisor as $s)
+                                        <tr>
+                                            <td>{{ $i++ }}</td>
+                                            <td>{{ $s->supervisor_name }}</td>
+                                            <td>{{ $s->supervisor_email }}</td>
+                                            <td>{{ $s->supervisor_designation }}</td>
+                                            <td>{{ $s->supervisor_contact }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="text-center">
+                                <a href="{{ url('coordinator/organizations') }}" class="btn btn-lg btn-danger">Go Back</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <script src="{{ asset('js/my.js') }}"></script>
     </body>
-    <script src="{{ asset('js/lettercheck.js') }}"></script>
-    <script src="{{ asset('js/my.js') }}"></script>
 </html>

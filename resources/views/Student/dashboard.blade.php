@@ -49,6 +49,12 @@
                 @if(isset($studentintern->status))
                 <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
+                @if($root->days_remaining < Carbon\Carbon::now())
+                <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                @endif
+                @if(isset($root->internship_report))
+                <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                @endif
             </div>
         </div>
         <div class="content">
