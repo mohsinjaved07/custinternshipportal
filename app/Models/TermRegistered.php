@@ -24,10 +24,13 @@ class TermRegistered extends Model
         'supervisor_contact',
         'offer_letter',
         'offer_letter_uploaded_date',
+        'offer_letter_status',
         'internship_report',
         'internship_report_uploaded_date',
+        'internship_report_status',
         'internship_completion_certificate',
         'internship_completion_certificate_uploaded_date',
+        'internship_completion_certificate_status',
         'days_remaining'
     ];
     

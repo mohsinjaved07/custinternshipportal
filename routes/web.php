@@ -53,6 +53,9 @@ Route::post('/coordinator/postfile', [CoordinatorController::class, 'postfile'])
 Route::post('/coordinator/sendforgotpasswordemail', [CoordinatorController::class, 'sendforgotpasswordemail'])->name('coordinatorsendforgotpasswordemail');
 Route::post('/coordinator/setforgotpassword/{name}', [CoordinatorController::class, 'setforgotpassword']);
 Route::post('/coordinator/announcement', [CoordinatorController::class, 'announcement'])->name('announcement');
+Route::post('/coordinator/offerletter_status/{registration_no}', [CoordinatorController::class, 'offerletter_status']);
+Route::post('/coordinator/internshipcompletion_status/{registration_no}', [CoordinatorController::class, 'internshipcompletion_status']);
+Route::post('/coordinator/internshipreport_status/{registration_no}', [CoordinatorController::class, 'internshipreport_status']);
 
 /*********************************** End of Coordinator Routes ***********************************/
 

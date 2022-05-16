@@ -269,13 +269,14 @@ class StudentController extends Controller
                 if(isset($termregistered->days_remaining)) {
                     $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
                         'offer_letter' => "offer_letters/".$file_name,
-                        'offer_letter_uploaded_date' => Carbon::now(),
+                        'offer_letter_status' => 'pending'
                     ]);
                 } else {
                     $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
                         'offer_letter' => "offer_letters/".$file_name,
                         'offer_letter_uploaded_date' => Carbon::now(),
-                        'days_remaining' => Carbon::now()->addDays(35)
+                        'days_remaining' => Carbon::now()->addDays(35),
+                        'offer_letter_status' => 'pending'
                     ]);
                 }
             }
@@ -316,10 +317,18 @@ class StudentController extends Controller
             $term = Term::all()->last();
             $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
             if($termregistered){
-                $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                    'internship_report' => "internship_reports/".$file_name,
-                    'internship_report_uploaded_date' => Carbon::now()
-                ]);
+                if(isset($termregistered->internship_report_uploaded_date)){
+                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                        'internship_report' => "internship_reports/".$file_name,
+                        'internship_report_status' => 'pending'
+                    ]);
+                } else {
+                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                        'internship_report' => "internship_reports/".$file_name,
+                        'internship_report_uploaded_date' => Carbon::now(),
+                        'internship_report_status' => 'pending'
+                    ]);
+                }
             }
             return Redirect()->back();
         } else {
@@ -358,10 +367,18 @@ class StudentController extends Controller
             $term = Term::all()->last();
             $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
             if($termregistered){
-                $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                    'internship_completion_certificate' => "internship_completion_certificate/".$file_name,
-                    'internship_completion_certificate_uploaded_date' => Carbon::now()
-                ]);
+                if(isset($termregistered->internship_completion_certificate_uploaded_date)){
+                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                        'internship_completion_certificate' => "internship_completion_certificate/".$file_name,
+                        'internship_completion_certificate_status' => 'pending'
+                    ]);
+                } else {
+                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
+                        'internship_completion_certificate' => "internship_completion_certificate/".$file_name,
+                        'internship_completion_certificate_uploaded_date' => Carbon::now(),
+                        'internship_completion_certificate_status' => 'pending'
+                    ]);
+                }
             }
             return Redirect()->back();
         } else {
@@ -397,9 +414,10 @@ class StudentController extends Controller
                 'supervisorcontact.required' => 'Please enter supervisor contact'
             ]);
 
-            if ($request->orgntn[3] != '-'){
-                return Redirect()->back();
-            }
+            $pattern = "/NTN-/i";
+            if (preg_match_all($pattern, strtoupper($request->orgntn)) == 0){
+                return "farigh";
+            } 
 
             $term = Term::all()->last();
             $termregistered = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();

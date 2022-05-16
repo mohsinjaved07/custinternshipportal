@@ -49,11 +49,15 @@
                 @if(isset($studentintern->status))
                 <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
-                @if($root->days_remaining < Carbon\Carbon::now())
-                <a class="active" href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                @if(isset($root->days_remaining))
+                    @if($root->days_remaining < Carbon\Carbon::now())
+                    <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                    @endif
                 @endif
-                @if(isset($root->internship_report))
-                <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                @if(isset($root->internship_completion_certificate))
+                    @if($root->internship_completion_certificate_status != 'pending')
+                    <a class="active" href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -70,6 +74,28 @@
                                 Please make sure that you upload your report in PDF or DOCX format.
                             </p>
                             <hr class="my-4">
+                            @if(isset($root->internship_report))
+                                @if ($root->internship_report_status != 'rejected')
+                                <p>
+                                    Congratulations, you're internship report is uploaded to our server. Coordinator will verify your internship report.
+                                    Meanwhile, please check your report status on daily basis for further progress.
+                                </p>
+                                @else
+                                <form action="{{ url('/student/internshipreport/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <label>Upload File</label>
+                                    <input type="file" name="internshipReport"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF or DOCX</span><br/><br/>
+                                    @error('internshipReport')
+                                    <div class="text-danger">
+                                        <p>{{ $message }}</p>
+                                    </div>
+                                    @enderror
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-success btn-lg">Submit</button>
+                                    </div>
+                                </form>
+                                @endif
+                            @else
                             <form action="{{ url('/student/internshipreport/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <label>Upload File</label>
@@ -83,6 +109,29 @@
                                     <button type="submit" class="btn btn-success btn-lg">Submit</button>
                                 </div>
                             </form>
+                            @endif
+                            <br/><br/>
+                            @if(isset($root->internship_report))
+                            <hr/>
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h2 class="text-center">Your internship report:</h2><br/><br/>
+                                        <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->internship_report_uploaded_date)->toformattedDateString() }}</strong></p>
+                                        <p>Status: <strong>{{ $root->internship_report_status }}</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @if(strpos($root->internship_report, "pdf") != 0)
+                                        <embed src="{{ asset($root->internship_report) }}" width="500" height="500" type="application/pdf"/>
+                                        @endif
+                                        @if(strpos($root->internship_report, "docx") != 0)
+                                        <h3 class="text-center">As there is no plugin available to embed DOCX files. You can simply download it below:</h3><br/>
+                                        <a class="btn btn-primary" href="{{ asset($root->internship_report) }}" download role="button"><strong>Download here</strong></a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -536,4 +536,88 @@ class CoordinatorController extends Controller
             return Redirect("/coordinator/loginForm");
         }
     }
+
+    public function offerletter_status(Request $request, $registration_no){
+        $id = session('id');
+        if ($id){
+            $term = Term::all()->last();
+            $student = TermRegistered::where([['term_name', $term->term_name], ['registration_no', $registration_no]])->first();
+            if ($student){
+                $student->where([['term_name', $term->term_name], ['registration_no', $registration_no]])->update([
+                    'offer_letter_status' => $request->status
+                ]);
+                $announcement = new Announcement;
+                $announcement->registration_no = $registration_no;
+                $announcement->purpose = "Offer Letter Status";
+                if ($request->status == 'approved'){
+                    $announcement->description = "Congratulations, you're offer letter has been accepted.";
+                } else {
+                    $announcement->description = "You're offer letter is not accepted due to non-verification or wrong information of your organization. Please reupload your offer letter to avoid such issues.";
+                }
+                $announcement->start_date = Carbon::now();
+                $announcement->end_date = Carbon::now()->addDays(7);
+                $announcement->coordinator_id = $id;
+                $announcement->save();
+            }
+            return Redirect()->back();
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function internshipcompletion_status(Request $request, $registration_no){
+        $id = session('id');
+        if ($id){
+            $term = Term::all()->last();
+            $student = TermRegistered::where([['term_name', $term->term_name], ['registration_no', $registration_no]])->first();
+            if ($student){
+                $student->where([['term_name', $term->term_name], ['registration_no', $registration_no]])->update([
+                    'internship_completion_certificate_status' => $request->status
+                ]);
+                $announcement = new Announcement;
+                $announcement->registration_no = $registration_no;
+                $announcement->purpose = "Internship Completion Status";
+                if ($request->status == 'approved'){
+                    $announcement->description = "Congratulations, you're internship completion certificate has been accepted.";
+                } else {
+                    $announcement->description = "You're internship completion certificate is not accepted due to non-verification. Please reupload your certificate to avoid such issues.";
+                }
+                $announcement->start_date = Carbon::now();
+                $announcement->end_date = Carbon::now()->addDays(7);
+                $announcement->coordinator_id = $id;
+                $announcement->save();
+            }
+            return Redirect()->back();
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function internshipreport_status(Request $request, $registration_no){
+        $id = session('id');
+        if ($id){
+            $term = Term::all()->last();
+            $student = TermRegistered::where([['term_name', $term->term_name], ['registration_no', $registration_no]])->first();
+            if ($student){
+                $student->where([['term_name', $term->term_name], ['registration_no', $registration_no]])->update([
+                    'internship_report_status' => $request->status
+                ]);
+                $announcement = new Announcement;
+                $announcement->registration_no = $registration_no;
+                $announcement->purpose = "Internship report Status";
+                if ($request->status == 'approved'){
+                    $announcement->description = "Congratulations, you're internship report has been accepted.";
+                } else {
+                    $announcement->description = "You're internship report is not accepted due to mistakes or vague information of your document. Please reupload your report to avoid such issues.";
+                }
+                $announcement->start_date = Carbon::now();
+                $announcement->end_date = Carbon::now()->addDays(7);
+                $announcement->coordinator_id = $id;
+                $announcement->save();
+            }
+            return Redirect()->back();
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
 }

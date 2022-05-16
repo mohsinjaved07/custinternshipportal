@@ -49,11 +49,15 @@
                 @if(isset($studentintern->status))
                 <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
-                @if($root->days_remaining < Carbon\Carbon::now())
-                <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                @if(isset($root->days_remaining))
+                    @if($root->days_remaining < Carbon\Carbon::now())
+                    <a class="active" href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                    @endif
                 @endif
-                @if(isset($root->internship_report))
-                <a class="active" href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                @if(isset($root->internship_completion_certificate))
+                    @if($root->internship_completion_certificate_status != 'pending')
+                    <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -70,11 +74,33 @@
                                 Please make sure that you upload your certificate in PDF, PNG or JPG format.
                             </p>
                             <hr class="my-4">
+                            @if(isset($root->internship_completion_certificate))
+                                @if ($root->internship_completion_certificate_status != 'rejected')
+                                <p>
+                                    Congratulations, you're internship completion certificate is uploaded to our server. Coordinator will verify your internship completion certificate.
+                                    Meanwhile, please check your certificate status on daily basis for further progress.
+                                </p>
+                                @else
+                                <form action="{{ url('/student/internshipcompletioncertificate/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <label>Upload File</label>
+                                    <input type="file" name="internshipCompletionCertificate"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF, PNG, JPG</span><br/><br/>
+                                    @error('internshipCompletionCertificate')
+                                    <div class="text-danger">
+                                        <p>{{ $message }}</p>
+                                    </div>
+                                    @enderror
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-success btn-lg">Submit</button>
+                                    </div>
+                                </form>
+                                @endif
+                            @else
                             <form action="{{ url('/student/internshipcompletioncertificate/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <label>Upload File</label>
                                 <input type="file" name="internshipCompletionCertificate"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF, PNG, JPG</span><br/><br/>
-                                @error('internshipReport')
+                                @error('internshipCompletionCertificate')
                                 <div class="text-danger">
                                     <p>{{ $message }}</p>
                                 </div>
@@ -82,13 +108,17 @@
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-success btn-lg">Submit</button>
                                 </div>
-                            </form><br/><br/>
+                            </form>
+                            @endif
+                            <br/><br/>
                             @if(isset($root->internship_completion_certificate))
                             <hr/>
                             <div class="text-center">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h2 class="text-center">Your internship completion certificate:</h2>
+                                        <h2 class="text-center">Your internship completion certificate:</h2><br/><br/>
+                                        <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->internship_completion_certificate_uploaded_date)->toformattedDateString() }}</strong></p>
+                                        <p>Status: <strong>{{$root->internship_completion_certificate_status}}</strong></p>
                                     </div>
                                     <div class="col-md-6">
                                         @if(strpos($root->internship_completion_certificate, "png") != 0)
@@ -98,7 +128,7 @@
                                         <img src="{{ asset($root->internship_completion_certificate) }}" width="500" height="300"/>
                                         @endif
                                         @if(strpos($root->internship_completion_certificate, "pdf") != 0)
-                                        <embed src="{{ asset($root->offer_letter) }}" width="500" height="500" type="application/pdf"/>
+                                        <embed src="{{ asset($root->internship_completion_certificate) }}" width="500" height="500" type="application/pdf"/>
                                         @endif
                                     </div>
                                 </div>

@@ -42,18 +42,22 @@
                 </div>
             </div>
         </nav>
-        <div style="margin-top:57px;">
+        <div style="margin-top:57px;">  
             <div class="sidebar">
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
                 @if(isset($studentintern->status))
                 <a class="active" href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
                 @endif
-                @if($root->days_remaining < Carbon\Carbon::now())
-                <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                @if(isset($root->days_remaining))
+                    @if($root->days_remaining < Carbon\Carbon::now())
+                    <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                    @endif
                 @endif
-                @if(isset($root->internship_report))
-                <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                @if(isset($root->internship_completion_certificate))
+                    @if($root->internship_completion_certificate_status != 'pending')
+                    <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -70,6 +74,28 @@
                                 Please make sure that you upload your offer in PDF format.
                             </p>
                             <hr class="my-4">
+                            @if(isset($root->offer_letter))
+                                @if ($root->offer_letter_status != 'rejected')
+                                <p>
+                                    Congratulations, you're offer letter is uploaded to our server. Coordinator will verify your offer letter.
+                                    Meanwhile, please check your offer letter status on daily basis for further progress.
+                                </p>
+                                @else
+                                <form action="{{ url('/student/offerletter/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <label>Upload File</label>
+                                    <input type="file" name="offerLetter"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF</span><br/><br/>
+                                    @error('offerLetter')
+                                    <div class="text-danger">
+                                        <p>{{ $message }}</p>
+                                    </div>
+                                    @enderror
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-success btn-lg">Submit</button>
+                                    </div>
+                                </form>
+                                @endif
+                            @else
                             <form action="{{ url('/student/offerletter/'.$student->registration_no) }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <label>Upload File</label>
@@ -82,13 +108,17 @@
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-success btn-lg">Submit</button>
                                 </div>
-                            </form><br/><br/>
+                            </form>
+                            @endif
+                            <br/><br/>
                             @if(isset($root->offer_letter))
                             <hr/>
                             <div class="text-center">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h2 class="text-center">Your Offer Letter:</h2>
+                                        <h2>Your Offer Letter:</h2><br/><br/>
+                                        <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->offer_letter_uploaded_date)->toformattedDateString() }}</strong></p>
+                                        <p>Status: <strong>{{ $root->offer_letter_status }}</strong></p>
                                     </div>
                                     <div class="col-md-6">
                                         <embed src="{{ asset($root->offer_letter) }}" width="500" height="500" type="application/pdf"/>
