@@ -49,6 +49,14 @@
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">Please enter your registered email to set password.</p>
                             <!-- <hr class="my-4"> -->
+                            @if (session('message'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ session('message') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
                             <form action="{{ route('sendforgotpasswordemail') }}" method="post">
                                 @csrf
                                 <div class="form-group">

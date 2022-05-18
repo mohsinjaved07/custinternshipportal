@@ -80,7 +80,15 @@
                                 Here are the students list.
                             </p>
                             <hr class="my-4">
-                            <form action="{{ route('letter') }}" method="post">
+                            @if (session('message'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ session('message') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
+                            <form action="{{ route('letter') }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group">
                                     <label class="h2">Add description:</label>
@@ -91,6 +99,17 @@ I recommend this student without reservation for the internship. So far, he/she 
 
 I wish this student best of luck in every endeavor of life.
                                     </textarea>
+                                </div>
+                                <hr class="my-4">
+                                <div class="form-group">
+                                    <h2>Upload Internship Plan</h2>
+                                    <label>Upload File:</label>
+                                    <input type="file" name="internshipPlan"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF</span><br/><br/>
+                                    @error('internshipPlan')
+                                    <div class="alert alert-danger">
+                                        <p>{{ $message }}</p>
+                                    </div>
+                                    @enderror
                                 </div>
                                 <hr class="my-4">
                                 <div class="form-group">
@@ -132,7 +151,7 @@ I wish this student best of luck in every endeavor of life.
                                     <br/><p>Send recommendation letter:&nbsp
                                         <button type="submit" class="btn btn-success">Submit</button>
                                         @error('regno')
-                                            <span class="text-danger">{{ $message }}</span>
+                                            <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
                                     </p>
                                 </div>

@@ -80,6 +80,14 @@
                                 Here you can create announcement.
                             </p>
                             <hr class="my-4">
+                            @if (session('message'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ session('message') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
                             <form action="{{ route('announcement') }}" method="post">
                                 @csrf
                                 <div class="row">
@@ -90,7 +98,7 @@
                                                 <option value="Meeting">Meeting</option>
                                             </select>
                                             @error('purpose')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
@@ -103,7 +111,7 @@
                                                 <option value = "allExternalEvaluator">allExternalEvaluator</option>
                                             </select>
                                             @error('users')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
@@ -114,7 +122,7 @@
                                             <label><strong>Start Date:</strong></label>
                                             <input type="date" name="startDate" class="form-control" />
                                             @error('startDate')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
@@ -123,7 +131,7 @@
                                             <label><strong>End Date:</strong></label>
                                             <input type="date" name="endDate" class="form-control" />
                                             @error('endDate')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
@@ -137,7 +145,7 @@
                                             <input type="checkbox" name="announcementMethod[]" value="Phone" id="Phone"/>
                                             <label for="Phone">Phone</label><br/>
                                             @error('announcementMethod')
-                                                <span class="text-danger">{{ $message }}</span>
+                                                <span class="alert alert-danger">{{ $message }}</span>
                                             @enderror
                                         </div>
                                     </div>
@@ -157,7 +165,7 @@
                                     <textarea name="description" readOnly id="desc" rows="10" class="form-control">Be advised that you're progress will be checked anytime for evaluation purpose. So, please be attentive at your work according to calendar.
                                     </textarea>
                                     @error('description')
-                                        <span class="text-danger">{{ $message }}</span>
+                                        <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
                                 <div style="text-align:center">

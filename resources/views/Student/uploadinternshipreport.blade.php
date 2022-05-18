@@ -121,13 +121,7 @@
                                         <p>Status: <strong>{{ $root->internship_report_status }}</strong></p>
                                     </div>
                                     <div class="col-md-6">
-                                        @if(strpos($root->internship_report, "pdf") != 0)
                                         <embed src="{{ asset($root->internship_report) }}" width="500" height="500" type="application/pdf"/>
-                                        @endif
-                                        @if(strpos($root->internship_report, "docx") != 0)
-                                        <h3 class="text-center">As there is no plugin available to embed DOCX files. You can simply download it below:</h3><br/>
-                                        <a class="btn btn-primary" href="{{ asset($root->internship_report) }}" download role="button"><strong>Download here</strong></a>
-                                        @endif
                                     </div>
                                 </div>
                             </div>

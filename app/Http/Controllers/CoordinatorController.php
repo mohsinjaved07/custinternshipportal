@@ -54,7 +54,7 @@ class CoordinatorController extends Controller
             }
         }
 
-        return Redirect()->back();
+        return Redirect()->back()->with('message', 'Invalid username/password.');
     }
 
     public function dashboardPage(){
@@ -86,10 +86,16 @@ class CoordinatorController extends Controller
         if ($id){
             $validated = $request->validate([
                 'regno' => 'required|max:100',
+                'internshipPlan' => 'required|mimes:pdf'
             ],
             [
                 'regno.required' => 'Please send letter to at least one student',
             ]);
+
+            $offerletterfile = $request->file("internshipPlan");
+            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
+            $file_name = "InternshipPlan.".$file_ext;
+            $offerletterfile->move("files", $file_name);
 
             foreach ($request->regno as $r){
                 $rendererName = Settings::PDF_RENDERER_TCPDF;
@@ -121,7 +127,7 @@ class CoordinatorController extends Controller
 
                     $studentdocs->where('registration_no', $r)->update([
                         'recommendation_letter' => $pdffile,
-                        'internship_plan' => "files/InternshipSummer2021Plan.pdf"
+                        'internship_plan' => "files/InternshipPlan.pdf"
                     ]);
                 } else {
                     $templateProcessor = new TemplateProcessor('templates/recLetter.docx');
@@ -146,12 +152,12 @@ class CoordinatorController extends Controller
                     $studentdocs = new StudentDocs;
                     $studentdocs->registration_no = $student->registration_no;
                     $studentdocs->recommendation_letter = $pdffile;
-                    $studentdocs->internship_plan = "files/InternshipSummer2021Plan.pdf";
+                    $studentdocs->internship_plan = "files/InternshipPlan.pdf";
                     $studentdocs->save();
                 }
                 Mail::to($student->email)->send(new LetterMail($student, $pdffile));
             }
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "Recommendation letter successfully sent.");
         } else {
             return Redirect('/coordinator/loginForm');
         }
@@ -201,12 +207,12 @@ class CoordinatorController extends Controller
                     if ($request->newpassword == $request->confirmpassword){
                         $coordinator->password = Hash::make($request->newpassword);
                         $coordinator->save();
-                        return Redirect('/coordinator/loginForm');
+                        return Redirect('/coordinator/loginForm')->with("message", "Password successfully changed.");
                     } else {
-                        return Redirect()->back();
+                        return Redirect()->back()->with("message", "Password not matched.");
                     }
                 } else {
-                    return Redirect()->back();
+                    return Redirect()->back()->with("message", "Incorrect current password.");
                 }
             }
 
@@ -259,7 +265,7 @@ class CoordinatorController extends Controller
                 Mail::to($student->email)->send(new LoginInfoMail($student));
             }
 
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "Student login info successfully sent.");
         } else {
             return Redirect('/coordinator/loginForm');
         }
@@ -303,7 +309,7 @@ class CoordinatorController extends Controller
                     'final_evaluation' => $request->termevaluation
                 ]);
             }
-            return Redirect('/coordinator/dashboard');
+            return Redirect()->back()->with("message", "Term plan updated successfully.");
         } else {
             return Redirect('/coordinator/loginForm');
         }
@@ -419,9 +425,9 @@ class CoordinatorController extends Controller
 
         if($coordinator){
             Mail::to($coordinator->email)->send(new CoordinatorForgotPwd($coordinator));
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "Password request has been sent. Please check your email.");
         } else {
-            return Redirect()->back();
+            return Redirect()->back()->with('message', "Sorry, you're email is not registered.");
         }
     }
 
@@ -453,11 +459,11 @@ class CoordinatorController extends Controller
                     'password' => Hash::make($request->confirmpassword),
                 ]);
             } else {
-                return Redirect()->back();
+                return Redirect()->back()->with("message", "Password not matched.");
             }
         }
 
-        return Redirect('coordinator/loginForm');
+        return Redirect('coordinator/loginForm')->with("message", "You're password is set successfully. Please login.");
     }
 
     public function getOrganizationList(){
@@ -505,7 +511,7 @@ class CoordinatorController extends Controller
                 }
             }
 
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "Announcement made successfully.");
         } else {
             return Redirect("/coordinator/loginForm");
         }
@@ -559,7 +565,7 @@ class CoordinatorController extends Controller
                 $announcement->coordinator_id = $id;
                 $announcement->save();
             }
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "You've set student's offer letter status successfully.");
         } else {
             return Redirect("/coordinator/loginForm");
         }
@@ -587,7 +593,7 @@ class CoordinatorController extends Controller
                 $announcement->coordinator_id = $id;
                 $announcement->save();
             }
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "You've set student's internship completion certificate status successfully.");
         } else {
             return Redirect("/coordinator/loginForm");
         }
@@ -615,7 +621,7 @@ class CoordinatorController extends Controller
                 $announcement->coordinator_id = $id;
                 $announcement->save();
             }
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "You've set student's internship report status successfully.");
         } else {
             return Redirect("/coordinator/loginForm");
         }

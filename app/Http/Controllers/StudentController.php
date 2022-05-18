@@ -45,20 +45,17 @@ class StudentController extends Controller
             }
         }
 
-        return Redirect()->back();
+        return Redirect()->back()->with("message", "Invalid username and password.");
     }
 
     public function downloadrecletter(){
         $registration_no = session('registration_no');
         if ($registration_no){
             $studentdocs = StudentDocs::where('registration_no', $registration_no)->first();
-
+            
             if ($studentdocs){
                 return response()->download($studentdocs->recommendation_letter);
-            } else {
-                return Redirect()->back();
             }
-        
         } else {
             return Redirect("/student/loginForm");
         }
@@ -71,10 +68,7 @@ class StudentController extends Controller
             
             if($studentdocs){
                 return response()->download($studentdocs->internship_plan);
-            } else {
-                return Redirect()->back();
             }
-        
         } else {
             return Redirect("/student/loginForm");
         }
@@ -152,10 +146,10 @@ class StudentController extends Controller
                         'one_time_auth' => 'authenticated'
                     ]);
                 } else {
-                    return Redirect()->back();    
+                    return Redirect()->back()->with("message", "Password mismatched.");    
                 }
             } else {
-                return Redirect()->back();
+                return Redirect()->back()->with("message", "Invalid current password.");
             }
             session()->forget('registration_no');
         }
@@ -179,9 +173,9 @@ class StudentController extends Controller
 
         if($student){
             Mail::to($student->email)->send(new StudentForgotPwd($student));
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "Password request has been sent. Please check your email.");
         } else {
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "Sorry, you're email is not registered.");
         }
     }
 
@@ -214,7 +208,7 @@ class StudentController extends Controller
                     'one_time_auth' => 'authenticated'
                 ]);
             } else {
-                return Redirect()->back();
+                return Redirect()->back()->with("message", "Password mismatched.");
             }
         }
 
@@ -303,7 +297,7 @@ class StudentController extends Controller
         $registration_no = session('registration_no');
         if ($registration_no){
             $validated = $request->validate([
-                'internshipReport' => 'required|mimes:pdf,docx',
+                'internshipReport' => 'required|mimes:pdf',
             ],
             [
                 'internshipReport.required' => 'Please upload report.',

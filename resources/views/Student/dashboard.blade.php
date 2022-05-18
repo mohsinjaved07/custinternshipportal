@@ -84,19 +84,23 @@
                                     <tr>
                                         <td>Recommendation letter:</td>
                                         <td>
+                                            @if (isset($student->studentdocuments->recommendation_letter))
                                             <form action="{{ route('recletter') }}" method="post">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary">Download</button>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Internship plan:</td>
                                         <td>
+                                            @if (isset($student->studentdocuments->internship_plan))
                                             <form action="{{ route('internshipplan') }}" method="post">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary">Download</button>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 </tbody>

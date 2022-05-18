@@ -49,6 +49,14 @@
                         <div class="card-body">
                             <!-- <h5 class="card-title display-4 font-weight-bold text-center custFontColor">Coordinator Login</h5> -->
                             <!-- <hr class="my-4"> -->
+                            @if (session('message'))
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ session('message') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
                             <form action="{{ route('validateStudent') }}" method="post">
                                 @csrf
                                 <div class="form-group">

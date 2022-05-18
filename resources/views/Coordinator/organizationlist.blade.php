@@ -55,12 +55,20 @@
                                 Here are the organization list students working.
                             </p>
                             <hr class="my-4"/>
+                            @if (session('message'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ session('message') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
                             <label>Search Student</label>
                             <div class="input-group mb-2">
                                 <div class="input-group-prepend">
                                     <div class="input-group-text"><i class="fas fa-search"></i></div>
                                 </div>
-                                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for registration no..."/><br/>
+                                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search Student (Reg No.)..."/><br/>
                             </div>
                             <div class="scroller">
                                 <table class="table" id="myTable">
@@ -132,11 +140,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
+                                                        @if(session('term') == $term->term_name)
                                                         <form action="{{ url('/coordinator/offerletter_status/'.$s->registration_no) }}" method="post">
                                                             @csrf
                                                             <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
                                                             <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
                                                         </form>
+                                                        @endif
                                                         <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
@@ -177,11 +187,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
+                                                        @if(session('term') == $term->term_name)
                                                         <form action="{{ url('/coordinator/internshipcompletion_status/'.$s->registration_no) }}" method="post">
                                                             @csrf
                                                             <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
                                                             <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
                                                         </form>
+                                                        @endif
                                                         <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
@@ -212,24 +224,18 @@
                                                                 <strong>Status</strong>: {{ $s->internship_report_status }}
                                                             </div>
                                                             <div class="col-md-6">
-                                                                @if(strpos($s->internship_report, "png") != 0)
-                                                                <img src="{{ asset($s->internship_report) }}" width="500" height="300"/>
-                                                                @endif
-                                                                @if(strpos($s->internship_report, "jpg") != 0)
-                                                                <img src="{{ asset($s->internship_report) }}" width="500" height="300"/>
-                                                                @endif
-                                                                @if(strpos($s->internship_report, "pdf") != 0)
                                                                 <embed src="{{ asset($s->internship_report) }}" width="500" height="500" type="application/pdf"/>
-                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
+                                                        @if(session('term') == $term->term_name)
                                                         <form action="{{ url('/coordinator/internshipreport_status/'.$s->registration_no) }}" method="post">
                                                             @csrf
                                                             <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
                                                             <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
                                                         </form>
+                                                        @endif
                                                         <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
