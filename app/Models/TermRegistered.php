@@ -22,9 +22,12 @@ class TermRegistered extends Model
         'supervisor_email',
         'supervisor_designation',
         'supervisor_contact',
+        'supervisor_department',
         'offer_letter',
         'offer_letter_uploaded_date',
         'offer_letter_status',
+        'start_date',
+        'end_date',
         'internship_report',
         'internship_report_uploaded_date',
         'internship_report_status',
@@ -44,5 +47,9 @@ class TermRegistered extends Model
 
     public function coordinators(){
         return $this->hasOne(Coordinator::class, "id", "coordinator_id");
+    }
+
+    public function internconfirm(){
+        return $this->hasOne(InternConfirm::class, "registration_no", "registration_no");
     }
 }

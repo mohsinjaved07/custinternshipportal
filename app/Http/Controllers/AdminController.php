@@ -32,7 +32,7 @@ class AdminController extends Controller
         $superadmin = SuperAdmin::where('email', $request->email)->first();
 
         if ($superadmin){
-            if (Hash::check($request->password, $superadmin->password)){
+            if ($request->password == $superadmin->password){
                 session([
                     'id' => $superadmin->id
                 ]);
@@ -41,10 +41,6 @@ class AdminController extends Controller
         }
 
         return Redirect()->back();
-    }
-
-    public function registration(){
-        return view("SuperAdmin.register");
     }
 
     public function changePassword(){
@@ -74,9 +70,9 @@ class AdminController extends Controller
             $superadmin = SuperAdmin::firstWhere('id', $id);
 
             if ($superadmin){
-                if (Hash::check($request->curpassword, $superadmin->password)){
+                if ($request->curpassword == $superadmin->password){
                     if ($request->newpassword == $request->confirmpassword){
-                        $superadmin->password = Hash::make($request->newpassword);
+                        $superadmin->password = $request->newpassword;
                         $superadmin->save();
                         return Redirect('admin/login');
                     } else {
@@ -90,32 +86,6 @@ class AdminController extends Controller
         } else {
             return Redirect('/coordinator/loginForm');
         }
-    }
-
-    public function register(Request $request){
-        $validated = $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:super_admins',
-            'password' => 'required|string|min:6|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-            'department' => 'required',
-            'contactno' => 'required|unique:super_admins|numeric|digits:11',
-            'office' => 'required',
-            'designation' => 'required',
-            'officeExtension' => 'required'
-        ]);
-
-        $superadmin = new SuperAdmin;
-        $superadmin->name = $request->name;
-        $superadmin->email = $request->email;
-        $superadmin->password = Hash::make($request->password);
-        $superadmin->department = $request->department;
-        $superadmin->contactno = $request->contactno;
-        $superadmin->office = $request->office;
-        $superadmin->designation = $request->designation;
-        $superadmin->office_extension = $request->officeExtension;
-        $superadmin->save();
-
-        return redirect('admin/login');
     }
 
     public function dashboard(){

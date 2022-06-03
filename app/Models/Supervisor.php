@@ -13,6 +13,7 @@ class Supervisor extends Model
         'supervisor_email',
         'supervisor_designation',
         'supervisor_contact',
+        'supervisor_department',
         'organization_ntn_no'
     ];
 }

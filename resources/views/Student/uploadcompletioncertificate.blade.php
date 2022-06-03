@@ -45,24 +45,22 @@
         <div style="margin-top:57px;">
             <div class="sidebar">
                 <a href="{{ url('/student/dashboard') }}">Home</a>
-                <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
-                @if(isset($studentintern->status))
                 <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
-                @endif
-                @if(isset($root->days_remaining))
-                    @if($root->days_remaining < Carbon\Carbon::now())
-                    <a class="active" href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
+                @if(isset($root->offer_letter))    
+                    @if($root->offer_letter_status == 'approved') 
+                    <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
                     @endif
                 @endif
-                @if(isset($root->internship_completion_certificate))
-                    @if($root->internship_completion_certificate_status != 'pending')
+                @if(isset($root->end_date))
+                    @if($root->end_date < Carbon\Carbon::now())
+                    <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
                     <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
                     @endif
                 @endif
             </div>
         </div>
         <div class="content">
-            <h1>Upload Internship Completion Certificate</h1>
+            <h1>Upload Internship Documents</h1>
             <hr/>
             <div class="row">
                 <div class="col-md-2"></div>
@@ -115,12 +113,14 @@
                             <hr/>
                             <div class="text-center">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <h2 class="text-center">Your internship completion certificate:</h2><br/><br/>
-                                        <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->internship_completion_certificate_uploaded_date)->toformattedDateString() }}</strong></p>
-                                        <p>Status: <strong>{{$root->internship_completion_certificate_status}}</strong></p>
+                                    <div class="col-md-12">
+                                    <h2 class="text-center">Your internship completion certificate:</h2><br/><br/>
+                                    <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->internship_completion_certificate_uploaded_date)->toformattedDateString() }}</strong></p>
+                                    <p>Status: <strong>{{$root->internship_completion_certificate_status}}</strong></p>
                                     </div>
-                                    <div class="col-md-6">
+                                </div><br/>
+                                <div class="row">
+                                    <div class="col-md-12">
                                         @if(strpos($root->internship_completion_certificate, "png") != 0)
                                         <img src="{{ asset($root->internship_completion_certificate) }}" width="500" height="300"/>
                                         @endif

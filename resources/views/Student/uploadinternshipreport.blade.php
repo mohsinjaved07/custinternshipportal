@@ -45,18 +45,11 @@
         <div style="margin-top:57px;">
             <div class="sidebar">
                 <a href="{{ url('/student/dashboard') }}">Home</a>
-                <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
-                @if(isset($studentintern->status))
-                <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
-                @endif
-                @if(isset($root->days_remaining))
-                    @if($root->days_remaining < Carbon\Carbon::now())
+                <a href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
+                @if(isset($root->end_date))
+                    @if($root->end_date < Carbon\Carbon::now())
                     <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
-                    @endif
-                @endif
-                @if(isset($root->internship_completion_certificate))
-                    @if($root->internship_completion_certificate_status != 'pending')
-                    <a class="active" href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                    <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
                     @endif
                 @endif
             </div>
@@ -71,7 +64,7 @@
                         <h5 class="card-header bg-dark text-white text-center">Internship Report</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Please make sure that you upload your report in PDF or DOCX format.
+                                Please make sure that you upload your report in PDF.
                             </p>
                             <hr class="my-4">
                             @if(isset($root->internship_report))
@@ -115,13 +108,15 @@
                             <hr/>
                             <div class="text-center">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <h2 class="text-center">Your internship report:</h2><br/><br/>
-                                        <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->internship_report_uploaded_date)->toformattedDateString() }}</strong></p>
-                                        <p>Status: <strong>{{ $root->internship_report_status }}</strong></p>
+                                    <div class="col-md-12">
+                                    <h2>Your Internship Report:</h2><br/><br/>
+                                    <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->internship_report_uploaded_date)->toformattedDateString() }}</strong></p>
+                                    <p>Status: <strong>{{ $root->internship_report_status }}</strong></p>
                                     </div>
-                                    <div class="col-md-6">
-                                        <embed src="{{ asset($root->internship_report) }}" width="500" height="500" type="application/pdf"/>
+                                </div><br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <embed src="{{ asset($root->offer_letter) }}" width="500" height="500" type="application/pdf"/>
                                     </div>
                                 </div>
                             </div>

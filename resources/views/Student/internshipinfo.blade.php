@@ -45,17 +45,10 @@
         <div style="margin-top:57px;">
             <div class="sidebar">
                 <a href="{{ url('/student/dashboard') }}">Home</a>
-                <a class="active" href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
-                @if(isset($studentintern->status))
-                <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
-                @endif
-                @if(isset($root->days_remaining))
-                    @if($root->days_remaining < Carbon\Carbon::now())
+                <a class="active" href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
+                @if(isset($root->end_date))
+                    @if($root->end_date < Carbon\Carbon::now())
                     <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
-                    @endif
-                @endif
-                @if(isset($root->internship_completion_certificate))
-                    @if($root->internship_completion_certificate_status != 'pending')
                     <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
                     @endif
                 @endif
@@ -71,7 +64,7 @@
                         <h5 class="card-header bg-dark text-white text-center">Organization Details</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Enter the Organization details
+                                Here you will provide the information of your organization.
                             </p>
                             <hr class="my-4"><br/>
                             @if (session('message'))
@@ -82,8 +75,223 @@
                                     </button>
                                 </div>
                             @endif
-                            <form action="{{ route('setorganizationdetails') }}" method="post">
+                            @if(isset($root->offer_letter))
+                                @if ($root->offer_letter_status != 'rejected')
+                                <p>
+                                    Congratulations, you're offer letter is uploaded to our server. Coordinator will verify your offer letter.
+                                    Meanwhile, please check your offer letter status on daily basis for further progress.
+                                </p>
+                                @else
+                                <form action="{{ route('setorganizationdetails') }}" method="post" enctype="multipart/form-data">
+                                    @csrf
+                                    <fieldset>
+                                        <legend>Upload Offer Letter</legend>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Upload file:</label>
+                                                    <input type="file" name="offerLetter"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF</span><br/><br/>
+                                                    @error('offerLetter')
+                                                    <div class="text-danger">
+                                                        <p>{{ $message }}</p>
+                                                    </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Start Date:</label>
+                                                    <input type="date" id="DATE1" name="startDate" class="form-control" /><br/>
+                                                    @error('startDate')
+                                                    <div class="text-danger">
+                                                        <p>{{ $message }}</p>
+                                                    </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>End Date:</label>
+                                                    <input type="date" id="DATE2" name="endDate" class="form-control" /><br/>
+                                                    @error('endDate')
+                                                    <div class="text-danger">
+                                                        <p>{{ $message }}</p>
+                                                    </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset><br/>
+                                    <hr class="my-4">
+                                    <fieldset>
+                                        <legend>Organization</legend>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Organization NTN No.:</label>
+                                                    <input type="text" class="form-control" name="orgntn"/>
+                                                    @error('orgntn')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Organization Name:</label>
+                                                    <input type="text" class="form-control" name="orgname"/>
+                                                    @error('orgname')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Organization Email:</label>
+                                                    <input type="text" class="form-control" name="orgemail"/>
+                                                    @error('orgemail')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Organization Contact:</label>
+                                                    <input type="text" class="form-control" name="orgcontact"/>
+                                                    @error('orgcontact')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Organization website:</label>
+                                                    <input type="text" class="form-control" name="orgwebsite"/>
+                                                    @error('orgwebsite')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Organization Address:</label>
+                                                    <textarea class="form-control" name="orgaddress" rows="4"></textarea>
+                                                    @error('orgaddress')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset><br/>
+                                    <hr class="my-4">
+                                    <fieldset>
+                                        <legend>Supervisor</legend>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Supervisor name:</label>
+                                                    <input type="text" class="form-control" name="supervisorname"/>
+                                                    @error('supervisorname')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Supervisor email:</label>
+                                                    <input type="text" class="form-control" name="supervisoremail"/>
+                                                    @error('supervisoremail')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Supervisor designation:</label>
+                                                    <input type="text" class="form-control" name="supervisordesignation"/>
+                                                    @error('supervisordesignation')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Supervisor Contact:</label>
+                                                    <input type="text" class="form-control" name="supervisorcontact"/>
+                                                    @error('supervisorcontact')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label><span class="required">*</span>Supervisor Department:</label>
+                                                    <input type="text" class="form-control" name="supervisordepartment"/>
+                                                    @error('supervisordepartment')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset><br/>
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-lg btn-danger">Submit Info</button>
+                                    </div>
+                                </form>
+                                @endif
+                            @else
+                            <form action="{{ route('setorganizationdetails') }}" method="post" enctype="multipart/form-data">
                                 @csrf
+                                <fieldset>
+                                    <legend>Upload Offer Letter</legend>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label><span class="required">*</span>Upload file:</label>
+                                                <input type="file" name="offerLetter"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF</span><br/><br/>
+                                                @error('offerLetter')
+                                                <div class="text-danger">
+                                                    <p>{{ $message }}</p>
+                                                </div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label><span class="required">*</span>Start Date:</label>
+                                                <input type="date" id="DATE1" name="startDate" class="form-control" /><br/>
+                                                @error('startDate')
+                                                <div class="text-danger">
+                                                    <p>{{ $message }}</p>
+                                                </div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label><span class="required">*</span>End Date:</label>
+                                                <input type="date" id="DATE2" name="endDate" class="form-control" /><br/>
+                                                @error('endDate')
+                                                <div class="text-danger">
+                                                    <p>{{ $message }}</p>
+                                                </div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset><br/>
+                                <hr class="my-4">
                                 <fieldset>
                                     <legend>Organization</legend>
                                     <div class="row">
@@ -190,15 +398,46 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label><span class="required">*</span>Supervisor Department:</label>
+                                                <input type="text" class="form-control" name="supervisordepartment"/>
+                                                @error('supervisordepartment')
+                                                <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
                                 </fieldset><br/>
                                 <div class="form-group text-center">
                                     <button type="submit" class="btn btn-lg btn-danger">Submit Info</button>
                                 </div>
                             </form>
+                            @endif
+                            <br/><br/>
+                            @if(isset($root->offer_letter))
+                            <hr/>
+                            <div class="text-center">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                    <h2>Your Offer Letter:</h2><br/><br/>
+                                    <p>Submitted: <strong>{{ Carbon\Carbon::parse($root->offer_letter_uploaded_date)->toformattedDateString() }}</strong></p>
+                                    <p>Status: <strong>{{ $root->offer_letter_status }}</strong></p>
+                                    </div>
+                                </div><br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <embed src="{{ asset($root->offer_letter) }}" width="500" height="500" type="application/pdf"/>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </body>
+    <script src="{{ asset('js/date.js') }}"></script>
 </html>

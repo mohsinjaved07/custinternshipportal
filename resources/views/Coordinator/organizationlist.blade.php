@@ -63,6 +63,14 @@
                                     </button>
                                 </div>
                             @endif
+                            @error('description')
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ $message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            @enderror
                             <label>Search Student</label>
                             <div class="input-group mb-2">
                                 <div class="input-group-prepend">
@@ -76,6 +84,7 @@
                                         <tr>
                                             <th scope="col">Registration No</th>
                                             <th scope="col">Name</th>
+                                            <th scope="col">Contact No</th>
                                             <th scope="col">Organization Status</th>
                                             <th scope="col">External Evaluator</th>
                                             <th scope="col">Internal Evaluator</th>
@@ -83,10 +92,11 @@
                                     </thead>
                                     <tbody>
                                         @foreach($student as $s)
-                                        @if(isset($s->organization_ntn_no))
+                                        @if(isset($s->offer_letter))
                                         <tr>
                                             <td>{{ $s->registration_no }}</td>
                                             <td>{{ $s->students->name }}</td>
+                                            <td>{{ $s->students->contact_no }}
                                             <td>
                                                 @if(isset($s->offer_letter))
                                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{$s->registration_no}}_offerLetter">
@@ -131,6 +141,8 @@
                                                                 <strong>Supervisor Email</strong>: {{ $s->supervisor_email }}<br/>
                                                                 <strong>Supervisor Designation</strong>: {{ $s->supervisor_designation }}<br/>
                                                                 <strong>Supervisor Contact</strong>: {{ $s->supervisor_contact }}<br/><br/>
+                                                                <strong>Internship Start Date</strong>: {{ Carbon\Carbon::parse($s->start_date)->toformattedDateString() }}<br/>
+                                                                <strong>Internship End Date</strong>: {{ Carbon\Carbon::parse($s->end_date)->toformattedDateString() }}<br/>
                                                                 <strong>Uploaded Date</strong>: {{ Carbon\Carbon::parse($s->offer_letter_uploaded_date)->toformattedDateString() }}<br/>
                                                                 <strong>Status</strong>: {{ $s->offer_letter_status }}
                                                             </div>
@@ -138,16 +150,25 @@
                                                                 <embed src="{{ asset($s->offer_letter) }}" width="500" height="500" type="application/pdf"/>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        @if(session('term') == $term->term_name)
-                                                        <form action="{{ url('/coordinator/offerletter_status/'.$s->registration_no) }}" method="post">
-                                                            @csrf
-                                                            <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
-                                                            <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
-                                                        </form>
-                                                        @endif
-                                                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                        <hr class="my-4"/>                                                        
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                            @if(session('term') == $term->term_name)
+                                                            <form action="{{ url('/coordinator/offerletter_status/'.$s->registration_no) }}" method="post">
+                                                                @csrf
+                                                                <fieldset>
+                                                                    <legend>Remarks</legend>
+                                                                    <div class="form-group">
+                                                                        <textarea class="form-control" name="description" rows="4">Congratulations, you're offer letter has been accepted.</textarea>
+                                                                    </div>
+                                                                </fieldset>
+                                                                <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
+                                                                <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
+                                                            </form>
+                                                            @endif
+                                                            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

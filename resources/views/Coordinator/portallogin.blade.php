@@ -85,6 +85,7 @@
                                                 <th scope="col">Email</th>
                                                 <th scope="col">Department</th>
                                                 <th scope="col">Contact No</th>
+                                                <th scope="col">Password Status</th>
                                                 @if(session('term') == $term->term_name)
                                                 <th scope="col">Login</th>
                                                 @endif
@@ -98,6 +99,11 @@
                                                 <td>{{ $s->students->email }}</td>
                                                 <td>{{ $s->students->department }}</td>
                                                 <td>{{ $s->students->contact_no }}</td>
+                                                @if(isset($s->students->studentAccount->one_time_auth))
+                                                <td>{{$s->students->studentAccount->one_time_auth}}</td>
+                                                @else
+                                                <td>Pending</td>
+                                                @endif
                                                 @if(session('term') == $term->term_name)
                                                 <td>
                                                     <input type="checkbox" class="checkmark" name="regno[]" value="{{ $s->registration_no }}"/>

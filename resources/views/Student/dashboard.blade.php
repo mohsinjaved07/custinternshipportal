@@ -45,17 +45,10 @@
         <div style="margin-top:57px;">
             <div class="sidebar">
                 <a class="active" href="{{ url('/student/dashboard') }}">Home</a>
-                <a href="{{ url('/student/internshipinfo') }}">Internship Organization Details</a>
-                @if(isset($studentintern->status))
-                <a href="{{ url('/student/uploadofferletter') }}">Upload Offer Letter</a>
-                @endif
-                @if(isset($root->days_remaining))
-                    @if($root->days_remaining > Carbon\Carbon::now())
+                <a href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
+                @if(isset($root->end_date))
+                    @if($root->end_date < Carbon\Carbon::now())
                     <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
-                    @endif
-                @endif
-                @if(isset($root->internship_completion_certificate))
-                    @if($root->internship_completion_certificate_status != 'pending')
                     <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
                     @endif
                 @endif
@@ -128,7 +121,7 @@
                                 Here you can view the announcements.
                             </p>
                             <hr class="my-4">
-                            @foreach($announcement as $a)
+                            @foreach($announcement->reverse() as $a)
                                 @if($a->end_date >= Carbon\Carbon::now())
                                 <div class="alert alert-success" role="alert">
                                     {{ $a->description }}<br/><br/>

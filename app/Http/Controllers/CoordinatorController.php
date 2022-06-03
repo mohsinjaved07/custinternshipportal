@@ -546,6 +546,14 @@ class CoordinatorController extends Controller
     public function offerletter_status(Request $request, $registration_no){
         $id = session('id');
         if ($id){
+            $validated = $request->validate([
+                'description'=>'required|max:100'
+            ],
+            [
+                'description.required' => 'Please enter remarks',
+            ]);
+
+            
             $term = Term::all()->last();
             $student = TermRegistered::where([['term_name', $term->term_name], ['registration_no', $registration_no]])->first();
             if ($student){
@@ -555,11 +563,7 @@ class CoordinatorController extends Controller
                 $announcement = new Announcement;
                 $announcement->registration_no = $registration_no;
                 $announcement->purpose = "Offer Letter Status";
-                if ($request->status == 'approved'){
-                    $announcement->description = "Congratulations, you're offer letter has been accepted.";
-                } else {
-                    $announcement->description = "You're offer letter is not accepted due to non-verification or wrong information of your organization. Please reupload your offer letter to avoid such issues.";
-                }
+                $announcement->description = $request->description;
                 $announcement->start_date = Carbon::now();
                 $announcement->end_date = Carbon::now()->addDays(7);
                 $announcement->coordinator_id = $id;
@@ -626,4 +630,16 @@ class CoordinatorController extends Controller
             return Redirect("/coordinator/loginForm");
         }
     }
+
+    // public function offerletterinfo(){
+    //     $id = session('id');
+    //     if ($id){
+    //         $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
+    //         $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+    //         $term = Term::all()->last();
+    //         return view("Coordinator.setannouncement", compact('root', 'student', 'term'));
+    //     } else {
+    //         return Redirect("/coordinator/loginForm");
+    //     }
+    // }
 }

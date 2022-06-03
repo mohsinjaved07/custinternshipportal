@@ -19,6 +19,7 @@ class CreateSupervisorsTable extends Migration
             $table->string('supervisor_email')->nullable();
             $table->string('supervisor_designation')->nullable();
             $table->string('supervisor_contact')->nullable();
+            $table->string('supervisor_department')->nullable();
             $table->string("organization_ntn_no")->nullable();
             $table->foreign('organization_ntn_no')->references("organization_ntn_no")->on("organizations");
             $table->timestamps();

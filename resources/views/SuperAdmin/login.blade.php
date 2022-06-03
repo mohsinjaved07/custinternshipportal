@@ -77,7 +77,6 @@
                                 </div>
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-success btn-lg">Login</button>
-                                    <a href="{{ url('/admin/registration') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Sign Up</a>
                                 </div>
                             </form>
                         </div>
