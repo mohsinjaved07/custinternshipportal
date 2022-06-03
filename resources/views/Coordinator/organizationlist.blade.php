@@ -84,7 +84,7 @@
                                         <tr>
                                             <th scope="col">Registration No</th>
                                             <th scope="col">Name</th>
-                                            <th scope="col">Contact No</th>
+                                            <th scope="col">Student Contact No</th>
                                             <th scope="col">Organization Status</th>
                                             <th scope="col">External Evaluator</th>
                                             <th scope="col">Internal Evaluator</th>
@@ -119,7 +119,7 @@
                                             <div class="modal-dialog modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Offer Letter</h5>
+                                                        <h3 class="modal-title" id="exampleModalLabel">Offer Letter</h3>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                         </button>
@@ -140,9 +140,12 @@
                                                                 <strong>Supervisor Name</strong>: {{ $s->supervisor_name }}<br/>
                                                                 <strong>Supervisor Email</strong>: {{ $s->supervisor_email }}<br/>
                                                                 <strong>Supervisor Designation</strong>: {{ $s->supervisor_designation }}<br/>
-                                                                <strong>Supervisor Contact</strong>: {{ $s->supervisor_contact }}<br/><br/>
+                                                                <strong>Supervisor Contact</strong>: {{ $s->supervisor_contact }}<br/>
+                                                                <strong>Supervisor Department</strong>: {{ $s->supervisor_department }}<br/>
+                                                                <br/><br/>
                                                                 <strong>Internship Start Date</strong>: {{ Carbon\Carbon::parse($s->start_date)->toformattedDateString() }}<br/>
                                                                 <strong>Internship End Date</strong>: {{ Carbon\Carbon::parse($s->end_date)->toformattedDateString() }}<br/>
+                                                                <br/><br/>
                                                                 <strong>Uploaded Date</strong>: {{ Carbon\Carbon::parse($s->offer_letter_uploaded_date)->toformattedDateString() }}<br/>
                                                                 <strong>Status</strong>: {{ $s->offer_letter_status }}
                                                             </div>

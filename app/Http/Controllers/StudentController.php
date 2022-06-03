@@ -328,14 +328,14 @@ class StudentController extends Controller
         $registration_no = session('registration_no');
         if ($registration_no){
             $validated = $request->validate([
-                'orgntn' => 'required|max:100',
+                'orgntn' => 'required|max:100|regex:/[0-9]{7}\-[0-9]{1}/',
                 'orgname' => 'required|max:100',
-                'orgemail' => 'required|max:100',
+                'orgemail' => 'required|max:100|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/',
                 'orgcontact' => 'required|numeric|digits:11',
                 'orgaddress' => 'required|max:100',
                 'orgwebsite' => 'required|max:100',
                 'supervisorname' => 'required|max:100',
-                'supervisoremail' => 'required|max:100',
+                'supervisoremail' => 'required|max:100|regex:/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/',
                 'supervisordesignation' => 'required|max:100',
                 'supervisorcontact' => 'required|numeric|digits:11',
                 'supervisordepartment' => 'required|max:100',
@@ -345,23 +345,21 @@ class StudentController extends Controller
             ],
             [
                 'orgntn.required' => 'Please enter organization NTN',
+                'orgntn.regex' => 'This is not a valid NTN no.',
                 'orgname.required' => 'Please enter organization name',
                 'orgemail.required' => 'Please enter organization email',
+                'orgemail.regex' => 'This is not a valid email',
                 'orgcontact.required' => 'Please enter organization contact',
                 'orgaddress.required' => 'Please enter organization address',
                 'orgwebsite.required' => 'Please enter organization website',
                 'supervisorname.required' => 'Please enter supervisor name',
                 'supervisoremail.required' => 'Please enter supervisor email',
+                'supervisoremail.regex' => 'This is not a valid email',
                 'supervisordesignation.required' => 'Please enter supervisor designation',
                 'supervisorcontact.required' => 'Please enter supervisor contact',
                 'supervisordepartment.required' => 'Please enter supervisor department',
                 'offerLetter.required' => 'Please upload offer letter',
             ]);
-
-            $pattern = "/NTN-/i";
-            if (preg_match_all($pattern, strtoupper($request->orgntn)) == 0){
-                return Redirect()->back();
-            }
             
             $offerletterfile = $request->file("offerLetter");
             $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
