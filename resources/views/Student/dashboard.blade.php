@@ -47,9 +47,8 @@
                 <a class="active" href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date < Carbon\Carbon::now())
-                    <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
-                    <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                    @if($root->end_date > Carbon\Carbon::now())
+                    <a href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif
             </div>
@@ -96,6 +95,10 @@
                                             @endif
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Evaluation Performa:</td>
+                                        <td><a href="https://cust.edu.pk/static/uploads/2019/05/13Evalutation-form.pdf" target="__blank" class="btn btn-primary" role="button">Download</a></td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>  
@@ -124,6 +127,7 @@
                             @foreach($announcement->reverse() as $a)
                                 @if($a->end_date >= Carbon\Carbon::now())
                                 <div class="alert alert-success" role="alert">
+                                    <h4>{{ $a->purpose }}</h4>
                                     {{ $a->description }}<br/><br/>
                                     <strong>Announced by:</strong> {{ $a->coordinator->name }}<br/>
                                     <strong>Expire date:</strong> {{ Carbon\Carbon::parse($a->end_date)->toFormattedDateString() }}

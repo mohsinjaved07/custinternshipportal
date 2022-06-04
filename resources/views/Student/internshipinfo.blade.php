@@ -47,15 +47,14 @@
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a class="active" href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date < Carbon\Carbon::now())
-                    <a href="{{ url('/student/uploadcompletioncertificate') }}">Upload Certificate</a>
-                    <a href="{{ url('/student/uploadinternshipreport') }}">Upload Report</a>
+                    @if($root->end_date > Carbon\Carbon::now())
+                    <a href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif
             </div>
         </div>
         <div class="content">
-            <h1>Internship Organization Form</h1>
+            <h1>Offer Letter</h1>
             <hr/>
             <div class="row">
                 <div class="col-md-2"></div>

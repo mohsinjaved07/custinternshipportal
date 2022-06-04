@@ -85,8 +85,8 @@
                                             <th scope="col">Registration No</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Student Contact No</th>
-                                            <th scope="col">Organization Status</th>
-                                            <th scope="col">External Evaluator</th>
+                                            <th scope="col">Offer Letter</th>
+                                            <th scope="col">Documents</th>
                                             <th scope="col">Internal Evaluator</th>
                                         </tr>
                                     </thead>
@@ -96,21 +96,20 @@
                                         <tr>
                                             <td>{{ $s->registration_no }}</td>
                                             <td>{{ $s->students->name }}</td>
-                                            <td>{{ $s->students->contact_no }}
+                                            <td>{{ $s->students->contact_no }}</td>
                                             <td>
                                                 @if(isset($s->offer_letter))
                                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{$s->registration_no}}_offerLetter">
                                                     <i class="fas fa-list-alt"></i>
+                                                    Offer Letter
                                                 </button>
                                                 @endif
-                                                @if(isset($s->internship_completion_certificate))
+                                            </td>
+                                            <td>
+                                                @if(isset($s->document_uploaded_date))
                                                 <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#{{$s->registration_no}}_certificate">
                                                     <i class="fas fa-list-alt"></i>
-                                                </button>
-                                                @endif
-                                                @if(isset($s->internship_report))
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#{{$s->registration_no}}_report">
-                                                    <i class="fas fa-list-alt"></i>
+                                                    Documents
                                                 </button>
                                                 @endif
                                             </td>
@@ -150,7 +149,7 @@
                                                                 <strong>Status</strong>: {{ $s->offer_letter_status }}
                                                             </div>
                                                             <div class="col-md-6">
-                                                                <embed src="{{ asset($s->offer_letter) }}" width="500" height="500" type="application/pdf"/>
+                                                                <embed src="{{ asset($s->offer_letter) }}" width="500" height="600" type="application/pdf"/>
                                                             </div>
                                                         </div>
                                                         <hr class="my-4"/>                                                        
@@ -180,87 +179,64 @@
                                             <div class="modal-dialog modal-xl">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Internship Completion Certificate</h5>
+                                                        <h3 class="modal-title" id="exampleModalLabel">Internship Documents</h3>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
+                                                        <div class="row text-center">
+                                                            <div class="col-md-12">
                                                                 <strong>Registration No</strong>: {{ $s->registration_no }}<br/>
                                                                 <strong>Name</strong>: {{ $s->students->name }}<br/>
-                                                                <br/><br/>
-                                                                <strong>Offer Letter uploaded date</strong>: {{ Carbon\Carbon::parse($s->offer_letter_uploaded_date)->toformattedDateString() }}<br/>
-                                                                <strong>Offer Letter status</strong>: {{ $s->offer_letter_status }}<br/>
-                                                                <br/><br/>
-                                                                <strong>Uploaded Date</strong>: {{ Carbon\Carbon::parse($s->internship_completion_certificate_uploaded_date)->toformattedDateString() }}<br/>
-                                                                <strong>Status</strong>: {{ $s->internship_completion_certificate_status }}
                                                             </div>
-                                                            <div class="col-md-6">
+                                                        </div>
+                                                        <hr class="my-4"/>
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <h3 class="text-center">Internship Report</h3>
+                                                                <embed src="{{ asset($s->internship_report) }}" width="350" height="400" type="application/pdf"/>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <h3 class="text-center">Internship Certificate</h3>
                                                                 @if(strpos($s->internship_completion_certificate, "png") != 0)
-                                                                <img src="{{ asset($s->internship_completion_certificate) }}" width="500" height="300"/>
+                                                                <img src="{{ asset($s->internship_completion_certificate) }}" width="350" height="300"/>
                                                                 @endif
                                                                 @if(strpos($s->internship_completion_certificate, "jpg") != 0)
-                                                                <img src="{{ asset($s->internship_completion_certificate) }}" width="500" height="300"/>
+                                                                <img src="{{ asset($s->internship_completion_certificate) }}" width="350" height="300"/>
                                                                 @endif
                                                                 @if(strpos($s->internship_completion_certificate, "pdf") != 0)
-                                                                <embed src="{{ asset($s->internship_completion_certificate) }}" width="500" height="500" type="application/pdf"/>
+                                                                <embed src="{{ asset($s->internship_completion_certificate) }}" width="350" height="400" type="application/pdf"/>
                                                                 @endif
                                                             </div>
+                                                            <div class="col-md-4">
+                                                                <h3 class="text-center">Evaluation Performa</h3>
+                                                                <embed src="{{ asset($s->internship_evaluation_performa) }}" width="350" height="400" type="application/pdf"/>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        @if(session('term') == $term->term_name)
-                                                        <form action="{{ url('/coordinator/internshipcompletion_status/'.$s->registration_no) }}" method="post">
-                                                            @csrf
-                                                            <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
-                                                            <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
-                                                        </form>
-                                                        @endif
-                                                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal fade" id="{{$s->registration_no}}_report" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-xl">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Internship Report</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
+                                                        <hr class="my-4"/>                                                        
                                                         <div class="row">
-                                                            <div class="col-md-6">
-                                                                <strong>Registration No</strong>: {{ $s->registration_no }}<br/>
-                                                                <strong>Name</strong>: {{ $s->students->name }}<br/>
+                                                            <div class="col-md-12">
                                                                 <br/><br/>
-                                                                <strong>Offer Letter uploaded date</strong>: {{ Carbon\Carbon::parse($s->offer_letter_uploaded_date)->toformattedDateString() }}<br/>
-                                                                <strong>Offer Letter status</strong>: {{ $s->offer_letter_status }}<br/>
-                                                                <br/><br/>
-                                                                <strong>Internship Certificate Uploaded Date</strong>: {{ Carbon\Carbon::parse($s->internship_completion_certificate_uploaded_date)->toformattedDateString() }}<br/>
-                                                                <strong>Internship Certificate Status</strong>: {{ $s->internship_completion_certificate_status }}
-                                                                <br/><br/>
-                                                                <strong>Uploaded Date</strong>: {{ Carbon\Carbon::parse($s->internship_report_uploaded_date)->toformattedDateString() }}<br/>
-                                                                <strong>Status</strong>: {{ $s->internship_report_status }}
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <embed src="{{ asset($s->internship_report) }}" width="500" height="500" type="application/pdf"/>
+                                                                <strong>Documents Uploaded date</strong>: {{ Carbon\Carbon::parse($s->document_uploaded_date)->toformattedDateString() }}<br/>
+                                                                <strong>Status</strong>: {{ $s->document_status }}<br/>
+                                                            @if(session('term') == $term->term_name)
+                                                            <br/><br/>
+                                                            <form action="{{ url('/coordinator/internshipcompletion_status/'.$s->registration_no) }}" method="post">
+                                                                @csrf
+                                                                <fieldset>
+                                                                    <legend>Remarks</legend>
+                                                                    <div class="form-group">
+                                                                        <textarea class="form-control" name="description" rows="4">Congratulations, you're all documents has been accepted.</textarea>
+                                                                    </div>
+                                                                </fieldset>
+                                                                <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
+                                                                <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
+                                                            </form>
+                                                            @endif
+                                                            <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        @if(session('term') == $term->term_name)
-                                                        <form action="{{ url('/coordinator/internshipreport_status/'.$s->registration_no) }}" method="post">
-                                                            @csrf
-                                                            <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
-                                                            <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
-                                                        </form>
-                                                        @endif
-                                                        <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
                                                     </div>
                                                 </div>
                                             </div>

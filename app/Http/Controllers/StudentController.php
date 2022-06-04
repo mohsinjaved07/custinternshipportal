@@ -226,55 +226,6 @@ class StudentController extends Controller
         }
     }
 
-    public function uploadinternshipreport(){
-        $registration_no = session('registration_no');
-        if ($registration_no){
-            $student = Student::where('registration_no', $registration_no)->first();
-            $term = Term::all()->last();
-            $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
-            return view('Student.uploadinternshipreport', compact('student', 'term', 'root'));
-        } else {
-            return Redirect("/student/loginForm");
-        }
-    }
-
-    public function internshipreport($regno, Request $request){
-        $registration_no = session('registration_no');
-        if ($registration_no){
-            $validated = $request->validate([
-                'internshipReport' => 'required|mimes:pdf',
-            ],
-            [
-                'internshipReport.required' => 'Please upload report.',
-            ]);
-            
-            $offerletterfile = $request->file("internshipReport");
-            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
-            $file_name = $regno.'.'.$file_ext;
-            $offerletterfile->move("internship_reports", $file_name);
-            
-            $term = Term::all()->last();
-            $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
-            if($termregistered){
-                if(isset($termregistered->internship_report_uploaded_date)){
-                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                        'internship_report' => "internship_reports/".$file_name,
-                        'internship_report_status' => 'pending'
-                    ]);
-                } else {
-                    $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                        'internship_report' => "internship_reports/".$file_name,
-                        'internship_report_uploaded_date' => Carbon::now(),
-                        'internship_report_status' => 'pending'
-                    ]);
-                }
-            }
-            return Redirect()->back();
-        } else {
-            return Redirect("/student/loginForm");
-        }
-    }
-
     public function uploadcompletioncertificate(){
         $registration_no = session('registration_no');
         if ($registration_no){
@@ -292,29 +243,47 @@ class StudentController extends Controller
         if ($registration_no){
             $validated = $request->validate([
                 'internshipCompletionCertificate' => 'required|mimes:pdf,png,jpg',
+                'internshipReport' => 'required|mimes:pdf',
+                'internshipPerforma' => 'required|mimes:pdf'
             ],
             [
                 'internshipCompletionCertificate.required' => 'Please upload internship completion certificate.',
+                'internshipReport.required' => 'Please upload report.',
+                'internshipPerforma.required' => 'Please upload performa.',
             ]);
             
             $offerletterfile = $request->file("internshipCompletionCertificate");
             $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
-            $file_name = $regno.'.'.$file_ext;
-            $offerletterfile->move("internship_completion_certificate", $file_name);
+            $certificate_file_name = $regno.'.'.$file_ext;
+            $offerletterfile->move("internship_completion_certificate", $certificate_file_name);
+
+            $offerletterfile = $request->file("internshipReport");
+            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
+            $report_file_name = $regno.'.'.$file_ext;
+            $offerletterfile->move("internship_reports", $report_file_name);
+
+            $offerletterfile = $request->file("internshipPerforma");
+            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
+            $performa_file_name = $regno.'.'.$file_ext;
+            $offerletterfile->move("evaluation_performas", $performa_file_name);
             
             $term = Term::all()->last();
             $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
             if($termregistered){
-                if(isset($termregistered->internship_completion_certificate_uploaded_date)){
+                if(isset($termregistered->document_uploaded_date)){
                     $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                        'internship_completion_certificate' => "internship_completion_certificate/".$file_name,
-                        'internship_completion_certificate_status' => 'pending'
+                        'internship_completion_certificate' => "internship_completion_certificate/".$certificate_file_name,
+                        'internship_report' => "internship_reports/".$report_file_name,
+                        'internship_evaluation_performa' => "evaluation_performas/".$performa_file_name,
+                        'document_status' => 'pending'
                     ]);
                 } else {
                     $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
-                        'internship_completion_certificate' => "internship_completion_certificate/".$file_name,
-                        'internship_completion_certificate_uploaded_date' => Carbon::now(),
-                        'internship_completion_certificate_status' => 'pending'
+                        'internship_completion_certificate' => "internship_completion_certificate/".$certificate_file_name,
+                        'internship_report' => "internship_reports/".$report_file_name,
+                        'internship_evaluation_performa' => "evaluation_performas/".$performa_file_name,
+                        'document_status' => 'pending',
+                        'document_uploaded_date' => Carbon::now()
                     ]);
                 }
             }

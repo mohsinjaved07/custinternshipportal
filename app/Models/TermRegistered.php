@@ -29,12 +29,11 @@ class TermRegistered extends Model
         'start_date',
         'end_date',
         'internship_report',
-        'internship_report_uploaded_date',
-        'internship_report_status',
         'internship_completion_certificate',
-        'internship_completion_certificate_uploaded_date',
-        'internship_completion_certificate_status',
-        'days_remaining'
+        'internship_evaluation_performa',
+        'document_uploaded_date',
+        'document_status'
+
     ];
     
     public function students(){

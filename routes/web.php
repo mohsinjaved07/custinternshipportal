@@ -70,8 +70,7 @@ Route::get('/student/accountsettings', [StudentController::class, 'accountsettin
 Route::get('/student/forgotpasswordlink', [StudentController::class, 'forgotpasswordlink']);
 Route::get('/student/forgotpassword/{registrationno}', [StudentController::class, 'forgotpassword']);
 Route::get('/student/internshipinfo', [StudentController::class, 'internshipinfo']);
-Route::get('/student/uploadinternshipreport', [StudentController::class, 'uploadinternshipreport']);
-Route::get('/student/uploadcompletioncertificate', [StudentController::class, 'uploadcompletioncertificate']);
+Route::get('/student/uploaddocuments', [StudentController::class, 'uploadcompletioncertificate']);
 
 Route::post('/student/login', [StudentController::class, 'login'])->name("validateStudent");
 Route::post('/student/setloginid', [StudentController::class, 'setloginid'])->name("setloginid");
@@ -81,7 +80,6 @@ Route::post('/student/downloadinternshipplan', [StudentController::class, 'downl
 Route::post('/student/sendforgotpasswordemail', [StudentController::class, 'sendforgotpasswordemail'])->name('sendforgotpasswordemail');
 Route::post('/student/setforgotpassword/{registrationno}', [StudentController::class, 'setforgotpassword']);
 Route::post('/student/setorganizationdetails', [StudentController::class, 'setOrganizationDetails'])->name("setorganizationdetails");
-Route::post('/student/internshipreport/{regno}', [StudentController::class, 'internshipreport']);
 Route::post('/student/internshipcompletioncertificate/{regno}', [StudentController::class, 'internshipcompletioncertificate']);
 
 /*********************************** End of Student Routes ***********************************/

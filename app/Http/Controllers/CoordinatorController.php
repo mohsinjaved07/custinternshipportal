@@ -127,7 +127,7 @@ class CoordinatorController extends Controller
 
                     $studentdocs->where('registration_no', $r)->update([
                         'recommendation_letter' => $pdffile,
-                        'internship_plan' => "files/InternshipPlan.pdf"
+                        'internship_plan' => "files/".$file_name
                     ]);
                 } else {
                     $templateProcessor = new TemplateProcessor('templates/recLetter.docx');
@@ -152,7 +152,7 @@ class CoordinatorController extends Controller
                     $studentdocs = new StudentDocs;
                     $studentdocs->registration_no = $student->registration_no;
                     $studentdocs->recommendation_letter = $pdffile;
-                    $studentdocs->internship_plan = "files/InternshipPlan.pdf";
+                    $studentdocs->internship_plan = "files/".$file_name;
                     $studentdocs->save();
                 }
                 Mail::to($student->email)->send(new LetterMail($student, $pdffile));
@@ -547,7 +547,7 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $validated = $request->validate([
-                'description'=>'required|max:100'
+                'description'=>'required'
             ],
             [
                 'description.required' => 'Please enter remarks',
@@ -578,26 +578,30 @@ class CoordinatorController extends Controller
     public function internshipcompletion_status(Request $request, $registration_no){
         $id = session('id');
         if ($id){
+            $validated = $request->validate([
+                'description'=>'required'
+            ],
+            [
+                'description.required' => 'Please enter remarks',
+            ]);
+
+            
             $term = Term::all()->last();
             $student = TermRegistered::where([['term_name', $term->term_name], ['registration_no', $registration_no]])->first();
             if ($student){
                 $student->where([['term_name', $term->term_name], ['registration_no', $registration_no]])->update([
-                    'internship_completion_certificate_status' => $request->status
+                    'document_status' => $request->status
                 ]);
                 $announcement = new Announcement;
                 $announcement->registration_no = $registration_no;
-                $announcement->purpose = "Internship Completion Status";
-                if ($request->status == 'approved'){
-                    $announcement->description = "Congratulations, you're internship completion certificate has been accepted.";
-                } else {
-                    $announcement->description = "You're internship completion certificate is not accepted due to non-verification. Please reupload your certificate to avoid such issues.";
-                }
+                $announcement->purpose = "Document Status";
+                $announcement->description = $request->description;
                 $announcement->start_date = Carbon::now();
                 $announcement->end_date = Carbon::now()->addDays(7);
                 $announcement->coordinator_id = $id;
                 $announcement->save();
             }
-            return Redirect()->back()->with("message", "You've set student's internship completion certificate status successfully.");
+            return Redirect()->back()->with("message", "You've set student's documents status successfully.");
         } else {
             return Redirect("/coordinator/loginForm");
         }
