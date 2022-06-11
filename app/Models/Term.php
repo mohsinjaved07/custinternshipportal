@@ -13,6 +13,7 @@ class Term extends Model
         'apply_for_internship',
         'acquisition_offer_letter',
         'acquisition_completion_certificate',
-        'final_evaluation'
+        'final_evaluation',
+        'internship_plan'
     ];
 }

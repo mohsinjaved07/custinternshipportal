@@ -19,7 +19,6 @@ class CreateStudentDocsTable extends Migration
             $table->foreign('registration_no')->references("registration_no")->on("students");
             $table->primary('registration_no');
             $table->string('recommendation_letter')->nullable();
-            $table->string('internship_plan')->nullable();
             $table->timestamps();
         });
     }

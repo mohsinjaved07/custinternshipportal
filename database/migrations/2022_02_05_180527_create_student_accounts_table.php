@@ -18,6 +18,7 @@ class CreateStudentAccountsTable extends Migration
             $table->string("login_id");
             $table->unique("login_id");
             $table->string("password");
+            $table->string("login_date");
             $table->string("one_time_auth")->nullable();
             $table->foreign('registration_no')->references("registration_no")->on("students");
             $table->primary("registration_no");

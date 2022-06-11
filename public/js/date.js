@@ -1,13 +1,5 @@
-const d = new Date();
-var year = d.getFullYear();
-var month = d.getMonth() + 1;
-month = month < 10 ? '0' + month : month;
-var date = d.getDate();
-date = date < 10 ? '0' + date : date;
-var DATE = year + "-" + month + "-" + date;
-
+DATE = document.getElementById("DATE1").value;
 document.getElementById("DATE1").min = DATE;
-document.getElementById("DATE1").value = DATE;
 
 const d2 = new Date(DATE);
 d2.setDate(d2.getDate() + 45);

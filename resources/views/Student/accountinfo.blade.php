@@ -54,7 +54,11 @@
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
                                 Hi {{ $student->name }}<br/>
+                                @if(isset($student->studentAccount->one_time_auth))
+                                Please change your password for future premises.
+                                @else
                                 Thanks for joining in this internship program. Please change your password for future premises.
+                                @endif
                             </p>
                             <hr class="my-4">
                             @if (session('message'))
@@ -75,7 +79,7 @@
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fas fa-key"></i></div>
                                             </div>
-                                            <input type="password" class="form-control" name="curpassword"/>    
+                                            <input type="password" class="form-control" id="curpassword" name="curpassword"/>    
                                         </div>
                                         @error('curpassword')
                                         <span class="text-danger">{{ $message }}</span>
@@ -87,7 +91,7 @@
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fas fa-key"></i></div>
                                             </div>
-                                            <input type="password" class="form-control" name="newpassword"/>    
+                                            <input type="password" class="form-control" id="newpassword" name="newpassword"/>    
                                         </div>
                                         @error('newpassword')
                                         <span class="text-danger">{{ 'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.' }}</span>
@@ -99,11 +103,15 @@
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fas fa-key"></i></div>
                                             </div>
-                                            <input type="password" class="form-control" name="confirmpassword"/>    
+                                            <input type="password" class="form-control" id="confirmpassword" name="confirmpassword"/>    
                                         </div>
                                         @error('confirmpassword')
                                         <span class="text-danger">{{ 'Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.' }}</span>
                                         @enderror
+                                    </div>
+                                    <div class="input-group">
+                                        Show Password:
+                                        <input type="checkbox" class="checkmark" onclick="changePasswordStudent()"/>
                                     </div>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-danger btn-lg">Submit</button>
@@ -119,4 +127,5 @@
             </div>
         </div>
     </body>
+    <script src="{{ asset('js/password.js') }}"></script>
 </html>

@@ -11,6 +11,5 @@ class StudentDocs extends Model
     protected $fillable = [
         'registration_no',
         'recommendation_letter',
-        'internship_plan'
     ];
 }

@@ -87,7 +87,7 @@
                                     <tr>
                                         <td>Internship plan:</td>
                                         <td>
-                                            @if (isset($student->studentdocuments->internship_plan))
+                                            @if (isset($term->internship_plan))
                                             <form action="{{ route('internshipplan') }}" method="post">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary">Download</button>

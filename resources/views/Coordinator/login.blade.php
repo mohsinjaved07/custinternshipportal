@@ -77,7 +77,12 @@
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="fas fa-key"></i></div>
                                         </div>
-                                        <input type="password" class="form-control" name="password"/>    
+                                        <input type="password" class="form-control" name="password" id="loginPassword"/>
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <input type="checkbox" class="checkmark" onclick="loginCor()"/>
+                                            </div>
+                                        </div>
                                     </div>
                                     @error('password')
                                     <span class="text-danger">{{ $message }}</span>
@@ -96,4 +101,5 @@
             </div>
         </div>
     </body>
+    <script src="{{ asset('js/password.js') }}"></script>
 </html>

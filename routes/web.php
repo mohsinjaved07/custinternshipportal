@@ -40,6 +40,7 @@ Route::get('/coordinator/setannouncement', [CoordinatorController::class, 'setAn
 Route::get('/coordinator/forgotpassword/{name}', [CoordinatorController::class, 'forgotpassword']);
 Route::get('/coordinator/organizationlist', [CoordinatorController::class, 'getOrganizationList']);
 Route::get('/coordinator/organizations', [CoordinatorController::class, 'organizations']);
+Route::get('/coordinator/orientation', [CoordinatorController::class, 'uploadInternshipPlan']);
 Route::get('/coordinator/{organizationNTN}/supervisors', [CoordinatorController::class, 'supervisors']);
 
 Route::post('/coordinator/login', [CoordinatorController::class, 'login'])->name("validateCoordinator");
@@ -56,6 +57,7 @@ Route::post('/coordinator/announcement', [CoordinatorController::class, 'announc
 Route::post('/coordinator/offerletter_status/{registration_no}', [CoordinatorController::class, 'offerletter_status']);
 Route::post('/coordinator/internshipcompletion_status/{registration_no}', [CoordinatorController::class, 'internshipcompletion_status']);
 Route::post('/coordinator/internshipreport_status/{registration_no}', [CoordinatorController::class, 'internshipreport_status']);
+Route::post('/coordinator/postorientation', [CoordinatorController::class, 'internshipPlan'])->name('postOrientation');
 
 /*********************************** End of Coordinator Routes ***********************************/
 

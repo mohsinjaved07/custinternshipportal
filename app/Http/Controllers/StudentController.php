@@ -63,10 +63,10 @@ class StudentController extends Controller
     public function downloadinternshipplan(){
         $registration_no = session('registration_no');
         if ($registration_no){
-            $studentdocs = StudentDocs::where('registration_no', $registration_no)->first();
+            $term = Term::all()->last();
             
-            if($studentdocs){
-                return response()->download($studentdocs->internship_plan);
+            if($term){
+                return response()->download($term->internship_plan);
             }
         } else {
             return Redirect("/student/loginForm");

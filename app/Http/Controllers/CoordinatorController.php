@@ -86,16 +86,10 @@ class CoordinatorController extends Controller
         if ($id){
             $validated = $request->validate([
                 'regno' => 'required|max:100',
-                'internshipPlan' => 'required|mimes:pdf'
             ],
             [
                 'regno.required' => 'Please send letter to at least one student',
             ]);
-
-            $offerletterfile = $request->file("internshipPlan");
-            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
-            $file_name = "InternshipPlan.".$file_ext;
-            $offerletterfile->move("files", $file_name);
 
             foreach ($request->regno as $r){
                 $rendererName = Settings::PDF_RENDERER_TCPDF;
@@ -127,7 +121,6 @@ class CoordinatorController extends Controller
 
                     $studentdocs->where('registration_no', $r)->update([
                         'recommendation_letter' => $pdffile,
-                        'internship_plan' => "files/".$file_name
                     ]);
                 } else {
                     $templateProcessor = new TemplateProcessor('templates/recLetter.docx');
@@ -152,12 +145,67 @@ class CoordinatorController extends Controller
                     $studentdocs = new StudentDocs;
                     $studentdocs->registration_no = $student->registration_no;
                     $studentdocs->recommendation_letter = $pdffile;
-                    $studentdocs->internship_plan = "files/".$file_name;
                     $studentdocs->save();
                 }
                 Mail::to($student->email)->send(new LetterMail($student, $pdffile));
             }
             return Redirect()->back()->with("message", "Recommendation letter successfully sent.");
+        } else {
+            return Redirect('/coordinator/loginForm');
+        }
+    }
+
+    public function uploadInternshipPlan(){
+        $id = session('id');
+        if ($id){
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
+            $term = Term::all()->last();
+            return view('Coordinator.orientation', compact('student', 'root', 'term'));
+        } else {
+            return Redirect('/coordinator/loginForm');
+        }
+    }
+
+    public function internshipPlan(Request $request){
+        $id = session('id');
+        if($id){
+            $validated = $request->validate([
+                'orientation_date' => 'required',
+                'orientation_venue' => 'required',
+                'internshipPlan' => 'required|mimes:pdf'
+            ],
+            [
+                'orientation_date.required' => 'Please set date.',
+                'orientation_venue.required' => 'Please add information about venue.',
+                'internshipPlan.required' => 'Please upload file.'
+            ]);
+
+
+            $term = Term::all()->last();
+            $offerletterfile = $request->file("internshipPlan");
+            $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
+            $file_name = $term->term_name."InternshipPlan.".$file_ext;
+            $offerletterfile->move("files", $file_name);
+
+            
+            $term->where('term_name', $term->term_name)->update([
+                'internship_plan' => 'files/'.$file_name
+            ]);
+
+            $student = Student::all();
+            foreach($student as $s){
+                $announcement = new Announcement;
+                $announcement->registration_no = $s->registration_no;
+                $announcement->purpose = "Orientation Status";
+                $announcement->description = $request->orientation_venue;
+                $announcement->start_date = Carbon::now();
+                $announcement->end_date = $request->orientation_date;
+                $announcement->coordinator_id = $id;
+                $announcement->save();
+            }
+
+            return Redirect()->back();
         } else {
             return Redirect('/coordinator/loginForm');
         }
@@ -247,6 +295,7 @@ class CoordinatorController extends Controller
             foreach ($request->regno as $r){
                 $studentaccount = StudentAccount::where('registration_no', $r)->first();
                 $student = Student::where('registration_no', $r)->first();
+                $studentdocs = StudentDocs::where('registration_no', $r)->first();
 
                 if($studentaccount){
                     $studentaccount->where('registration_no', $r)->update([
@@ -260,8 +309,16 @@ class CoordinatorController extends Controller
                     $studentaccount->login_id = strtolower($student->registration_no);
                     $studentaccount->password = $this->generate_letter_pass();
                     $studentaccount->one_time_auth = null;
+                    $studentaccount->login_date = Carbon::now();
                     $studentaccount->save();
                 }
+
+                if(!$studentdocs){
+                    $studentdocs = new StudentDocs;
+                    $studentdocs->registration_no = $student->registration_no;
+                    $studentdocs->save();
+                }
+
                 Mail::to($student->email)->send(new LoginInfoMail($student));
             }
 

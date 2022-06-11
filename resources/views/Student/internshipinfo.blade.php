@@ -102,7 +102,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><span class="required">*</span>Start Date:</label>
-                                                    <input type="date" id="DATE1" name="startDate" class="form-control" /><br/>
+                                                    <input type="date" id="DATE1" value="{{ Carbon\Carbon::parse($student->studentAccount->login_date)->toformattedDateString() }}" name="startDate" class="form-control" /><br/>
                                                     @error('startDate')
                                                     <div class="text-danger">
                                                         <p>{{ $message }}</p>
@@ -269,7 +269,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label><span class="required">*</span>Start Date:</label>
-                                                <input type="date" id="DATE1" name="startDate" class="form-control" /><br/>
+                                                <input type="date" id="DATE1" value="{{ Carbon\Carbon::parse($student->studentAccount->login_date)->toDateString() }}" name="startDate" class="form-control" /><br/>
                                                 @error('startDate')
                                                 <div class="text-danger">
                                                     <p>{{ $message }}</p>

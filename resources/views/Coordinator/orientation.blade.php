@@ -20,11 +20,11 @@
         <!-- Scripts -->
         <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-        
 
+        
     </head>
     <body class="antialiased">
-        <nav class="navbar navbar-light fixed-top bg-light">
+    <nav class="navbar navbar-light fixed-top bg-light">
             <a class="navbar-brand font-weight-bold" href="{{ url('/coordinator/dashboard') }}">
                 <img src="{{ asset('image/cust.jpg') }}" class="imgcircle" width="30" height="30" class="d-inline-block align-top" alt="">
                 CUST Internship Portal
@@ -46,7 +46,7 @@
         <div style="margin-top:57px;">
             <div class="sidebar">
                 <a href="{{ url('/coordinator/dashboard') }}">Dashboard</a>
-                <div id="ACTIVE" href="#" class="dropdown-btn">Term Management 
+                <div href="#" class="dropdown-btn">Term Management 
                     <i class="fa fa-caret-down"></i>
                 </div>
                 <div class="dropdown-container">
@@ -65,50 +65,75 @@
                 @endif
                 <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
                 <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
-                <a href="{{ url('/coordinator/orientation') }}">Orientation</a>
+                <a class="active" href="{{ url('/coordinator/orientation') }}">Orientation</a>
             </div>
         </div>
         <div class="content">
-            <h1>Term Management</h1>
+            <h1>Orientation</h1>
             <hr/>
             <div class="row">
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Term Details</h5>
+                        <h5 class="card-header bg-dark text-white text-center">Set Orientation Status</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Here you can select the working term.
+                                Here you can notify the orientation status.
                             </p>
                             <hr class="my-4">
-                            <form action="{{ route('selectterm') }}" method="post">
+                            @if (session('message'))
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ session('message') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            @endif
+                            <form action="{{ route('postOrientation') }}" method="post" enctype="multipart/form-data">
                                 @csrf
-                                <div class="form-group">
-                                    <label>Select working term:</label>
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="fas fa-list-ol"></i></div>
+                                <hr class="my-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h2>Orientation Date</h2>
+                                            <input type="date" name="orientation_date" class="form-control" />
+                                            @error('orientation_date')
+                                                <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
-                                        <select class="custom-select" name="termname">
-                                            @foreach($terms->reverse() as $t)
-                                            <option value="{{ $t->term_name }}">{{ $t->term_name }}</option>
-                                            @endforeach
-                                        </select>
                                     </div>
-                                    @error('name')
-                                    <span class="text-danger">{{ $message }}</span>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <h2>Upload Internship Plan</h2>
+                                            <label>Upload File:</label>
+                                            <input type="file" name="internshipPlan"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF</span><br/><br/>
+                                            @error('internshipPlan')
+                                            <div class="alert alert-danger">
+                                                <p>{{ $message }}</p>
+                                            </div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <h2>Orientation Venue</h2>
+                                    <textarea name="orientation_venue" id="desc" rows="4" class="form-control">Full Sharp 2:00 PM at Auditorium A1, Capital University of Science & Technology, Islamabad
+                                    </textarea>
+                                    @error('orientation_venue')
+                                    <div class="alert alert-danger">
+                                        <p>{{ $message }}</p>
+                                    </div>
                                     @enderror
                                 </div>
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-success btn-lg">Submit</button>
-                                    <a href="{{ url('/coordinator/dashboard') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Cancel</a>
+                                <hr class="my-4">
+                                <div class="form-group text-center">
+                                    <button type="submit" class="btn btn-danger btn-lg">Submit</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-            </div><br/><br/>
+            </div>
         </div>
     </body>
-    <script src="{{ asset('js/my.js') }}"></script>
 </html>

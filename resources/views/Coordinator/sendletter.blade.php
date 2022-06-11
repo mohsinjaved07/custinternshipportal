@@ -65,6 +65,7 @@
                 @endif
                 <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
                 <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
+                <a href="{{ url('/coordinator/orientation') }}">Orientation</a>
             </div>
         </div>
         <div class="content">
@@ -99,17 +100,6 @@ I recommend this student without reservation for the internship. So far, he/she 
 
 I wish this student best of luck in every endeavor of life.
                                     </textarea>
-                                </div>
-                                <hr class="my-4">
-                                <div class="form-group">
-                                    <h2>Upload Internship Plan</h2>
-                                    <label>Upload File:</label>
-                                    <input type="file" name="internshipPlan"/><span class="text-danger"><strong>Note:</strong> File extensions: PDF</span><br/><br/>
-                                    @error('internshipPlan')
-                                    <div class="alert alert-danger">
-                                        <p>{{ $message }}</p>
-                                    </div>
-                                    @enderror
                                 </div>
                                 <hr class="my-4">
                                 <div class="form-group">

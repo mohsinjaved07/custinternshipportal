@@ -12,6 +12,7 @@ class StudentAccount extends Model
         'registration_no',
         'login_id',
         'password',
+        'login_date',
         'one_time_auth'
     ];
 }
