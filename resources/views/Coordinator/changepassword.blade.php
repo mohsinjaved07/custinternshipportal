@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -53,7 +53,8 @@
                         <h5 class="card-header bg-dark text-white text-center">Change Password</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Please fill the following credentials
+                                Please fill the following credentials<br/><br/>
+                                Note: Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
                             </p>
                             <hr class="my-4">
                             @if (session('message'))

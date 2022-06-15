@@ -8,10 +8,12 @@ use App\Models\Coordinator;
 use App\Models\Term;
 use App\Models\TermRegistered;
 use App\Models\Student;
+use App\Models\StudentAccount;
+use App\Models\StudentDocs;
 use App\Models\Announcement;
 use App\Mail\CoordinatorAccountMail;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 
 class AdminController extends Controller
 {
@@ -34,7 +36,7 @@ class AdminController extends Controller
         if ($superadmin){
             if ($request->password == $superadmin->password){
                 session([
-                    'id' => $superadmin->id
+                    'adminid' => $superadmin->id
                 ]);
                 return Redirect('admin/dashboard');
             }
@@ -44,7 +46,7 @@ class AdminController extends Controller
     }
 
     public function changePassword(){
-        $id = session('id');
+        $id = session('adminid');
         if ($id){
             $superadmin = SuperAdmin::firstWhere('id', $id);
             return view('SuperAdmin.changepassword', compact('superadmin'));
@@ -54,7 +56,7 @@ class AdminController extends Controller
     }
 
     public function password(Request $request){
-        $id = session('id');
+        $id = session('adminid');
         if ($id){
             $validated = $request->validate([
                 'curpassword' => 'required|max:100',
@@ -89,50 +91,32 @@ class AdminController extends Controller
     }
 
     public function dashboard(){
-        $id = session('id');
+        $id = session('adminid');
         if($id){
+            $term = Term::all()->last();
             $superadmin = SuperAdmin::firstWhere('id', $id);
-            return view("SuperAdmin.dashboard", compact('superadmin'));
+            $coordinator = TermRegistered::firstWhere('term_name', $term->term_name);
+            return view("SuperAdmin.dashboard", compact('superadmin', 'coordinator', 'term'));
         } else {
             return redirect('admin/login');
         }
     }
 
     public function coordinator(){
-        $id = session('id');
+        $id = session('adminid');
         if($id){
+            $term = Term::all()->last();
             $superadmin = SuperAdmin::firstWhere('id', $id);
             $coordinator = Coordinator::all();
-            return view("SuperAdmin.coordinator", compact('superadmin', 'coordinator'));
-        } else {
-            return redirect('admin/login');
-        }
-    }
-
-    public function updateCoordinator($coordinatorid){
-        $id = session('id');
-        if($id){
-            $superadmin = SuperAdmin::firstWhere('id', $id);
-            $coordinator = Coordinator::firstWhere('id', $coordinatorid);
-            return view("SuperAdmin.updatecoordinator", compact('superadmin', 'coordinator'));
-        } else {
-            return redirect('admin/login');
-        }
-    }
-
-    public function deleteCoordinator($coordinatorid){
-        $id = session('id');
-        if($id){
-            $superadmin = SuperAdmin::firstWhere('id', $id);
-            $coordinator = Coordinator::firstWhere('id', $coordinatorid);
-            return view("SuperAdmin.deletecoordinator", compact('superadmin', 'coordinator'));
+            $maincoordinator = TermRegistered::firstWhere('term_name', $term->term_name);
+            return view("SuperAdmin.coordinator", compact('superadmin', 'coordinator', 'term', 'maincoordinator'));
         } else {
             return redirect('admin/login');
         }
     }
 
     public function postCoordinator(){
-        $id = session('id');
+        $id = session('adminid');
         if($id){
             $superadmin = SuperAdmin::firstWhere('id', $id);
             return view("SuperAdmin.postcoordinator", compact('superadmin'));
@@ -141,36 +125,18 @@ class AdminController extends Controller
         }
     }
 
-    public function addCoordinator(Request $request){
-        $id = session('id');
+    public function addCoordinator($coordinatorid){
+        $id = session('adminid');
         if($id){
-            $validated = $request->validate([
-                'name' => 'required',
-                'email' => 'required|unique:coordinators',
-                'password' => 'required|string|min:6|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-                'department' => 'required',
-                'contactno' => 'required|unique:coordinators|numeric|digits:11',
-                'office' => 'required',
-            ]);
-
-            $coordinator = new Coordinator;
-            $coordinator->name = $request->name;
-            $coordinator->email = $request->email;
-            $coordinator->password = Hash::make($request->password);
-            $coordinator->department = $request->department;
-            $coordinator->contactno = $request->contactno;
-            $coordinator->office = $request->office;
-            $coordinator->save();
-
             $term = Term::all()->last();
             $students = Student::all();
-            $coordinator = Coordinator::where('email', $request->email)->first();
             $termRegistered = TermRegistered::all()->where('term_name', $term->term_name);
 
             if(count($termRegistered) > 0) {
                 foreach($termRegistered as $t){
-                    $t->coordinator_id = $coordinator->id;
-                    $t->save();
+                    $t->update([
+                        "coordinator_id" => $coordinatorid
+                    ]);
                 }
             } else {
                 if($term){
@@ -179,77 +145,87 @@ class AdminController extends Controller
                             $termRegistered = new TermRegistered;
                             $termRegistered->registration_no = $s->registration_no;
                             $termRegistered->term_name = $term->term_name;
-                            $termRegistered->coordinator_id = $coordinator->id;
+                            $termRegistered->coordinator_id = $coordinatorid;
                             $termRegistered->save();
+
+                            $studentAcc = StudentAccount::all();
+                            foreach($studentAcc as $sa){
+                                $sa->where('registration_no', $s->registration_no)->delete();
+                            }
+
+                            $studentdocs = StudentDocs::all();
+                            foreach($studentdocs as $sd){
+                                $sd->where('registration_no', $s->registration_no)->delete();
+                            }
+
+                            $term->where('term_name', $term->term_name)->update([
+                                "internship_plan" => null
+                            ]);
+                        }
+
+                        $announcement = Announcement::all();
+                        foreach($announcement as $a){
+                            if($a){
+                                $a->delete();
+                            }
                         }
                     }
                 }
             }
-            Mail::to($request->email)->send(new CoordinatorAccountMail($request));
-            return redirect('admin/coordinator');
-        } else {
-            return redirect('admin/login');
-        }
-    }
 
-    public function changeCoordinator(Request $request){
-        $id = session('id');
-        if($id){
-            $validated = $request->validate([
-                'name' => 'required',
-                'email' => 'required',
-                'department' => 'required',
-                'contactno' => 'required|numeric|digits:11',
-                'office' => 'required',
-            ]);
-            
-            $coordinator = Coordinator::firstWhere("email", $request->email);
-            if($coordinator){
-                $coordinator->where("email", $request->email)->update([
-                    "name" => $request->name,
-                    "email" => $request->email,
-                    "department" => $request->department,
-                    "contactno" => $request->contactno,
-                    "office" => $request->office
+            $coordinator = Coordinator::all();
+            foreach($coordinator as $c){
+                $c->update([
+                    'password' => null,
                 ]);
-            } else {
-                return redirect('admin/coordinator');    
             }
 
+            $coordinator = Coordinator::firstWhere("id", $coordinatorid);
+            $password = $this->generate_letter_pass();
+
+            $coordinator->update([
+                'password' => Crypt::encryptString($password),
+            ]);
+
+            Mail::to($coordinator->email)->send(new CoordinatorAccountMail($coordinator, $password));
             return redirect('admin/coordinator');
         } else {
             return redirect('admin/login');
         }
     }
 
-    public function removeCoordinator($coordinatorid){
-        $id = session('id');
-        if($id){
-            $announcement = Announcement::all()->where("coordinator_id", $coordinatorid);
-            if($announcement){
-                foreach($announcement as $a){
-                    $a->delete();
-                }
-            }
+    function generate_letter_pass(){
+        $random = '';
+        for($i = 0; $i < 6; $i++){
+            $random .= rand(0, 1) ? rand(0, 9) : chr(rand(ord('a'), ord('z')));
+        }
+        return $random;
+    }
 
-            $termRegistered = TermRegistered::all()->where("coordinator_id", $coordinatorid);
+    public function removeCoordinator(Request $request){
+        $id = session('adminid');
+        if($id){
+            $term = Term::all()->last();
+            $termRegistered = TermRegistered::all()->where("coordinator_id", $request->coordinatorid);
             if($termRegistered){
                 foreach($termRegistered as $t){
-                    $t->where("coordinator_id", $coordinatorid)->update([
+                    $t->where("term_name", $term->term_name)->update([
                         'coordinator_id' => null
                     ]);
                 }
             }
 
-            $coordinator = Coordinator::firstWhere("id", $coordinatorid);
-            $coordinator->delete();
+            $coordinator = Coordinator::firstWhere("id", $request->coordinatorid);
+            $coordinator->update([
+                'password' => null,
+            ]);
 
             return redirect('admin/coordinator');
         }
     }
 
     public function logout(){
-        session()->forget('id');
+        session()->forget('adminid');
         return redirect('admin/login');
     }
 }

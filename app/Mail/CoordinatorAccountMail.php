@@ -11,15 +11,17 @@ class CoordinatorAccountMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $coordinator;
+    public $coordinator, $password;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($coordinator)
+    public function __construct($coordinator, $password)
     {
         $this->coordinator = $coordinator;
+        $this->password = $password;
     }
 
     /**
@@ -30,6 +32,7 @@ class CoordinatorAccountMail extends Mailable
     public function build()
     {
         $coordinator = $this->coordinator;
-        return $this->markdown('Email.CoordinatorAccount', compact('coordinator'));
+        $password = $this->password;
+        return $this->markdown('Email.coordinatoraccount', compact('coordinator', 'password'));
     }
 }

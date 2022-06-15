@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -30,6 +30,9 @@
                 CUST Internship Portal
             </a>
             <div class="btn-group">
+                <button class="btn btn-warning">Current Term: {{ $term->term_name }}</button>
+            </div>
+            <div class="btn-group">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ $superadmin->name }}
                 </a>
@@ -45,13 +48,17 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Coordinators</h5>
-                        <div class="card-body">
+                        <h5 class="card-header bg-dark text-white text-center">Main Menu</h5>
+                        <div class="card-body text-center">
                             <p class="card-title font-weight-bold custFontColor">
-                                Show the details of the coordinators
+                                Please select one of the following
                             </p>
                             <hr class="my-4">    
-                            <a href="{{ url('admin/coordinator') }}" class="btn btn-success btn-lg" role="button" aria-pressed="true">Show Coordinators List</a>
+                            <a href="{{ url('admin/coordinator') }}" class="btn btn-success btn-lg" role="button" aria-pressed="true">Show Faculty Members</a>
+                            @if(isset($coordinator->coordinator_id))
+                            <hr class="my-4"/>
+                            <h3>Current Coordinator: <strong>{{ $coordinator->coordinators->name }}</strong></h3>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -47,7 +47,10 @@
                     <div class="card shadow">
                         <h5 class="card-header bg-dark text-white text-center">CUST Internship Portal</h5>
                         <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">Hi {{ $coordinator->name }}, Please change your password credentials.</p>
+                            <p class="card-title font-weight-bold custFontColor">
+                                Hi {{ $coordinator->name }}, Please change your password credentials.<br/><br/>
+                                Note: Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
+                            </p>
                             <!-- <hr class="my-4"> -->
                             @if (session('message'))
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">

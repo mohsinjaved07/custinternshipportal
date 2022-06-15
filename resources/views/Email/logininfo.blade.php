@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
         <style>
             .backgroundimg {
                 background-image: url("https://zahanat.com/wp-content/uploads/2021/06/CUST-Islamabad-3-1024x575-1.jpg");

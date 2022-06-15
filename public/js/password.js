@@ -72,3 +72,18 @@ function changePasswordStudent(){
         z.type = "password";
     }
 }
+
+function forgotPasswordStudent(){
+    var y = document.getElementById("newpassword");
+    if (y.type === "password") {
+        y.type = "text";
+    } else {
+        y.type = "password";
+    }
+    var z = document.getElementById("confirmpassword");
+    if (z.type === "password") {
+        z.type = "text";
+    } else {
+        z.type = "password";
+    }
+}

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\StudentForgotPwd;
 use App\Mail\InternConfirmation;
+use App\Mail\OfferLetterMail;
+use App\Mail\DocumentMail;
 use PhpOffice\PhpWord\Settings;
 use PhpOffice\PhpWord\IOFactory;
 use Carbon\Carbon;
@@ -232,6 +234,9 @@ class StudentController extends Controller
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+            if ($root->end_date < Carbon::now()){
+                return Redirect()->back();
+            }
             return view('Student.uploadcompletioncertificate', compact('student', 'term', 'root'));
         } else {
             return Redirect("/student/loginForm");
@@ -252,22 +257,22 @@ class StudentController extends Controller
                 'internshipPerforma.required' => 'Please upload performa.',
             ]);
             
+            $term = Term::all()->last();
             $offerletterfile = $request->file("internshipCompletionCertificate");
             $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
-            $certificate_file_name = $regno.'.'.$file_ext;
+            $certificate_file_name = $term->term_name.'-'.$regno.'.'.$file_ext;
             $offerletterfile->move("internship_completion_certificate", $certificate_file_name);
 
             $offerletterfile = $request->file("internshipReport");
             $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
-            $report_file_name = $regno.'.'.$file_ext;
+            $report_file_name = $term->term_name.'-'.$regno.'.'.$file_ext;
             $offerletterfile->move("internship_reports", $report_file_name);
 
             $offerletterfile = $request->file("internshipPerforma");
             $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
-            $performa_file_name = $regno.'.'.$file_ext;
+            $performa_file_name = $term->term_name.'-'.$regno.'.'.$file_ext;
             $offerletterfile->move("evaluation_performas", $performa_file_name);
-            
-            $term = Term::all()->last();
+
             $termregistered = TermRegistered::where([['registration_no', $regno], ['term_name', $term->term_name]])->first();
             if($termregistered){
                 if(isset($termregistered->document_uploaded_date)){
@@ -287,6 +292,11 @@ class StudentController extends Controller
                     ]);
                 }
             }
+
+            if($termregistered->coordinator_id){
+                Mail::to($termregistered->coordinators->email)->send(new DocumentMail($termregistered->students));
+            }
+
             return Redirect()->back();
         } else {
             return Redirect("/student/loginForm");
@@ -330,12 +340,13 @@ class StudentController extends Controller
                 'offerLetter.required' => 'Please upload offer letter',
             ]);
             
+            $term = Term::all()->last();
             $offerletterfile = $request->file("offerLetter");
             $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
-            $file_name = $registration_no.'.'.$file_ext;
+            $file_name = $term->term_name.$registration_no.'.'.$file_ext;
             $offerletterfile->move("offer_letters", $file_name);
 
-            $term = Term::all()->last();
+            
             $termregistered = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
             if ($termregistered){
                 $termregistered->where([['registration_no', $registration_no], ['term_name', $term->term_name]])->update([
@@ -380,6 +391,10 @@ class StudentController extends Controller
                 $supervisor->supervisor_department = $request->supervisordepartment;
                 $supervisor->organization_ntn_no = strtoupper($request->orgntn);
                 $supervisor->save();
+            }
+
+            if($termregistered->coordinator_id){
+                Mail::to($termregistered->coordinators->email)->send(new OfferLetterMail($termregistered->students));
             }
         } else {
             return Redirect('student/loginForm');

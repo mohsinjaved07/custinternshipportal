@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -61,7 +61,7 @@
                                 <div class="input-group-prepend">
                                     <div class="input-group-text"><i class="fas fa-search"></i></div>
                                 </div>
-                                <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search..."/><br/>
+                                <input type="text" class="form-control" id="myInput" onkeyup="myFunction2()" placeholder="Search..."/><br/>
                             </div>
                             <div class="scroller">
                                 <table class="table" id="myTable">
@@ -73,6 +73,8 @@
                                                 <strong>Name</strong>: {{ $s->students->name }}<br/>
                                                 <strong>Email</strong>: {{ $s->students->email }}<br/>
                                                 <strong>Department</strong>: {{ $s->students->department }}<br/>
+                                                <strong>CGPA</strong>: {{ $s->students->CGPA }}<br/>
+                                                <strong>Credit hrs.</strong>: {{ $s->students->cr_hrs }}<br/>
                                                 <strong>Contact</strong>: {{ $s->students->contact_no }}<br/>
                                             </td>
                                         </tr>

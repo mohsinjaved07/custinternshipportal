@@ -18,7 +18,6 @@ class CreateSuperAdminsTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('password');
-            $table->string('department');
             $table->string('contactno');
             $table->string('office');
             $table->string('designation');

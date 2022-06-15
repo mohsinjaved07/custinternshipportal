@@ -13,6 +13,8 @@ class Student extends Model
         'name',
         'email',
         'department',
+        'CGPA',
+        'cr. hrs',
         'contact_no',
     ];
 

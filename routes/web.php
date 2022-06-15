@@ -86,11 +86,6 @@ Route::post('/student/internshipcompletioncertificate/{regno}', [StudentControll
 
 /*********************************** End of Student Routes ***********************************/
 
-/*********************************** Confirmation Routes ***********************************/
-
-Route::get('/confirmation/{link}', [ConfirmationController::class, 'studentConfirm']);
-
-/*********************************** End of Confirmation Routes ***********************************/
 
 /*********************************** Administrator Routes ***********************************/
 
@@ -99,14 +94,11 @@ Route::get('/admin/registration', [AdminController::class, 'registration']);
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 Route::get('/admin/changepassword', [AdminController::class, 'changePassword']);
 Route::get('/admin/coordinator', [AdminController::class, 'coordinator']);
-Route::get('/admin/postcoordinator', [AdminController::class, 'postCoordinator']);
-Route::get('/admin/updatecoordinator/{coordinatorid}', [AdminController::class, 'updateCoordinator']);
 Route::get('/admin/deletecoordinator/{coordinatorid}', [AdminController::class, 'deleteCoordinator']);
 Route::get('/admin/logout', [AdminController::class, 'logout']);
 
 Route::post('/admin/register', [AdminController::class, 'register'])->name('createAdmin');
 Route::post('/admin/validation', [AdminController::class, 'validation'])->name('validation');
 Route::post('/admin/password', [AdminController::class, 'password'])->name('adminpassword');
-Route::post('/admin/addcoordinator', [AdminController::class, 'addCoordinator'])->name('addCoordinator');
-Route::post('/admin/changecoordinator', [AdminController::class, 'changeCoordinator'])->name('changeCoordinator');
-Route::post('/admin/removecoordinator/{coordinatorid}', [AdminController::class, 'removeCoordinator']);
+Route::post('/admin/postcoordinator/{coordinatorid}', [AdminController::class, 'addCoordinator']);
+Route::post('/admin/removecoordinator', [AdminController::class, 'removeCoordinator'])->name('RemoveCoordinator');

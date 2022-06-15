@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -62,19 +62,27 @@
                                 <tbody>
                                     <tr>
                                         <td>Apply for internship at the organization:</td>
+                                        @if(isset($term->apply_for_internship))
                                         <td>{{ Carbon\Carbon::parse($term->apply_for_internship)->toFormattedDateString() }}</td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>Acquisition offer letter:</td>
+                                        @if(isset($term->acquisition_offer_letter))
                                         <td>{{ Carbon\Carbon::parse($term->acquisition_offer_letter)->toFormattedDateString() }}</td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>Acquisition completion certificate:</td>
+                                        @if(isset($term->acquisition_completion_certificate))
                                         <td>{{ Carbon\Carbon::parse($term->acquisition_completion_certificate)->toFormattedDateString() }}</td>
+                                        @endif
                                     </tr>
                                     <tr>
                                         <td>Final Evaluation:</td>
+                                        @if(isset($term->final_evaluation))
                                         <td>{{ Carbon\Carbon::parse($term->final_evaluation)->toFormattedDateString() }}</td>
+                                        @endif
                                     </tr>
                                 </tbody>
                             </table>

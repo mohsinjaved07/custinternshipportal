@@ -18,8 +18,10 @@ class CreateStudentsTable extends Migration
             $table->primary("registration_no");
             $table->string("name");
             $table->string("email");
+            $table->string("CGPA");
+            $table->string("cr_hrs");
             $table->string("contact_no");
-            $table->string("department");
+            $table->string("department")->default("BS Computer Science");
             $table->timestamps();
         });
     }

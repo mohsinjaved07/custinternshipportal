@@ -17,10 +17,11 @@ class CreateCoordinatorsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
-            $table->string('password');
-            $table->string('department');
+            $table->text('password')->nullable();
+            $table->string('department')->default("Computer Science");
             $table->string('contactno');
             $table->string('office');
+            $table->string('extension');
             $table->timestamps();
         });
     }

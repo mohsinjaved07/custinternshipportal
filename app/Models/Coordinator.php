@@ -14,6 +14,7 @@ class Coordinator extends Model
         'password',
         'department',
         'contactno',
-        'office'
+        'office',
+        'extension',
     ];
 }

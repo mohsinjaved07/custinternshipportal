@@ -12,7 +12,6 @@ class SuperAdmin extends Model
         'name',
         'email',
         'password',
-        'department',
         'contactno',
         'office',
         'designation',

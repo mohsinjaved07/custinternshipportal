@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -47,7 +47,7 @@
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date > Carbon\Carbon::now())
+                    @if($root->end_date < Carbon\Carbon::now())
                     <a class="active" href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif

@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -30,6 +30,9 @@
                 CUST Internship Portal
             </a>
             <div class="btn-group">
+                <button class="btn btn-warning">Current Term: {{ $term->term_name }}</button>
+            </div>
+            <div class="btn-group">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 {{ $superadmin->name }}
                 </a>
@@ -39,23 +42,20 @@
                 </div>
             </div>
         </nav>
-        <h1 style="margin-top:57px;" class="text-center">Coordinators List</h1>
+        <h1 style="margin-top:57px;" class="text-center">Faculty Members List</h1>
         <hr/>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Coordinators</h5>
+                        <h5 class="card-header bg-dark text-white text-center">Faculty Members</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Here you can add, update and delete coordinators.
+                                Here you can edit the faculty members.
                             </p>
                             <hr class="my-4">    
                             <div class="form-group">
-                                <label class="h2">Select Coordinator:</label>
-                                <span style="float:right;">
-                                    <a href="{{ url('admin/postcoordinator') }}" class="btn btn-info" role="button">Add Coordinator</a>
-                                </span>
+                                <label class="h2">Search for Faculty Members:</label>
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
                                         <div class="input-group-text"><i class="fas fa-search"></i></div>
@@ -72,7 +72,11 @@
                                             <th scope="col">Department</th>
                                             <th scope="col">Contact No</th>
                                             <th scope="col">Office</th>
+                                            <th scope="col">Extension</th>
+                                            @if(isset($maincoordinator->coordinators->id))
+                                            @else
                                             <th scope="col">Options</th>
+                                            @endif
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -83,14 +87,32 @@
                                             <td>{{ $c->department }}</td>
                                             <td>{{ $c->contactno }}</td>
                                             <td>{{ $c->office }}</td>
+                                            <td>{{ $c->extension }}</td>
+                                            @if(isset($maincoordinator->coordinators->id))
+                                            @else
                                             <td>
-                                                <a href="{{ url('admin/updatecoordinator/'.$c->id) }}" class="btn btn-success" role="button">Update</a>
-                                                <a href="{{ url('admin/deletecoordinator/'.$c->id) }}" class="btn btn-danger" role="button">Delete</a>
+                                                <form action="{{ url('admin/postcoordinator/'.$c->id) }}" method="post">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-info">Assign Coordinator</button>
+                                                </form>
                                             </td>
+                                            @endif
                                         </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
+                                @if(isset($maincoordinator->coordinator_id))
+                                <hr class="my-4"/>
+                                <div>
+                                <h3>
+                                    <form action="{{ route('RemoveCoordinator') }}" method="post">
+                                        @csrf
+                                        Current Coordinator: <strong>{{ $maincoordinator->coordinators->name }}</strong>
+                                        <button type="submit" name="coordinatorid" value="{{ $maincoordinator->coordinators->id }}" class="btn btn-danger">Remove Coordinator Role</button>
+                                    </form>
+                                </h3>
+                                </div>
+                                @endif
                             </div>
                             <div class="text-center">
                                 <a href="{{ url('admin/dashboard') }}" class="btn btn-danger btn-lg" role="button">Go Back</a>

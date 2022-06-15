@@ -12,11 +12,11 @@ use App\Models\Term;
 use App\Models\Announcement;
 use App\Models\Organization;
 use App\Models\Supervisor;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\LetterMail;
 use App\Mail\LoginInfoMail;
 use App\Mail\AnnouncementMail;
+use App\Mail\OrientationMail;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
@@ -43,8 +43,9 @@ class CoordinatorController extends Controller
 
         $coordinator = Coordinator::where('email', $request->email)->first();
 
-        if ($coordinator){
-            if (Hash::check($request->password, $coordinator->password)){
+        if ($coordinator && $coordinator->password){
+            $password = Crypt::decryptString($coordinator->password);
+            if ($request->password == $password){
                 session([
                     'id' => $coordinator->id,
                     'term' => Term::all()->last()->term_name,
@@ -112,7 +113,8 @@ class CoordinatorController extends Controller
                     $objReader = PhpWord\IOFactory::createReader();
                     $pdfWord = $objReader->load($student->registration_no.'.docx');
                     $objWriter = PhpWord\IOFactory::createWriter($pdfWord, 'PDF');
-                    $file = $student->registration_no.".pdf";
+                    $term = Term::all()->last();
+                    $file = $term->term_name.'-'.$student->registration_no.".pdf";
                     $objWriter->save($file);
                     
                     $pdffile = "files/".$file;
@@ -135,7 +137,8 @@ class CoordinatorController extends Controller
                     $objReader = PhpWord\IOFactory::createReader();
                     $pdfWord = $objReader->load($student->registration_no.'.docx');
                     $objWriter = PhpWord\IOFactory::createWriter($pdfWord, 'PDF');
-                    $file = $student->registration_no.".pdf";
+                    $term = Term::all()->last();
+                    $file = $term->term_name.'-'.$student->registration_no.".pdf";
                     $objWriter->save($file);
                     
                     $pdffile = "files/".$file;
@@ -203,9 +206,11 @@ class CoordinatorController extends Controller
                 $announcement->end_date = $request->orientation_date;
                 $announcement->coordinator_id = $id;
                 $announcement->save();
+
+                Mail::to($s->email)->send(new OrientationMail($s, $request->orientation_venue, $request->orientation_date));
             }
 
-            return Redirect()->back();
+            return Redirect()->back()->with("message", "Orientation message successfully sent.");
         } else {
             return Redirect('/coordinator/loginForm');
         }
@@ -251,9 +256,10 @@ class CoordinatorController extends Controller
             $coordinator = Coordinator::where('id', $id)->first();
 
             if ($coordinator){
-                if (Hash::check($request->curpassword, $coordinator->password)){
+                $password = Crypt::decryptString($coordinator->password);
+                if ($request->curpassword == $password){
                     if ($request->newpassword == $request->confirmpassword){
-                        $coordinator->password = Hash::make($request->newpassword);
+                        $coordinator->password = Crypt::encryptString($request->newpassword);
                         $coordinator->save();
                         return Redirect('/coordinator/loginForm')->with("message", "Password successfully changed.");
                     } else {
@@ -309,7 +315,6 @@ class CoordinatorController extends Controller
                     $studentaccount->login_id = strtolower($student->registration_no);
                     $studentaccount->password = $this->generate_letter_pass();
                     $studentaccount->one_time_auth = null;
-                    $studentaccount->login_date = Carbon::now();
                     $studentaccount->save();
                 }
 
@@ -512,8 +517,9 @@ class CoordinatorController extends Controller
 
         if($coordinator){
              if($request->newpassword == $request->confirmpassword){
+                $password = Crypt::encryptString($request->confirmpassword);
                 $coordinator->where('name', $name)->update([
-                    'password' => Hash::make($request->confirmpassword),
+                    'password' => $password,
                 ]);
             } else {
                 return Redirect()->back()->with("message", "Password not matched.");

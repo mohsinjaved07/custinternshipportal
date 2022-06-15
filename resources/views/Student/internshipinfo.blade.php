@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -47,7 +47,7 @@
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a class="active" href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date > Carbon\Carbon::now())
+                    @if($root->end_date < Carbon\Carbon::now())
                     <a href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif
@@ -102,7 +102,7 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label><span class="required">*</span>Start Date:</label>
-                                                    <input type="date" id="DATE1" value="{{ Carbon\Carbon::parse($student->studentAccount->login_date)->toformattedDateString() }}" name="startDate" class="form-control" /><br/>
+                                                    <input type="date" id="DATE1" value="{{ $term->term_started_date }}" name="startDate" class="form-control" /><br/>
                                                     @error('startDate')
                                                     <div class="text-danger">
                                                         <p>{{ $message }}</p>
@@ -269,7 +269,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label><span class="required">*</span>Start Date:</label>
-                                                <input type="date" id="DATE1" value="{{ Carbon\Carbon::parse($student->studentAccount->login_date)->toDateString() }}" name="startDate" class="form-control" /><br/>
+                                                <input type="date" id="DATE1" value="{{ $term->term_started_date }}" name="startDate" class="form-control" /><br/>
                                                 @error('startDate')
                                                 <div class="text-danger">
                                                     <p>{{ $message }}</p>

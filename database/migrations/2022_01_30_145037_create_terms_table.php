@@ -16,6 +16,7 @@ class CreateTermsTable extends Migration
         Schema::create('terms', function (Blueprint $table) {
             $table->string('term_name');
             $table->primary("term_name");
+            $table->date('term_started_date')->nullable();
             $table->string('apply_for_internship')->nullable();
             $table->string('acquisition_offer_letter')->nullable();
             $table->string('acquisition_completion_certificate')->nullable();

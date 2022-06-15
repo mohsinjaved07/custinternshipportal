@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -55,9 +55,11 @@
                             <p class="card-title font-weight-bold custFontColor">
                                 Hi {{ $student->name }}<br/>
                                 @if(isset($student->studentAccount->one_time_auth))
-                                Please change your password for future premises.
+                                Please change your password for future premises.<br/><br/>
+                                Note: Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
                                 @else
-                                Thanks for joining in this internship program. Please change your password for future premises.
+                                Thanks for joining in this internship program. Please change your password for future premises.<br/><br/>
+                                Note: Your password must be more than 6 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
                                 @endif
                             </p>
                             <hr class="my-4">

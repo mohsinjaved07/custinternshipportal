@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -53,19 +53,21 @@
                     <a href="{{ url('/coordinator/changeterm') }}">Change Term</a>
                 </div>
                 @if(session('term') == $term->term_name)
-                <div href="#" class="dropdown-btn">Generate Login 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
-                    <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
-                </div>
-                <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
-                <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
+                <a class="active" href="{{ url('/coordinator/orientation') }}">Orientation</a>
+                    @if($term->internship_plan)
+                    <div href="#" class="dropdown-btn">Generate Login 
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="dropdown-container">
+                        <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
+                        <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
+                    </div>
+                    <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
+                    <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
+                    @endif
                 @endif
                 <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
                 <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
-                <a class="active" href="{{ url('/coordinator/orientation') }}">Orientation</a>
             </div>
         </div>
         <div class="content">
@@ -80,7 +82,6 @@
                             <p class="card-title font-weight-bold custFontColor">
                                 Here you can notify the orientation status.
                             </p>
-                            <hr class="my-4">
                             @if (session('message'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     {{ session('message') }}
@@ -117,7 +118,7 @@
                                 </div>
                                 <div class="form-group">
                                     <h2>Orientation Venue</h2>
-                                    <textarea name="orientation_venue" id="desc" rows="4" class="form-control">Full Sharp 2:00 PM at Auditorium A1, Capital University of Science & Technology, Islamabad
+                                    <textarea name="orientation_venue" id="desc" rows="4" class="form-control">Their will be an orientation full Sharp 2:00 PM at Auditorium A1, Capital University of Science & Technology, Islamabad. You are advised to be present as it is mandatory for your internship progress.
                                     </textarea>
                                     @error('orientation_venue')
                                     <div class="alert alert-danger">
@@ -136,4 +137,5 @@
             </div>
         </div>
     </body>
+    <script src="{{ asset('js/my.js') }}"></script>
 </html>

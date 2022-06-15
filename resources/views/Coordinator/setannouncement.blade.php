@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>CUST Internship Portal</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -53,19 +53,21 @@
                     <a href="{{ url('/coordinator/changeterm') }}">Change Term</a>
                 </div>
                 @if(session('term') == $term->term_name)
-                <div href="#" class="dropdown-btn">Generate Login 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
-                    <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
-                </div>
-                <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
-                <a class="active" href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
+                <a href="{{ url('/coordinator/orientation') }}">Orientation</a>
+                    @if($term->internship_plan)
+                    <div href="#" class="dropdown-btn">Generate Login 
+                        <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div class="dropdown-container">
+                        <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
+                        <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
+                    </div>
+                    <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
+                    <a class="active" href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
+                    @endif
                 @endif
                 <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
                 <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
-                <a href="{{ url('/coordinator/orientation') }}">Orientation</a>
             </div>
         </div>
         <div class="content">
@@ -107,9 +109,7 @@
                                         <div class="form-group">
                                             <label class="h3">Announcement to:</label>
                                             <select multiple name="users[]" class="form-control">
-                                                <option value = "allStudent">allStudent</option>
-                                                <option value = "allInternalEvaluator">allInternalEvaluator</option>
-                                                <option value = "allExternalEvaluator">allExternalEvaluator</option>
+                                                <option value = "allStudent" selected>allStudent</option>
                                             </select>
                                             @error('users')
                                                 <div class="alert alert-danger">{{ $message }}</div>
@@ -143,8 +143,6 @@
                                             <p><strong>Announcement type:</strong></p>  
                                             <input type="checkbox" name="announcementMethod[]" value="Email" id="Email" checked/>
                                             <label for="Email">Email</label><br/>
-                                            <input type="checkbox" name="announcementMethod[]" value="Phone" id="Phone"/>
-                                            <label for="Phone">Phone</label><br/>
                                             @error('announcementMethod')
                                                 <span class="alert alert-danger">{{ $message }}</span>
                                             @enderror
@@ -162,7 +160,6 @@
                                 </div><br/>
                                 <div class="form-group">
                                     <label class="h2">Message:</label>
-                                    <p class="text-danger"><strong>Note: </strong>Don't change ${}. The names under the bracket are reserved.</p>
                                     <textarea name="description" readOnly id="desc" rows="10" class="form-control">Be advised that you're progress will be checked anytime for evaluation purpose. So, please be attentive at your work according to calendar.
                                     </textarea>
                                     @error('description')
