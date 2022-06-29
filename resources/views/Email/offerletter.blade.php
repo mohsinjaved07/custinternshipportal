@@ -33,7 +33,7 @@
     <body class="antialiased backgroundimg">
         <nav class="navbar navbar-dark fixed-top bg-dark">
             <a class="navbar-brand font-weight-bold" href="https://cust.edu.pk">
-                <img src="https://lh3.googleusercontent.com/--4HObqeQSNE/AAAAAAAAAAI/AAAAAAAAAAA/57ujoguMxJs/s44-p-k-no-ns-nd/photo.jpg" class="imgcircle" width="30" height="30" class="d-inline-block align-top" alt="">
+                <img src="https://lh3.googleusercontent.com/--4HObqeQSNE/AAAAAAAAAAI/AAAAAAAAAAA/57ujoguMxJs/s44-p-k-no-ns-nd/photo.jpg" class="imgcircle" width="30" height="30" class="d-inline-block align-top" alt=""/>
                 CUST
             </a>
         </nav>

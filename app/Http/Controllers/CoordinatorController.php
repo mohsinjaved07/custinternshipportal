@@ -12,11 +12,15 @@ use App\Models\Term;
 use App\Models\Announcement;
 use App\Models\Organization;
 use App\Models\Supervisor;
+use App\Models\VivaLink;
 use Illuminate\Support\Facades\Crypt;
 use App\Mail\LetterMail;
 use App\Mail\LoginInfoMail;
 use App\Mail\AnnouncementMail;
 use App\Mail\OrientationMail;
+use App\Mail\ResponseMail;
+use App\Mail\VivaMail;
+use App\Mail\StudentViva;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
@@ -30,7 +34,7 @@ class CoordinatorController extends Controller
     public function loginForm(){
         return view('Coordinator.login');
     }
-
+    
     public function login(Request $request){
         $validated = $request->validate([
             'email' => 'required|max:100',
@@ -631,6 +635,8 @@ class CoordinatorController extends Controller
                 $announcement->end_date = Carbon::now()->addDays(7);
                 $announcement->coordinator_id = $id;
                 $announcement->save();
+
+                Mail::to($student->students->email)->send(new ResponseMail($student->students, $request->description));
             }
             return Redirect()->back()->with("message", "You've set student's offer letter status successfully.");
         } else {
@@ -648,7 +654,6 @@ class CoordinatorController extends Controller
                 'description.required' => 'Please enter remarks',
             ]);
 
-            
             $term = Term::all()->last();
             $student = TermRegistered::where([['term_name', $term->term_name], ['registration_no', $registration_no]])->first();
             if ($student){
@@ -663,6 +668,8 @@ class CoordinatorController extends Controller
                 $announcement->end_date = Carbon::now()->addDays(7);
                 $announcement->coordinator_id = $id;
                 $announcement->save();
+
+                Mail::to($student->students->email)->send(new ResponseMail($student->students, $request->description));
             }
             return Redirect()->back()->with("message", "You've set student's documents status successfully.");
         } else {
@@ -670,43 +677,57 @@ class CoordinatorController extends Controller
         }
     }
 
-    public function internshipreport_status(Request $request, $registration_no){
+    public function selectViva($registrationno){
         $id = session('id');
         if ($id){
+            $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where([['term_name', $term->term_name], ['registration_no', $registration_no]])->first();
-            if ($student){
-                $student->where([['term_name', $term->term_name], ['registration_no', $registration_no]])->update([
-                    'internship_report_status' => $request->status
-                ]);
-                $announcement = new Announcement;
-                $announcement->registration_no = $registration_no;
-                $announcement->purpose = "Internship report Status";
-                if ($request->status == 'approved'){
-                    $announcement->description = "Congratulations, you're internship report has been accepted.";
-                } else {
-                    $announcement->description = "You're internship report is not accepted due to mistakes or vague information of your document. Please reupload your report to avoid such issues.";
-                }
-                $announcement->start_date = Carbon::now();
-                $announcement->end_date = Carbon::now()->addDays(7);
-                $announcement->coordinator_id = $id;
-                $announcement->save();
-            }
-            return Redirect()->back()->with("message", "You've set student's internship report status successfully.");
+            $student = TermRegistered::where([['term_name', session('term')], ['registration_no', $registrationno]])->first();
+            $coordinator = Coordinator::all()->except($id);
+            return view('Coordinator.selectviva', compact('root', 'term', 'student', 'coordinator'));
         } else {
             return Redirect("/coordinator/loginForm");
         }
     }
 
-    // public function offerletterinfo(){
-    //     $id = session('id');
-    //     if ($id){
-    //         $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
-    //         $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
-    //         $term = Term::all()->last();
-    //         return view("Coordinator.setannouncement", compact('root', 'student', 'term'));
-    //     } else {
-    //         return Redirect("/coordinator/loginForm");
-    //     }
-    // }
+    public function viva(Request $request, $registrationno, $term){
+        $id = session('id');
+        if ($id){
+            $validated = $request->validate([
+                'Date'=>'required'
+            ],
+            [
+                'Date.required' => 'Please select date',
+            ]);
+
+            $link = VivaLink::where('registration_no', $registrationno)->first();
+            if($link){
+                $link->where('registration_no', $registrationno)->update([
+                    'link' => Crypt::encryptString($registrationno),
+                    'date'=> $request->Date,
+                    'status' => 'Not held'
+                ]);
+            } else {
+                $link = new VivaLink;
+                $link->registration_no = $registrationno;
+                $link->link = Crypt::encryptString($registrationno);
+                $link->date = $request->Date;
+                $link->status = 'Not held';
+                $link->save();
+            }
+            $student = TermRegistered::where([['term_name', $term], ['registration_no', $registrationno]])->first();
+            $student->update([
+                'evaluator_id' => $request->viva,
+            ]);
+            Mail::to($student->evaluators->email)->send(new VivaMail($student->students, Crypt::encryptString($registrationno), $student->evaluators, $term));
+            Mail::to($student->students->email)->send(new StudentViva($student->students, $student->evaluators, $term));
+            return Redirect()->back()->with('message', 'Email sent successfully.');
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function startviva($term, $link){
+        return $term.'/'.$link;
+    }
 }

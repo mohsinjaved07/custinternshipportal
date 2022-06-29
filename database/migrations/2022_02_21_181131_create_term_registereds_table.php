@@ -42,6 +42,11 @@ class CreateTermRegisteredsTable extends Migration
             $table->string('internship_evaluation_performa')->nullable();
             $table->string('document_uploaded_date')->nullable();
             $table->string('document_status')->nullable();
+            $table->unsignedBigInteger('evaluator_id')->nullable();
+            $table->foreign('evaluator_id')->references("id")->on("coordinators");
+            $table->text('remarks')->nullable();
+            $table->string('grade')->nullable();
+            $table->string('reevaluated_grade')->nullable();
             $table->timestamps();
         });
     }

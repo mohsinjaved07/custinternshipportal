@@ -32,7 +32,12 @@ class TermRegistered extends Model
         'internship_completion_certificate',
         'internship_evaluation_performa',
         'document_uploaded_date',
-        'document_status'
+        'document_status',
+        'evaluator_id',
+        'remarks',
+        'grade',
+        'reevaluated_grade'
+
 
     ];
     
@@ -48,7 +53,7 @@ class TermRegistered extends Model
         return $this->hasOne(Coordinator::class, "id", "coordinator_id");
     }
 
-    public function internconfirm(){
-        return $this->hasOne(InternConfirm::class, "registration_no", "registration_no");
+    public function evaluators(){
+        return $this->hasOne(Coordinator::class, "id", "evaluator_id");
     }
 }

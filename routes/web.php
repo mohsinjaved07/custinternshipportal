@@ -42,6 +42,8 @@ Route::get('/coordinator/organizationlist', [CoordinatorController::class, 'getO
 Route::get('/coordinator/organizations', [CoordinatorController::class, 'organizations']);
 Route::get('/coordinator/orientation', [CoordinatorController::class, 'uploadInternshipPlan']);
 Route::get('/coordinator/{organizationNTN}/supervisors', [CoordinatorController::class, 'supervisors']);
+Route::get('/coordinator/selectviva/{registrationno}/{term}', [CoordinatorController::class, 'selectViva']);
+Route::get('/coordinator/startviva/{term}/{link}', [CoordinatorController::class, 'startviva']);
 
 Route::post('/coordinator/login', [CoordinatorController::class, 'login'])->name("validateCoordinator");
 Route::post('/coordinator/password', [CoordinatorController::class, 'password'])->name('password');
@@ -56,8 +58,8 @@ Route::post('/coordinator/setforgotpassword/{name}', [CoordinatorController::cla
 Route::post('/coordinator/announcement', [CoordinatorController::class, 'announcement'])->name('announcement');
 Route::post('/coordinator/offerletter_status/{registration_no}', [CoordinatorController::class, 'offerletter_status']);
 Route::post('/coordinator/internshipcompletion_status/{registration_no}', [CoordinatorController::class, 'internshipcompletion_status']);
-Route::post('/coordinator/internshipreport_status/{registration_no}', [CoordinatorController::class, 'internshipreport_status']);
 Route::post('/coordinator/postorientation', [CoordinatorController::class, 'internshipPlan'])->name('postOrientation');
+Route::post('/coordinator/viva/{registrationno}/{term}', [CoordinatorController::class, 'viva']);
 
 /*********************************** End of Coordinator Routes ***********************************/
 

@@ -25,4 +25,8 @@ class Student extends Model
     public function studentdocuments(){
         return $this->hasOne(StudentDocs::class, "registration_no", "registration_no");
     }
+
+    public function studentLink(){
+        return $this->hasOne(VivaLink::class, "registration_no", "registration_no");
+    }
 }

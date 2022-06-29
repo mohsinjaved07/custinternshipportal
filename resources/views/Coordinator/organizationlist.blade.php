@@ -113,6 +113,16 @@
                                                 </button>
                                                 @endif
                                             </td>
+                                            <td>
+                                                @if(isset($s->offer_letter_status) && isset($s->document_status))
+                                                    @if($s->offer_letter_status == 'approved' && $s->document_status == 'approved')
+                                                    <a href="/coordinator/selectviva/{{ $s->registration_no}}/{{ $s->term_name }}" class="btn btn-danger" role="button">
+                                                        <i class="fas fa-user"></i>
+                                                        Assign Viva
+                                                    </a>
+                                                    @endif
+                                                @endif
+                                            </td>
                                         </tr>
                                         <div class="modal fade" id="{{$s->registration_no}}_offerLetter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-xl">
