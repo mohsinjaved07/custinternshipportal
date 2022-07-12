@@ -21,6 +21,7 @@ use App\Mail\OrientationMail;
 use App\Mail\ResponseMail;
 use App\Mail\VivaMail;
 use App\Mail\StudentViva;
+use App\Mail\GradeMail;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpWord\TemplateProcessor;
 use PhpOffice\PhpWord\Settings;
@@ -32,6 +33,9 @@ use App\Mail\CoordinatorForgotPwd;
 class CoordinatorController extends Controller
 {    
     public function loginForm(){
+        session([
+            'id' => 2
+        ]);
         return view('Coordinator.login');
     }
     
@@ -728,6 +732,104 @@ class CoordinatorController extends Controller
     }
 
     public function startviva($term, $link){
-        return $term.'/'.$link;
+        $registration_no = Crypt::decryptString($link);
+        $root = TermRegistered::where([['term_name', $term], ['registration_no', $registration_no]])->first();
+        return view('Coordinator.startviva', compact('root'));
+    }
+
+    public function setGrades(Request $request, $registrationno, $term){
+        $validated = $request->validate([
+            'grade'=>'required',
+            'description' => 'required'
+        ],
+        [
+            'grade.required' => 'Please select grade',
+            'description.required' => 'Please enter description',
+        ]);
+
+        $root = TermRegistered::where([['term_name', $term], ['registration_no', $registrationno]])->first();
+        $root->update([
+            'remarks' => $request->description,
+            'grade' => $request->grade
+        ]);
+        Mail::to($root->coordinators->email)->send(new GradeMail($root));
+        return "Thank you for your cooperation. Please close this window immediately.";
+    }
+
+    public function grades(){
+        $id = session('id');
+        if ($id){
+            $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', $id]])->first();
+            $term = Term::all()->last();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            return view('Coordinator.grades', compact('root', 'student', 'term'));
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function gradeReport(){
+        $id = session('id');
+        if ($id){
+            $spreadsheet = new PhpSpreadsheet\Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $sheet->setCellValue('A1', '#');
+            $sheet->setCellValue('B1', 'Registration No');
+            $sheet->setCellValue('C1', 'Name');
+            $sheet->setCellValue('D1', 'Grade');
+            $i = 2;
+
+            foreach($student as $s){
+                $sheet->setCellValue('A'.$i, $i-1);
+                $sheet->setCellValue('B'.$i, $s->registration_no);
+                $sheet->setCellValue('C'.$i, $s->students->name);
+                if (isset($s->grade)){
+                    $sheet->setCellValue('D'.$i, $s->grade);
+                } else {
+                    $sheet->setCellValue('D'.$i, 'Not Assigned');
+                }
+                $i++;
+            }
+
+            $writer = new PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer->save('gradeReport.xlsx');
+            return response()->download('gradeReport.xlsx')->deleteFileAfterSend(true);
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function singleGradeReport($registration_no){
+        $id = session('id');
+        if ($id){
+            $rendererName = Settings::PDF_RENDERER_TCPDF;
+            $renderedLibraryPath = "../vendor/tecnickcom/tcpdf";
+            Settings::setPdfRenderer($rendererName, $renderedLibraryPath);
+
+            $student = TermRegistered::where([['term_name', session('term')], ['registration_no', $registration_no]])->first();
+            if ($student){
+                $templateProcessor = new TemplateProcessor('templates/singleGradeReport.docx');
+                $templateProcessor->setValue('student_name', $student->students->name);
+                $templateProcessor->setValue('registration_no', $student->registration_no);
+                $templateProcessor->setValue('term_name', $student->term_name);
+                $templateProcessor->setValue('grade', $student->grade);
+                $templateProcessor->setValue('c_name', $student->coordinators->name);
+                $templateProcessor->setValue('date', Carbon::now()->toFormattedDateString());
+                $templateProcessor->saveAs($student->registration_no.'.docx');
+
+                // $objReader = PhpWord\IOFactory::createReader();
+                // $pdfWord = $objReader->load($student->registration_no.'.docx');
+                // $objWriter = PhpWord\IOFactory::createWriter($pdfWord, 'PDF');
+                // $file = $student->registration_no.".pdf";
+                // $objWriter->save($file);
+                // unlink($student->registration_no.'.docx');
+                return response()->download($student->registration_no.'.docx')->deleteFileAfterSend(true);
+            } else {
+                return "Sorry! student not found.";
+            }
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
     }
 }

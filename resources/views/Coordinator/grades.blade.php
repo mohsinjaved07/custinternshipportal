@@ -24,7 +24,7 @@
         
     </head>
     <body class="antialiased">
-    <nav class="navbar navbar-light fixed-top bg-light">
+        <nav class="navbar navbar-light fixed-top bg-light">
             <a class="navbar-brand font-weight-bold" href="{{ url('/coordinator/dashboard') }}">
                 <img src="{{ asset('image/cust.jpg') }}" class="imgcircle" width="30" height="30" class="d-inline-block align-top" alt="">
                 CUST Internship Portal
@@ -43,47 +43,19 @@
                 </div>
             </div>
         </nav>
-        <div style="margin-top:57px;">
-            <div class="sidebar">
-                <a href="{{ url('/coordinator/dashboard') }}">Dashboard</a>
-                <div href="#" class="dropdown-btn">Term Management 
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="dropdown-container">
-                    <a href="{{ url('/coordinator/changeterm') }}">Change Term</a>
-                </div>
-                @if(session('term') == $term->term_name)
-                <a href="{{ url('/coordinator/orientation') }}">Orientation</a>
-                    @if($term->internship_plan)
-                    <div href="#" class="dropdown-btn">Generate Login 
-                        <i class="fa fa-caret-down"></i>
-                    </div>
-                    <div class="dropdown-container">
-                        <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
-                        <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
-                    </div>
-                    <a class="active" href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
-                    <a href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
-                    @endif
-                @endif
-                <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
-                <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
-                <a href="{{ url('/coordinator/grades') }}">Grades</a>
-            </div>
-        </div>
-        <div class="content">
-            <h1>Send Recommendation letter</h1>
+        <div class="container" style="margin-top:57px;">
+            <h1>Grade info</h1>
             <hr/>
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
                     <div class="card shadow">
-                        <h5 class="card-header bg-dark text-white text-center">Recommendation Letter</h5>
+                        <h5 class="card-header bg-dark text-white text-center">Grades</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
-                                Here are the students list.
+                                Here are the students grades.
                             </p>
-                            <hr class="my-4">
+                            <hr class="my-4"/>
                             @if (session('message'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     {{ session('message') }}
@@ -92,69 +64,61 @@
                                     </button>
                                 </div>
                             @endif
-                            <form action="{{ route('letter') }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route('gradeReport') }}" method="post">
                                 @csrf
-                                <div class="form-group">
-                                    <label class="h2">Add description:</label>
-                                    <p class="text-danger"><strong>Note: </strong>Don't change ${}. The names under the bracket are reserved.</p>
-                                    <textarea name="description" rows="10" class="form-control">${name} (${registration_no}) is currently doing ${department} at Capital University of Science and Technology (CUST), Islamabad. He/She has completed 90 Credit hours in this course with flying colors. I have no doubt that the student has the skills, focus, and determination to perform well in further studies.
-
-I recommend this student without reservation for the internship. So far, he/she is a disciplined student and has never been involved in any activity that might have tarnished reputation as a student. 
-
-I wish this student best of luck in every endeavor of life.
-                                    </textarea>
-                                </div>
-                                <hr class="my-4">
-                                <div class="form-group">
-                                    <label class="h2">Select student registration no:</label>
-                                    <div style="float:right;">
-                                        <button type="button" class="btn btn-danger" id="checkbutton" onclick="letter()">Select all</button>
-                                    </div><br/>
-                                    <br/>
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="fas fa-search"></i></div>
-                                        </div>
-                                        <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for registration number..."/><br/>
+                                <label>Search Student</label>
+                                <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><i class="fas fa-search"></i></div>
                                     </div>
+                                    <input type="text" class="form-control" id="myInput" onkeyup="myFunction()" placeholder="Search for registration no..."/><br/>
                                 </div>
-                                <div class="form-group">
-                                    <div class="scroller">
-                                        <table class="table" id="myTable">
-                                            <thead class="thead-dark">
-                                                <tr>
-                                                    <th scope="col">Registration No</th>
-                                                    <th scope="col">Name</th>
-                                                    <th scope="col">Select</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($student as $s)
-                                                <tr>
-                                                    <td>{{ $s->students->registration_no }}</td>
-                                                    <td>{{ $s->students->name }}</td>
-                                                    <td>
-                                                        <input type="checkbox" class="checkmark" name="regno[]" value="{{ $s->students->registration_no }}"/>
-                                                    </td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br/><p>Send recommendation letter:&nbsp
-                                        <button type="submit" class="btn btn-success">Submit</button>
-                                        @error('regno')
-                                            <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-                                    </p>
-                                </div>
+                                <div class="scroller">
+                                    <table class="table" id="myTable">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Registration No</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Grade</th>
+                                                <th scope="col">Download</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php($i = 1)
+                                            @foreach ($student as $s)
+                                            <tr>
+                                                @if(isset($s->grade))
+                                                <td>{{ $i++ }}</td>
+                                                <td>{{ $s->registration_no }}</td>
+                                                <td>{{ $s->students->name }}</td>
+                                                <td>{{ $s->grade }}</td>
+                                                <td>
+                                                    <a href="{{ url('/coordinator/singlegrade/'.$s->registration_no) }}" class="btn btn-danger" role="button">Grade</a>
+                                                </td>
+                                                @endif
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div><br/><br/>
+                                <p>Print all grade report:&nbsp
+                                    <span>
+                                        <button type="submit" class="btn btn-success btn-lg">Print</button>
+                                    </span>
+                                    @error('regno')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                    <span style="float:right;">
+                                        <a href="{{ url('/coordinator/dashboard') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Go Back</a>
+                                    </span>
+                                </p>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <script src="{{ asset('js/my.js') }}"></script>
     </body>
-    <script src="{{ asset('js/lettercheck.js') }}"></script>
-    <script src="{{ asset('js/my.js') }}"></script>
 </html>

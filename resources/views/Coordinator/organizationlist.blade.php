@@ -114,7 +114,9 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if(isset($s->offer_letter_status) && isset($s->document_status))
+                                                @if(isset($s->evaluator_id))
+                                                    {{ $s->evaluators->name }}
+                                                @else if(isset($s->offer_letter_status) && isset($s->document_status))
                                                     @if($s->offer_letter_status == 'approved' && $s->document_status == 'approved')
                                                     <a href="/coordinator/selectviva/{{ $s->registration_no}}/{{ $s->term_name }}" class="btn btn-danger" role="button">
                                                         <i class="fas fa-user"></i>

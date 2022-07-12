@@ -58,3 +58,11 @@ function disableText(){
 function enableText(){
   document.getElementById("desc").readOnly = false;
 }
+
+function termsAndCons(){
+  if(document.getElementById('checked').disabled == false){
+    document.getElementById('checked').disabled = true;
+  } else {
+    document.getElementById('checked').disabled = false;
+  }
+}

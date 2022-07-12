@@ -68,6 +68,7 @@
                 @endif
                 <a href="{{ url('coordinator/organizationlist') }}">Student Internship Progress</a>
                 <a href="{{ url('/coordinator/organizations') }}">Organizations</a>
+                <a href="{{ url('/coordinator/grades') }}">Grades</a>
             </div>
         </div>
         <div class="content">
