@@ -13,8 +13,9 @@ class Coordinator extends Model
         'email',
         'password',
         'department',
+        'designation',
         'contactno',
         'office',
-        'extension',
+        'extension'
     ];
 }

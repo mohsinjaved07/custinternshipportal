@@ -46,6 +46,7 @@ Route::get('/coordinator/selectviva/{registrationno}/{term}', [CoordinatorContro
 Route::get('/coordinator/startviva/{term}/{link}', [CoordinatorController::class, 'startviva']);
 Route::get('/coordinator/grades', [CoordinatorController::class, 'grades']);
 Route::get('/coordinator/singlegrade/{registration_no}', [CoordinatorController::class, 'singleGradeReport']);
+Route::get('/coordinator/addstudent', [CoordinatorController::class, 'AddStudent']);
 
 Route::post('/coordinator/login', [CoordinatorController::class, 'login'])->name("validateCoordinator");
 Route::post('/coordinator/password', [CoordinatorController::class, 'password'])->name('password');
@@ -64,6 +65,7 @@ Route::post('/coordinator/postorientation', [CoordinatorController::class, 'inte
 Route::post('/coordinator/viva/{registrationno}/{term}', [CoordinatorController::class, 'viva']);
 Route::post('/coordinator/setgrades/{registrationno}/{term}', [CoordinatorController::class, 'setGrades']);
 Route::post('/coordinator/gradereport', [CoordinatorController::class, 'gradeReport'])->name('gradeReport');
+Route::post('/coordinator/poststudent', [CoordinatorController::class, 'postStudent'])->name('postStudent');
 
 /*********************************** End of Coordinator Routes ***********************************/
 

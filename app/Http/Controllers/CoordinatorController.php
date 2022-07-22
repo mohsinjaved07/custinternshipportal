@@ -101,8 +101,8 @@ class CoordinatorController extends Controller
             ]);
 
             foreach ($request->regno as $r){
-                $rendererName = Settings::PDF_RENDERER_TCPDF;
-                $renderedLibraryPath = "../vendor/tecnickcom/tcpdf";
+                $rendererName = Settings::PDF_RENDERER_DOMPDF;
+                $renderedLibraryPath = "../vendor/dompdf/dompdf";
                 Settings::setPdfRenderer($rendererName, $renderedLibraryPath);
 
                 $student = Student::where('registration_no', $r)->first();
@@ -116,6 +116,8 @@ class CoordinatorController extends Controller
                     $templateProcessor->setValue('department', $student->department);
                     $templateProcessor->setValue('contactno', $student->contactno);
                     $templateProcessor->setValue('date', $studentdocs->created_at->toFormattedDateString());
+                    // $term = Term::all()->last();/*To be removed afterwards*/
+                    // $file = $term->term_name.'-'.$student->registration_no.".docx";/*To be removed afterwards*/
                     $templateProcessor->saveAs($student->registration_no.'.docx');
 
                     $objReader = PhpWord\IOFactory::createReader();
@@ -140,6 +142,8 @@ class CoordinatorController extends Controller
                     $templateProcessor->setValue('department', $student->department);
                     $templateProcessor->setValue('contactno', $student->contactno);
                     $templateProcessor->setValue('date', Carbon::now()->toFormattedDateString());
+                    // $term = Term::all()->last();/*To be removed afterwards*/
+                    // $file = $term->term_name.'-'.$student->registration_no.".docx";/*To be removed afterwards*/
                     $templateProcessor->saveAs($student->registration_no.'.docx');
 
                     $objReader = PhpWord\IOFactory::createReader();
@@ -372,7 +376,6 @@ class CoordinatorController extends Controller
             $term = Term::where('term_name', session('term'))->first();
             if ($term){
                 $term->where('term_name', session('term'))->update([
-                    'apply_for_internship' => $request->termapply,
                     'apply_for_internship' => $request->termapply,
                     'acquisition_offer_letter' => $request->termoffer,
                     'acquisition_completion_certificate' => $request->termcomplete,
@@ -803,9 +806,9 @@ class CoordinatorController extends Controller
     public function singleGradeReport($registration_no){
         $id = session('id');
         if ($id){
-            $rendererName = Settings::PDF_RENDERER_TCPDF;
-            $renderedLibraryPath = "../vendor/tecnickcom/tcpdf";
-            Settings::setPdfRenderer($rendererName, $renderedLibraryPath);
+            // $rendererName = Settings::PDF_RENDERER_DOMPDF;
+            // $renderedLibraryPath = "../vendor/dompdf/dompdf";
+            // Settings::setPdfRenderer($rendererName, $renderedLibraryPath);
 
             $student = TermRegistered::where([['term_name', session('term')], ['registration_no', $registration_no]])->first();
             if ($student){
@@ -828,6 +831,82 @@ class CoordinatorController extends Controller
             } else {
                 return "Sorry! student not found.";
             }
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function AddStudent(){
+        $id = session('id');
+        if ($id){
+            $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', $id]])->first();
+            $term = Term::all()->last();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            return view('Coordinator.addstudent', compact('root', 'student', 'term'));
+        } else {
+            return Redirect("/coordinator/loginForm");
+        }
+    }
+
+    public function postStudent(Request $request){
+        $id = session('id');
+        if ($id){
+            $validated = $request->validate([
+                'registration_no'=>'required|regex:/BCS[0-9]{6}/',
+                'student_name'=>'required',
+                'student_email'=>'required',
+                'student_CGPA'=>'required|numeric|between:0,99.99',
+                'student_chrs'=>'required',
+                'student_contactno'=>'required|numeric|digits:11',
+                'student_department'=>'required'
+            ],
+            [
+                'registration_no.required'=> 'Please enter registration no',
+                'registration_no.regex'=> 'This is not valid registration no',
+                'student_name.required'=> 'Please enter student name',
+                'student_email.required'=> 'Please enter student email',
+                'student_CGPA.required'=> 'Please enter student CGPA',
+                'student_chrs.required'=> 'Please enter student chrs',
+                'student_contactno.required'=> 'Please enter student contact no',
+                'student_department.required'=> 'Please enter student department'
+            ]);
+
+            $student = Student::where('registration_no', $request->registration_no)->first();
+            if ($student){
+                return Redirect()->back()->with('message', "This student is already on this term. You can check it from 'fetch from portal' option in the dashboard menu under 'generate login' OR you can check it in 'show students info'.");
+            } else {
+                $student = new Student;
+                $student->registration_no = $request->registration_no;
+                $student->name = $request->student_name;
+                $student->email = $request->student_email;
+                $student->CGPA = $request->student_CGPA;
+                $student->cr_hrs = $request->student_chrs;
+                $student->contact_no = $request->student_contactno;
+                $student->department = $request->student_department;
+                $student->save();
+
+                $student = Student::where('registration_no', $request->registration_no)->first();
+                $termRegistered = new TermRegistered;
+                $termRegistered->registration_no = $student->registration_no;
+                $termRegistered->term_name = session('term');
+                $termRegistered->coordinator_id = $id;
+                $termRegistered->save();
+
+                $studentaccount = new StudentAccount;
+                $studentaccount->registration_no = $student->registration_no;
+                $studentaccount->login_id = strtolower($student->registration_no);
+                $studentaccount->password = $this->generate_letter_pass();
+                $studentaccount->one_time_auth = null;
+                $studentaccount->save();
+
+                $studentdocs = new StudentDocs;
+                $studentdocs->registration_no = $student->registration_no;
+                $studentdocs->save();
+
+                Mail::to($student->email)->send(new LoginInfoMail($student));
+            }
+
+            return Redirect()->back()->with('message', "Student added successfully and email has been sent to student.");
         } else {
             return Redirect("/coordinator/loginForm");
         }

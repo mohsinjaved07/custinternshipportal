@@ -54,7 +54,6 @@
                 </div>
                 @if(session('term') == $term->term_name)
                 <a href="{{ url('/coordinator/orientation') }}">Orientation</a>
-                    @if($term->internship_plan)
                     <div href="#" class="dropdown-btn">Generate Login 
                         <i class="fa fa-caret-down"></i>
                     </div>
@@ -62,6 +61,7 @@
                         <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
                         <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
                     </div>
+                    @if($term->internship_plan)
                     <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
                     <a class="active" href="{{ url('/coordinator/setannouncement') }}">Announcements</a>
                     @endif
