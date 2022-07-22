@@ -102,17 +102,6 @@ class StudentController extends Controller
         return Redirect('/student/loginForm');
     }
 
-    public function getplan(){
-        $registration_no = session('registration_no');
-        if ($registration_no){
-            $term = Term::all()->last();
-            $student = Student::where('registration_no', $registration_no)->first();
-            return view('Student.plan', compact('student', 'term'));
-        } else {
-            return Redirect("/student/loginForm");
-        }
-    }
-
     public function accountsettings(){
         $registration_no = session('registration_no');
         if ($registration_no){
@@ -234,7 +223,7 @@ class StudentController extends Controller
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
-            if ($root->end_date < Carbon::now()){
+            if ($root->end_date > Carbon::now()){
                 return Redirect()->back();
             }
             return view('Student.uploadcompletioncertificate', compact('student', 'term', 'root'));

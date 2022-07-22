@@ -60,6 +60,7 @@
                     <div class="dropdown-container">
                         <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
                         <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
+                        <a href="{{ url('/coordinator/addstudent') }}">Add Student</a>
                     </div>
                     @if($term->internship_plan)
                     <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>
@@ -98,7 +99,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <h2>Orientation Date</h2>
-                                            <input type="date" name="orientation_date" class="form-control" />
+                                            <input type="date" name="orientation_date" class="form-control" value="{{ Carbon\Carbon::parse($term->term_started_date)->toDateString() }}"/>
                                             @error('orientation_date')
                                                 <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror

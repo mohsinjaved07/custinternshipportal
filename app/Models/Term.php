@@ -13,9 +13,8 @@ class Term extends Model
         'sem_name',
         'term_started_date',
         'apply_for_internship',
-        'acquisition_offer_letter',
-        'acquisition_completion_certificate',
-        'final_evaluation',
+        'upload_offer_letter_date',
+        'upload_document_date',
         'internship_plan'
     ];
 }

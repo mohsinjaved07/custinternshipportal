@@ -60,6 +60,7 @@
                     <div class="dropdown-container">
                         <a href="{{ url('/coordinator/uploadfile') }}">Upload from Excel File</a>
                         <a href="{{ url('/coordinator/portallogin') }}">Fetch from portal</a>
+                        <a href="{{ url('/coordinator/addstudent') }}">Add Student</a>
                     </div>
                     @if($term->internship_plan)
                     <a href="{{ url('coordinator/sendletter') }}">Send Recommendation Letter</a>

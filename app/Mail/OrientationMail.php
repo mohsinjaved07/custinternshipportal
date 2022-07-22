@@ -11,18 +11,19 @@ class OrientationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $student, $message, $date;
+    public $student, $message, $date, $file;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($student, $message, $date)
+    public function __construct($student, $message, $date, $file)
     {
         $this->student = $student;
         $this->message = $message;
         $this->date = $date;
+        $this->file = $file;
     }
 
     /**
@@ -35,6 +36,6 @@ class OrientationMail extends Mailable
         $student = $this->student;
         $message = $this->message;
         $date = $this->date;
-        return $this->markdown('Email.orientation', compact('student', 'message', 'date'));
+        return $this->markdown('Email.orientation', compact('student', 'message', 'date'))->attach($this->file);
     }
 }

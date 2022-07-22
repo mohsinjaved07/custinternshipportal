@@ -67,21 +67,15 @@
                                         @endif
                                     </tr>
                                     <tr>
-                                        <td>Acquisition offer letter:</td>
-                                        @if(isset($term->acquisition_offer_letter))
-                                        <td>{{ Carbon\Carbon::parse($term->acquisition_offer_letter)->toFormattedDateString() }}</td>
+                                        <td>Upload offer letter:</td>
+                                        @if(isset($term->upload_offer_letter_date))
+                                        <td>{{ Carbon\Carbon::parse($term->upload_offer_letter_date)->toFormattedDateString() }}</td>
                                         @endif
                                     </tr>
                                     <tr>
-                                        <td>Acquisition completion certificate:</td>
-                                        @if(isset($term->acquisition_completion_certificate))
-                                        <td>{{ Carbon\Carbon::parse($term->acquisition_completion_certificate)->toFormattedDateString() }}</td>
-                                        @endif
-                                    </tr>
-                                    <tr>
-                                        <td>Final Evaluation:</td>
-                                        @if(isset($term->final_evaluation))
-                                        <td>{{ Carbon\Carbon::parse($term->final_evaluation)->toFormattedDateString() }}</td>
+                                        <td>Upload certificate, report and evaluation performa:</td>
+                                        @if(isset($term->upload_document_date))
+                                        <td>{{ Carbon\Carbon::parse($term->upload_document_date)->toFormattedDateString() }}</td>
                                         @endif
                                     </tr>
                                 </tbody>

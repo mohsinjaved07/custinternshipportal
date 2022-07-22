@@ -19,9 +19,8 @@ class CreateTermsTable extends Migration
             $table->string("sem_name");
             $table->date('term_started_date');
             $table->string('apply_for_internship')->nullable();
-            $table->string('acquisition_offer_letter')->nullable();
-            $table->string('acquisition_completion_certificate')->nullable();
-            $table->string('final_evaluation')->nullable();
+            $table->string('upload_offer_letter_date')->nullable();
+            $table->string('upload_document_date')->nullable();
             $table->string('internship_plan')->nullable();
             $table->timestamps();
         });

@@ -75,7 +75,6 @@ Route::post('/coordinator/poststudent', [CoordinatorController::class, 'postStud
 Route::get('/student/loginForm', [StudentController::class, 'loginForm']);
 Route::get('/student/dashboard', [StudentController::class, 'dashboardPage']);
 Route::get('/student/logout', [StudentController::class, 'logout']);
-Route::get('/student/getplan', [StudentController::class, 'getplan']);
 Route::get('/student/accountsettings', [StudentController::class, 'accountsettings']);
 Route::get('/student/forgotpasswordlink', [StudentController::class, 'forgotpasswordlink']);
 Route::get('/student/forgotpassword/{registrationno}', [StudentController::class, 'forgotpassword']);

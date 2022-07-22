@@ -72,10 +72,10 @@
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="far fa-calendar"></i></div>
                                         </div>
-                                        @if($root->terms->apply_for_internship != NULL)
+                                        @if(isset($root->terms->apply_for_internship))
                                         <input type="date" class="form-control" value="{{ $root->terms->apply_for_internship }}" name="termapply"/>
                                         @else
-                                        <input type="date" class="form-control" value="{{ $carbon->format('Y-m-d') }}" name="termapply"/>
+                                        <input type="date" class="form-control" value="{{ $root->terms->term_started_date }}" name="termapply"/>
                                         @endif
                                     </div>
                                     @error('termapply')
@@ -83,15 +83,15 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label>Date for Acquisition Offer letter</label>
+                                    <label>Date to upload Offer letter</label>
                                     <div class="input-group mb-2">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="far fa-calendar"></i></div>
                                         </div>
-                                        @if($root->terms->acquisition_offer_letter != NULL)
-                                        <input type="date" class="form-control" value="{{ $root->terms->acquisition_offer_letter }}" name="termoffer"/>
+                                        @if(isset($root->terms->upload_offer_letter_date))
+                                        <input type="date" class="form-control" value="{{ $root->terms->upload_offer_letter_date }}" name="termoffer"/>
                                         @else
-                                        <input type="date" class="form-control" value="{{ $carbon->format('Y-m-d') }}" name="termoffer"/>
+                                        <input type="date" class="form-control" value="{{ $root->terms->term_started_date }}" name="termoffer"/>
                                         @endif
                                     </div>
                                     @error('termoffer')
@@ -99,34 +99,20 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
-                                    <label>Date for Acquisition Completion Certificate</label>
+                                    <label>
+                                        Date to upload Reports and other Documents
+                                    </label>
                                     <div class="input-group mb-2">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text"><i class="far fa-calendar"></i></div>
                                         </div>
-                                        @if($root->terms->acquisition_completion_certificate != NULL)
-                                        <input type="date" class="form-control" value="{{ $root->terms->acquisition_completion_certificate }}" name="termcomplete"/>
+                                        @if(isset($root->terms->upload_document_date))
+                                        <input type="date" class="form-control" value="{{ $root->terms->upload_document_date }}" name="termcomplete"/>
                                         @else
-                                        <input type="date" class="form-control" value="{{ $carbon->format('Y-m-d') }}" name="termcomplete"/>
+                                        <input type="date" class="form-control" value="{{ $root->terms->term_started_date }}" name="termcomplete"/>
                                         @endif
                                     </div>
                                     @error('termcomplete')
-                                    <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="form-group">
-                                    <label>Date for Final Evaluation</label>
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text"><i class="far fa-calendar"></i></div>
-                                        </div>
-                                        @if($root->terms->final_evaluation != NULL)
-                                        <input type="date" class="form-control" value="{{ $root->terms->final_evaluation }}" name="termevaluation"/>
-                                        @else
-                                        <input type="date" class="form-control" value="{{ $carbon->format('Y-m-d') }}" name="termevaluation"/>
-                                        @endif
-                                    </div>
-                                    @error('termevaluation')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>

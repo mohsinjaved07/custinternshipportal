@@ -219,7 +219,7 @@ class CoordinatorController extends Controller
                 $announcement->coordinator_id = $id;
                 $announcement->save();
 
-                Mail::to($s->email)->send(new OrientationMail($s, $request->orientation_venue, $request->orientation_date));
+                Mail::to($s->email)->send(new OrientationMail($s, $request->orientation_venue, $request->orientation_date, "files/".$file_name));
             }
 
             return Redirect()->back()->with("message", "Orientation message successfully sent.");
@@ -364,22 +364,19 @@ class CoordinatorController extends Controller
                 'termapply' => 'required|max:100',
                 'termoffer' => 'required|max:100',
                 'termcomplete' => 'required|max:100',
-                'termevaluation' => 'required|max:100'
             ],
             [
                 'termapply.required' => 'Please select date',
                 'termoffer.required' => 'Please select date',
                 'termcomplete.required' => 'Please select date',
-                'termevaluation.required' => 'Please select date'
             ]);
 
             $term = Term::where('term_name', session('term'))->first();
             if ($term){
                 $term->where('term_name', session('term'))->update([
                     'apply_for_internship' => $request->termapply,
-                    'acquisition_offer_letter' => $request->termoffer,
-                    'acquisition_completion_certificate' => $request->termcomplete,
-                    'final_evaluation' => $request->termevaluation
+                    'upload_offer_letter_date' => $request->termoffer,
+                    'upload_document_date' => $request->termcomplete,
                 ]);
             }
             return Redirect()->back()->with("message", "Term plan updated successfully.");

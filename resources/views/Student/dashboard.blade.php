@@ -47,7 +47,7 @@
                 <a class="active" href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date > Carbon\Carbon::now())
+                    @if($root->end_date < Carbon\Carbon::now())
                     <a href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif
@@ -112,7 +112,34 @@
                                 Follow this activity guidelines for your internship progress.
                             </p>
                             <hr class="my-4">
-                            <a href="{{ url('/student/getplan') }}" class="btn btn-danger btn-lg" role="button" aria-pressed="true">Show Internship Plan</a>
+                            <table class="table" id="myTable">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Objectives</th>
+                                        <th>Deadlines</th>
+                                    </tr>
+                                </thead>    
+                                <tbody>
+                                    <tr>
+                                        <td>Apply for internship at the organization:</td>
+                                        @if(isset($term->apply_for_internship))
+                                        <td>{{ Carbon\Carbon::parse($term->apply_for_internship)->toFormattedDateString() }}</td>
+                                        @endif
+                                    </tr>
+                                    <tr>
+                                        <td>Upload offer letter:</td>
+                                        @if(isset($term->upload_offer_letter_date))
+                                        <td>{{ Carbon\Carbon::parse($term->upload_offer_letter_date)->toFormattedDateString() }}</td>
+                                        @endif
+                                    </tr>
+                                    <tr>
+                                        <td>Upload certificate, report and evaluation performa:</td>
+                                        @if(isset($term->upload_document_date))
+                                        <td>{{ Carbon\Carbon::parse($term->upload_document_date)->toFormattedDateString() }}</td>
+                                        @endif
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
