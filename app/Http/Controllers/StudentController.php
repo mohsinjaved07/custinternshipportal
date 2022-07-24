@@ -78,10 +78,56 @@ class StudentController extends Controller
     public function dashboardPage(){
         $registration_no = session('registration_no');
         if ($registration_no){
-            $announcement = Announcement::where('registration_no', $registration_no)->get();
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
+
+            $announcement = Announcement::where([['registration_no', $registration_no], ['purpose', 'Warning Offer Letter Status']])->latest()->first();
+
+            if($term->upload_offer_letter_date < Carbon::now()){
+                if(!isset($root->offer_letter)){
+                    if(!isset($announcement)){
+                        $announcement = new Announcement;
+                        $announcement->registration_no = $registration_no;
+                        $announcement->purpose = "Warning Offer Letter Status";
+                        $announcement->description = "You're offer letter is not uploaded. Please upload it immediately for further internship progress.";
+                        $announcement->start_date = Carbon::now();
+                        $announcement->end_date = Carbon::now()->addDays(61);
+                        $announcement->coordinator_id = $root->coordinators->id;
+                        $announcement->save();
+                    }
+                } else {
+                    $announcement = Announcement::all()->where('purpose', 'Warning Offer Letter Status');
+                    foreach($announcement as $a){
+                        $a->delete();
+                    }
+                }
+            }
+
+            $announcement = Announcement::where([['registration_no', $registration_no], ['purpose', 'Warning Document Status']])->latest()->first();
+
+            if($term->upload_document_date < Carbon::now()){
+                if(!isset($root->internship_report)){
+                    if(!isset($announcement)){
+                        $announcement = new Announcement;
+                        $announcement->registration_no = $registration_no;
+                        $announcement->purpose = "Warning Document Status";
+                        $announcement->description = "You're documents are not uploaded. Please upload it immediately for further internship progress.";
+                        $announcement->start_date = Carbon::now();
+                        $announcement->end_date = Carbon::now()->addDays(61);
+                        $announcement->coordinator_id = $root->coordinators->id;
+                        $announcement->save();
+                    } else {
+                        $announcement = Announcement::all()->where('purpose', 'Warning Document Status');
+                        foreach($announcement as $a){
+                            $a->delete();
+                        }
+                    }
+                }
+            }
+
+            $announcement = Announcement::where('registration_no', $registration_no)->get();
+
             return view('Student.dashboard', compact('student', 'term', 'announcement', 'root'));
         } else {
             return Redirect("/student/loginForm");
@@ -223,7 +269,7 @@ class StudentController extends Controller
             $student = Student::where('registration_no', $registration_no)->first();
             $term = Term::all()->last();
             $root = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
-            if ($root->end_date > Carbon::now()){
+            if ($root->end_date < Carbon::now()){
                 return Redirect()->back();
             }
             return view('Student.uploadcompletioncertificate', compact('student', 'term', 'root'));
@@ -334,7 +380,6 @@ class StudentController extends Controller
             $file_ext = strtolower($offerletterfile->getClientOriginalExtension());
             $file_name = $term->term_name.$registration_no.'.'.$file_ext;
             $offerletterfile->move("offer_letters", $file_name);
-
             
             $termregistered = TermRegistered::where([['registration_no', $registration_no], ['term_name', $term->term_name]])->first();
             if ($termregistered){

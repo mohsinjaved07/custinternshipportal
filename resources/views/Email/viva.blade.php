@@ -62,7 +62,11 @@
                                <strong>Student Name:</strong> {{ $student->name }}<br/>
                                <strong>Student Contact No:</strong> {{ $student->contact_no }}<br/><br/>
 
-                               Kindly take viva on {{ Carbon\Carbon::parse($student->studentLink->date)->toFormattedDateString() }}.<br/><br/>
+                               Kindly take viva on or before {{ Carbon\Carbon::parse($student->studentLink->date)->toFormattedDateString() }}.<br/><br/>
+
+                               Even, if there is an issue regarding taking viva, you can mark <strong>Deferred</strong> and give reason at the description in the remarks section by entering into the URL given below.</br>
+                               Also, make ensure that it should have a strong reason.<br/><br/>
+                        
 
                                Here's the link:<br/>
                                <a href="http://localhost:8000/coordinator/startviva/{{ $term }}/{{ $link }}">Click here</a>

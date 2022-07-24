@@ -103,19 +103,6 @@
                 </div>
                 <div class="col-md-4">
                     <div class="card shadow">
-                        <h5 class="card-header bg-light text-dark text-center">Announcements</h5>
-                        <div class="card-body">
-                            <p class="card-title font-weight-bold custFontColor">
-                                Here you can view the announcements.
-                            </p>
-                            <hr class="my-4">
-                        </div>
-                    </div>
-                </div>
-            </div><br/><br/>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card shadow">
                         <h5 class="card-header bg-dark text-white text-center">Organization</h5>
                         <div class="card-body">
                             <p class="card-title font-weight-bold custFontColor">
@@ -126,7 +113,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div><br/><br/>
         </div>
     </body>
     <script src="{{ asset('js/my.js') }}"></script>

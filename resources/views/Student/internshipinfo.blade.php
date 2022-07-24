@@ -47,7 +47,7 @@
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a class="active" href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date < Carbon\Carbon::now())
+                    @if($root->end_date > Carbon\Carbon::now())
                     <a href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif

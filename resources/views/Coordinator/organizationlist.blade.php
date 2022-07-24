@@ -71,6 +71,9 @@
                                 </button>
                             </div>
                             @enderror
+                            @error('status')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
                             <label>Search Student</label>
                             <div class="input-group mb-2">
                                 <div class="input-group-prepend">
@@ -181,16 +184,13 @@
                                                                 <hr class="my-4"/>
                                                                 <div class="row">
                                                                     <div class="col-md-6 text-center">
-                                                                        <input type="radio" style="height:30px;width:30px;" id="approved" name="status" value="approved" onclick="changeText1()"/>
+                                                                        <input type="radio" selected style="height:30px;width:30px;" id="approved" name="status" value="approved" onclick="changeText1()"/>
                                                                         <label for="approved" class="h3">Approve</label>
                                                                     </div>
                                                                     <div class="col-md-6 text-center">
                                                                         <input type="radio" style="height:30px;width:30px;" id="rejected" name="status" value="rejected" onclick="changeText2()"/>
                                                                         <label for="rejected" class="h3">Reject</label>
                                                                     </div>
-                                                                    @error('grade')
-                                                                        <div class="alert alert-danger">{{ $message }}</div>
-                                                                    @enderror
                                                                 </div>
                                                                 <hr class="my-4"/>
                                                                 <button type="submit" class="btn btn-danger">Submit</button>
@@ -255,11 +255,21 @@
                                                                 <fieldset>
                                                                     <legend>Remarks</legend>
                                                                     <div class="form-group">
-                                                                        <textarea class="form-control" name="description" rows="4">Congratulations, you're all documents has been accepted.</textarea>
+                                                                        <textarea class="form-control" id="remarkedd" name="description" rows="4">Congratulations, you're all documents has been accepted.</textarea>
                                                                     </div>
                                                                 </fieldset>
-                                                                <button type="submit" name="status" value="approved" class="btn btn-success">Approve</button>
-                                                                <button type="submit" name="status" value="rejected" class="btn btn-danger">Reject</button>
+                                                                <div class="row">
+                                                                    <div class="col-md-6 text-center">
+                                                                        <input type="radio" selected style="height:30px;width:30px;" id="approvedd" name="status" value="approved" onclick="changeText3()"/>
+                                                                        <label for="approvedd" class="h3">Approve</label>
+                                                                    </div>
+                                                                    <div class="col-md-6 text-center">
+                                                                        <input type="radio" style="height:30px;width:30px;" id="rejectedd" name="status" value="rejected" onclick="changeText4()"/>
+                                                                        <label for="rejectedd" class="h3">Reject</label>
+                                                                    </div>
+                                                                </div>
+                                                                <hr class="my-4"/>
+                                                                <button type="submit" class="btn btn-danger">Submit</button>
                                                             </form>
                                                             @endif
                                                             <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>

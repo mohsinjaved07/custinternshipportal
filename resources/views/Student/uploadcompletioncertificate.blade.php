@@ -47,7 +47,7 @@
                 <a href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date < Carbon\Carbon::now())
+                    @if($root->end_date > Carbon\Carbon::now())
                     <a class="active" href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif
@@ -168,20 +168,20 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     @if(strpos($root->internship_completion_certificate, "png") != 0)
-                                    <img src="{{ asset($root->internship_completion_certificate) }}" width="500" height="300"/>
+                                    <img src="{{ asset($root->internship_completion_certificate) }}" width="400" height="300"/>
                                     @endif
                                     @if(strpos($root->internship_completion_certificate, "jpg") != 0)
-                                    <img src="{{ asset($root->internship_completion_certificate) }}" width="500" height="300"/>
+                                    <img src="{{ asset($root->internship_completion_certificate) }}" width="400" height="300"/>
                                     @endif
                                     @if(strpos($root->internship_completion_certificate, "pdf") != 0)
-                                    <embed src="{{ asset($root->internship_completion_certificate) }}" width="500" height="500" type="application/pdf"/>
+                                    <embed src="{{ asset($root->internship_completion_certificate) }}" width="400" height="400" type="application/pdf"/>
                                     @endif
                                 </div>
                                 <div class="col-md-4">
-                                    <embed src="{{ asset($root->internship_report) }}" width="500" height="500" type="application/pdf"/>
+                                    <embed src="{{ asset($root->internship_report) }}" width="400" height="400" type="application/pdf"/>
                                 </div>
                                 <div class="col-md-4">
-                                    <embed src="{{ asset($root->internship_evaluation_performa) }}" width="500" height="500" type="application/pdf"/>
+                                    <embed src="{{ asset($root->internship_evaluation_performa) }}" width="400" height="400" type="application/pdf"/>
                                 </div>
                             </div>
                             @endif

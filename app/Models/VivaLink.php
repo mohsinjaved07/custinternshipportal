@@ -11,7 +11,6 @@ class VivaLink extends Model
     protected $fillable = [
         'registration_no',
         'link',
-        'date',
-        'status'
+        'date'
     ];
 }

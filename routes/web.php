@@ -52,6 +52,7 @@ Route::post('/coordinator/login', [CoordinatorController::class, 'login'])->name
 Route::post('/coordinator/password', [CoordinatorController::class, 'password'])->name('password');
 Route::post('/coordinator/letter', [CoordinatorController::class, 'letter'])->name('letter');
 Route::post('/coordinator/studentlogininfo', [CoordinatorController::class, 'studentlogininfo'])->name('studentlogininfo');
+Route::post('/coordinator/studentloginfileinfo', [CoordinatorController::class, 'studentloginfileinfo'])->name('studentloginfileinfo');
 Route::post('/coordinator/specificstudentlogininfo', [CoordinatorController::class, 'specificstudentlogininfo'])->name('specificstudentlogininfo');
 Route::post('/coordinator/setplan', [CoordinatorController::class, 'setplan'])->name('setplan');
 Route::post('/coordinator/selectterm', [CoordinatorController::class, 'selectterm'])->name('selectterm');

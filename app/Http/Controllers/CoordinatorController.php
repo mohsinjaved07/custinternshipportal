@@ -33,10 +33,12 @@ use App\Mail\CoordinatorForgotPwd;
 class CoordinatorController extends Controller
 {    
     public function loginForm(){
-        session([
-            'id' => 2
-        ]);
-        return view('Coordinator.login');
+        $id = session('id');
+        if($id){
+            return Redirect('/coordinator/dashboard');
+        } else {
+            return view('Coordinator.login');
+        }
     }
     
     public function login(Request $request){
@@ -81,7 +83,7 @@ class CoordinatorController extends Controller
     public function sendLetter(){
         $id = session('id');
         if ($id){
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
             return view('Coordinator.sendletter', compact('student', 'root', 'term'));
@@ -173,7 +175,7 @@ class CoordinatorController extends Controller
     public function uploadInternshipPlan(){
         $id = session('id');
         if ($id){
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
             return view('Coordinator.orientation', compact('student', 'root', 'term'));
@@ -232,7 +234,7 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             $term = Term::all()->last();
             return view('Coordinator.studentsinfo', compact('root', 'student', 'term'));
         } else {
@@ -273,6 +275,7 @@ class CoordinatorController extends Controller
                     if ($request->newpassword == $request->confirmpassword){
                         $coordinator->password = Crypt::encryptString($request->newpassword);
                         $coordinator->save();
+                        session()->forget('id');
                         return Redirect('/coordinator/loginForm')->with("message", "Password successfully changed.");
                     } else {
                         return Redirect()->back()->with("message", "Password not matched.");
@@ -345,6 +348,56 @@ class CoordinatorController extends Controller
         }
     }
 
+    public function studentloginfileinfo(Request $request){
+        $id = session('id');
+        if ($id){
+            $output = session("excel");
+
+            if(!$output){
+                return Redirect()->back()->with("message", "File must be uploaded first.");
+            }
+
+            for ($x = 1; $x < count($output); $x++){
+                $student = Student::where('registration_no', $output[$x][0])->first();
+
+                if(!$student){
+                    $student = new Student;
+                    $student->registration_no = $output[$x][0];
+                    $student->name = $output[$x][1];
+                    $student->email = $output[$x][2];
+                    $student->CGPA = $output[$x][3];
+                    $student->cr_hrs = $output[$x][4];
+                    $student->contact_no = $output[$x][5];
+                    $student->department = $output[$x][6];
+                    $student->save();
+
+                    $termRegistered = new TermRegistered;
+                    $termRegistered->registration_no = $output[$x][0];
+                    $termRegistered->term_name = session('term');
+                    $termRegistered->coordinator_id = $id;
+                    $termRegistered->save();
+
+                    $studentaccount = new StudentAccount;
+                    $studentaccount->registration_no = $output[$x][0];
+                    $studentaccount->login_id = strtolower($output[$x][0]);
+                    $studentaccount->password = $this->generate_letter_pass();
+                    $studentaccount->one_time_auth = null;
+                    $studentaccount->save();
+
+                    $studentdocs = new StudentDocs;
+                    $studentdocs->registration_no = $output[$x][0];
+                    $studentdocs->save();
+
+                    Mail::to($student->email)->send(new LoginInfoMail($student));
+                }
+            }
+
+            return Redirect()->back()->with("message", "Student login info successfully sent.");
+        } else {
+            return Redirect('/coordinator/loginForm');
+        }
+    }
+
     public function getplan(){
         $id = session('id');
         if ($id){
@@ -402,7 +455,7 @@ class CoordinatorController extends Controller
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             return view('Coordinator.portallogin', compact('root', 'term', 'student'));
         } else {
             return Redirect("/coordinator/loginForm");
@@ -471,7 +524,7 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             $term = Term::all()->last();
             return view("Coordinator.setannouncement", compact('root', 'student', 'term'));
         } else {
@@ -542,7 +595,7 @@ class CoordinatorController extends Controller
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             return view('Coordinator.organizationlist', compact('root', 'term', 'student'));
         } else {
             return Redirect("/coordinator/loginForm");
@@ -593,7 +646,7 @@ class CoordinatorController extends Controller
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             $org = Organization::all();
             return view('Coordinator.organizations', compact('root', 'term', 'student', 'org'));
         } else {
@@ -606,7 +659,7 @@ class CoordinatorController extends Controller
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', session('id')]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             $supervisor = Supervisor::where('organization_ntn_no', $organizationNTN)->get();
             return view('Coordinator.supervisors', compact('root', 'term', 'student', 'supervisor'));
         } else {
@@ -618,10 +671,12 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $validated = $request->validate([
-                'description'=>'required'
+                'description'=>'required',
+                'status' => 'required'
             ],
             [
                 'description.required' => 'Please enter remarks',
+                'status.required' => 'Please select status'
             ]);
 
             
@@ -652,10 +707,12 @@ class CoordinatorController extends Controller
         $id = session('id');
         if ($id){
             $validated = $request->validate([
-                'description'=>'required'
+                'description'=>'required',
+                'status' => 'required'
             ],
             [
                 'description.required' => 'Please enter remarks',
+                'status.required' => 'Please select status'
             ]);
 
             $term = Term::all()->last();
@@ -709,20 +766,28 @@ class CoordinatorController extends Controller
                 $link->where('registration_no', $registrationno)->update([
                     'link' => Crypt::encryptString($registrationno),
                     'date'=> $request->Date,
-                    'status' => 'Not held'
                 ]);
             } else {
                 $link = new VivaLink;
                 $link->registration_no = $registrationno;
                 $link->link = Crypt::encryptString($registrationno);
                 $link->date = $request->Date;
-                $link->status = 'Not held';
                 $link->save();
             }
             $student = TermRegistered::where([['term_name', $term], ['registration_no', $registrationno]])->first();
             $student->update([
                 'evaluator_id' => $request->viva,
             ]);
+
+            $announcement = new Announcement;
+            $announcement->registration_no = $registrationno;
+            $announcement->purpose = "Viva Status";
+            $announcement->description = "You're Viva is scheduled on ".Carbon::parse($request->Date)->toFormattedDateString()." and it will be taken by ".$student->evaluators->name.".";
+            $announcement->start_date = Carbon::now();
+            $announcement->end_date = Carbon::now()->addDays(7);
+            $announcement->coordinator_id = $id;
+            $announcement->save();
+
             Mail::to($student->evaluators->email)->send(new VivaMail($student->students, Crypt::encryptString($registrationno), $student->evaluators, $term));
             Mail::to($student->students->email)->send(new StudentViva($student->students, $student->evaluators, $term));
             return Redirect()->back()->with('message', 'Email sent successfully.');
@@ -732,9 +797,13 @@ class CoordinatorController extends Controller
     }
 
     public function startviva($term, $link){
-        $registration_no = Crypt::decryptString($link);
-        $root = TermRegistered::where([['term_name', $term], ['registration_no', $registration_no]])->first();
-        return view('Coordinator.startviva', compact('root'));
+        $viva_link = VivaLink::where('registration_no', Crypt::decryptString($link))->first();
+        if($viva_link){
+            $root = TermRegistered::where([['term_name', $term], ['registration_no', $viva_link->registration_no]])->first();
+            return view('Coordinator.startviva', compact('root'));
+        } else {
+            return "sorry, this link is expired.";
+        }
     }
 
     public function setGrades(Request $request, $registrationno, $term){
@@ -748,11 +817,20 @@ class CoordinatorController extends Controller
         ]);
 
         $root = TermRegistered::where([['term_name', $term], ['registration_no', $registrationno]])->first();
-        $root->update([
-            'remarks' => $request->description,
-            'grade' => $request->grade
-        ]);
-        Mail::to($root->coordinators->email)->send(new GradeMail($root));
+        Mail::to($root->coordinators->email)->send(new GradeMail($root, $request->grade, $request->description));
+
+        if($request->grade == "deferred"){
+            $root->update([
+                'evaluator_id' => null
+            ]);
+        } else {
+            $root->update([
+                'remarks' => $request->description,
+                'grade' => $request->grade
+            ]);
+        }
+        $viva_link = VivaLink::where('registration_no', $registrationno)->first();
+        $viva_link->where('registration_no', $registrationno)->delete();
         return "Thank you for your cooperation. Please close this window immediately.";
     }
 
@@ -761,7 +839,7 @@ class CoordinatorController extends Controller
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', $id]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             return view('Coordinator.grades', compact('root', 'student', 'term'));
         } else {
             return Redirect("/coordinator/loginForm");
@@ -773,7 +851,7 @@ class CoordinatorController extends Controller
         if ($id){
             $spreadsheet = new PhpSpreadsheet\Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             $sheet->setCellValue('A1', '#');
             $sheet->setCellValue('B1', 'Registration No');
             $sheet->setCellValue('C1', 'Name');
@@ -815,6 +893,7 @@ class CoordinatorController extends Controller
                 $templateProcessor->setValue('term_name', $student->term_name);
                 $templateProcessor->setValue('grade', $student->grade);
                 $templateProcessor->setValue('c_name', $student->coordinators->name);
+                $templateProcessor->setValue('designation', $student->coordinators->designation);
                 $templateProcessor->setValue('date', Carbon::now()->toFormattedDateString());
                 $templateProcessor->saveAs($student->registration_no.'.docx');
 
@@ -838,7 +917,7 @@ class CoordinatorController extends Controller
         if ($id){
             $root = TermRegistered::where([['term_name', session('term')], ['coordinator_id', $id]])->first();
             $term = Term::all()->last();
-            $student = TermRegistered::where('term_name', session('term'))->distinct()->get();
+            $student = TermRegistered::where('term_name', session('term'))->distinct()->orderBy('registration_no', 'asc')->get();
             return view('Coordinator.addstudent', compact('root', 'student', 'term'));
         } else {
             return Redirect("/coordinator/loginForm");

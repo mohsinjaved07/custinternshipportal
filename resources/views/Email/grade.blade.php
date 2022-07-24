@@ -44,9 +44,9 @@
             </p>
             <br/><br/>
             <p>
-                This student has been rewarded <strong>{{ $root->grade }}</strong> Grade.<br/><br/>
+                This student has been rewarded <strong>{{ $grade }}</strong> Grade.<br/><br/>
                 <strong>Reason:-</strong><br/>
-                {{ $root->remarks }}
+                {{ $description }}
             </p>
             <br/><br/>                            
             <p>

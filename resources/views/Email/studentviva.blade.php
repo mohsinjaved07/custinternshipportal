@@ -65,7 +65,6 @@
                                 <strong>Evaluator's name: </strong>{{ $evaluator->name }}<br/>
                                 <strong>Evaluator's email: </strong>{{ $evaluator->email }}<br/>
                                 <strong>Evaluator's department: </strong>{{ $evaluator->department }}<br/>
-                                <strong>Evaluator's contact no: </strong>{{ $evaluator->contactno }}<br/>
                                 <strong>Evaluator's office: </strong>{{ $evaluator->office }}<br/>
                             </p><br/>
                             Thank you,

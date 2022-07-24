@@ -67,7 +67,7 @@
                             <form action="{{ url('/coordinator/viva/'.$student->registration_no.'/'.$student->term_name) }}" method="post">
                                 @csrf
                                 <div class="form-group">
-                                    Term: {{ session('term') }}
+                                    Semester: {{ $root->terms->sem_name }}
                                 </div>
                                 <div class="form-group">
                                     Dear:&nbsp
@@ -76,7 +76,7 @@
                                         <option value="{{ $c->id }}">{{ $c->name }}</option>
                                         @endforeach
                                     </select><br/><br/>
-                                    Date:<input type="date" name="Date" class="form-control col-md-6"/>
+                                    Date:<input type="date" name="Date" class="form-control col-md-6" value="{{ Carbon\Carbon::now()->toDateString() }}"/>
                                     @error('Date')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror

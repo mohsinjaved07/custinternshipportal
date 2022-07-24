@@ -41,6 +41,12 @@
                     <div class="card shadow">
                         <h5 class="card-header bg-dark text-white text-center">Viva</h5>
                         <div class="card-body">
+                            @error('description')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+                            @error('grade')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
                             <div class="row">
                                 <div class="col-md-6">
                                     <p class="card-title font-weight-bold custFontColor">
@@ -101,25 +107,23 @@
                                     <div class="form-group">
                                         <textarea class="form-control" name="description" rows="4" placeholder="Please enter remarks here..."></textarea>
                                     </div>
-                                    @error('description')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
                                 </fieldset>
                                 <hr class="my-4"/>
                                 <fieldset>
                                     <legend>Assign Grade</legend>
                                     <div class="h1 row">
-                                        <div class="col-md-6 text-center">
+                                        <div class="col-md-4 text-center">
                                             <input type="radio" style="height:30px;width:30px;" name="grade" value="P" id="P"/>
                                             <label for="P">Pass</label>
                                         </div>
-                                        <div class="col-md-6 text-center">
+                                        <div class="col-md-4 text-center">
                                             <input type="radio" style="height:30px;width:30px;" name="grade" value="F" id="F"/>
                                             <label for="F">Fail</label>
                                         </div>
-                                        @error('grade')
-                                            <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
+                                        <div class="col-md-4 text-center">
+                                            <input type="radio" style="height:30px;width:30px;" name="grade" value="deferred" id="deferred"/>
+                                            <label for="deferred">Deferred</label>
+                                        </div>
                                     </div>
                                 </fieldset>
                                 <hr class="my-4"/>

@@ -47,7 +47,7 @@
                 <a class="active" href="{{ url('/student/dashboard') }}">Home</a>
                 <a href="{{ url('/student/internshipinfo') }}">Upload Offer Letter</a>
                 @if(isset($root->end_date))
-                    @if($root->end_date < Carbon\Carbon::now())
+                    @if($root->end_date > Carbon\Carbon::now())
                     <a href="{{ url('/student/uploaddocuments') }}">Upload Documents</a>
                     @endif
                 @endif
@@ -153,12 +153,21 @@
                             <hr class="my-4">
                             @foreach($announcement->reverse() as $a)
                                 @if($a->end_date >= Carbon\Carbon::now())
-                                <div class="alert alert-success" role="alert">
-                                    <h4>{{ $a->purpose }}</h4>
-                                    {{ $a->description }}<br/><br/>
-                                    <strong>Announced by:</strong> {{ $a->coordinator->name }}<br/>
-                                    <strong>Expire date:</strong> {{ Carbon\Carbon::parse($a->end_date)->toFormattedDateString() }}
-                                </div>
+                                    @if($a->purpose == "Warning Offer Letter Status" || $a->purpose == "Warning Document Status")
+                                    <div class="alert alert-danger" role="alert">
+                                        <h4>WARNING!!!</h4>
+                                        {{ $a->description }}<br/><br/>
+                                        <strong>Announced by:</strong> {{ $a->coordinator->name }}<br/>
+                                        <strong>Expire date:</strong> {{ Carbon\Carbon::parse($a->end_date)->toFormattedDateString() }}
+                                    </div>
+                                    @else
+                                    <div class="alert alert-success" role="alert">
+                                        <h4>{{ $a->purpose }}</h4>
+                                        {{ $a->description }}<br/><br/>
+                                        <strong>Announced by:</strong> {{ $a->coordinator->name }}<br/>
+                                        <strong>Expire date:</strong> {{ Carbon\Carbon::parse($a->end_date)->toFormattedDateString() }}
+                                    </div>
+                                    @endif
                                 @endif
                             @endforeach
                         </div>

@@ -10,16 +10,18 @@ use Illuminate\Queue\SerializesModels;
 class GradeMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $root;
+    public $root, $grade, $description;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($root)
+    public function __construct($root, $grade, $description)
     {
         $this->root = $root;
+        $this->grade = $grade;
+        $this->description = $description;
     }
 
     /**
@@ -30,6 +32,8 @@ class GradeMail extends Mailable
     public function build()
     {
         $root = $this->root;
-        return $this->markdown('Email.grade', compact('root'));
+        $description = $this->description;
+        $grade = $this->grade;
+        return $this->markdown('Email.grade', compact('root', 'description', 'grade'));
     }
 }

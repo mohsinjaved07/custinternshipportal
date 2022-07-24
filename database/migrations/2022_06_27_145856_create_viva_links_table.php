@@ -19,7 +19,6 @@ class CreateVivaLinksTable extends Migration
             $table->primary('registration_no');
             $table->string('link')->nullable();
             $table->string('date')->nullable();
-            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

@@ -85,14 +85,11 @@
                                     <div class="input-group-text"><i class="fas fa-search"></i></div>
                                 </div>
                                 <input type="text" class="form-control" id="myInput" onkeyup="myFunction2()" placeholder="Search for registration no..."/>
-                                @if(session('term') == $term->term_name)
-                                <button type="button" class="btn btn-danger" id="checkbutton" onclick="letter()">Select all</button>
-                                @endif
                                 @error('regno')
                                     <br/><span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <form action="{{ route('studentlogininfo') }}" method="post">
+                            <form action="{{ route('studentloginfileinfo') }}" method="post">
                                 @csrf
                                 <div class="scroller">
                                     <table class="table" id="myTable">
@@ -102,9 +99,6 @@
                                                     @foreach ($output[0] as $o)
                                                     <th scope="col">{{ $o }}</th>
                                                     @endforeach
-                                                    @if(session('term') == $term->term_name)
-                                                    <th scope="col">Login</th>
-                                                    @endif
                                                 @endif
                                             </tr>
                                         </thead>
@@ -115,11 +109,6 @@
                                                     @foreach ($output[$x] as $i)
                                                     <td>{{ $i }}</td>
                                                     @endforeach
-                                                    @if(session('term') == $term->term_name)
-                                                    <td>
-                                                        <input type="checkbox" class="checkmark" name="regno[]" value="{{ $output[$x][0] }}"/>
-                                                    </td>
-                                                    @endif
                                                 </tr>
                                                 @endfor
                                             @endif
